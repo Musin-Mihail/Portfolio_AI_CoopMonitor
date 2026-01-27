@@ -6,6 +6,9 @@ import { HouseListComponent } from './features/houses/house-list/house-list.comp
 import { PersonnelListComponent } from './features/personnel/personnel-list/personnel-list.component';
 import { FeedListComponent } from './features/feeds/feed-list/feed-list.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { MortalityListComponent } from './features/logs/mortality-list/mortality-list.component';
+import { FeedWaterListComponent } from './features/logs/feed-water-list/feed-water-list.component';
+import { DiseaseListComponent } from './features/logs/disease-list/disease-list.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +24,20 @@ export const routes: Routes = [
         path: '',
         component: DashboardComponent,
       },
+      // Logs
+      {
+        path: 'logs/mortality',
+        component: MortalityListComponent,
+      },
+      {
+        path: 'logs/feed-water',
+        component: FeedWaterListComponent,
+      },
+      {
+        path: 'logs/disease',
+        component: DiseaseListComponent,
+      },
+      // Master Data
       {
         path: 'houses',
         component: HouseListComponent,
