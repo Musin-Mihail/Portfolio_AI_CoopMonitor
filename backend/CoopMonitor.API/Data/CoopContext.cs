@@ -19,6 +19,10 @@ public class CoopContext : IdentityDbContext<User>
     public DbSet<FeedWaterRecord> FeedWaterRecords { get; set; }
     public DbSet<DiseaseRecord> DiseaseRecords { get; set; }
 
+    // Сложные журналы
+    public DbSet<WeighingRecord> WeighingRecords { get; set; }
+    public DbSet<MarkingRecord> MarkingRecords { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -105,6 +109,42 @@ public class CoopContext : IdentityDbContext<User>
                   .WithMany()
                   .HasForeignKey(e => e.PersonnelId)
                   .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // WeighingRecord Configuration
+        modelBuilder.Entity<WeighingRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.WeightGrams).IsRequired();
+            entity.Property(e => e.VideoUrl).IsRequired().HasMaxLength(500);
+
+            entity.HasOne(e => e.House)
+                .WithMany()
+                .HasForeignKey(e => e.HouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Personnel)
+                .WithMany()
+                .HasForeignKey(e => e.PersonnelId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // MarkingRecord Configuration
+        modelBuilder.Entity<MarkingRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.MarkingType).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.BirdAgeDays).IsRequired();
+
+            entity.HasOne(e => e.House)
+                .WithMany()
+                .HasForeignKey(e => e.HouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Personnel)
+                .WithMany()
+                .HasForeignKey(e => e.PersonnelId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
     }
 }
