@@ -5,6 +5,7 @@ using CoopMonitor.API.Models;
 using CoopMonitor.API.Services;
 using CoopMonitor.API.Services.Alerting;
 using CoopMonitor.API.Services.Notifications;
+using CoopMonitor.API.Services.SaaS; // New Namespace
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,9 @@ builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
 // Audit Service
 builder.Services.AddSingleton<IAuditService, AuditService>();
 
+// SaaS Service (New)
+builder.Services.AddScoped<ISaaSService, SaaSService>();
+
 // Quartz
 builder.Services.AddQuartz(q =>
 {
@@ -90,6 +94,16 @@ builder.Services.AddQuartz(q =>
     var cleanupJobKey = new JobKey("CleanupJob");
     q.AddJob<CleanupJob>(opts => opts.WithIdentity(cleanupJobKey));
     q.AddTrigger(opts => opts.ForJob(cleanupJobKey).WithIdentity("CleanupTrigger").WithCronSchedule("0 0 3 * * ?"));
+
+    // SaaS Uplink Job (Каждый час)
+    var uplinkJobKey = new JobKey("UplinkJob");
+    q.AddJob<UplinkJob>(opts => opts.WithIdentity(uplinkJobKey));
+    q.AddTrigger(opts => opts.ForJob(uplinkJobKey).WithIdentity("UplinkTrigger").WithCronSchedule("0 0 * * * ?"));
+
+    // SaaS Downlink Job (Каждые 4 часа)
+    var downlinkJobKey = new JobKey("DownlinkJob");
+    q.AddJob<DownlinkJob>(opts => opts.WithIdentity(downlinkJobKey));
+    q.AddTrigger(opts => opts.ForJob(downlinkJobKey).WithIdentity("DownlinkTrigger").WithCronSchedule("0 0 0/4 * * ?"));
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 

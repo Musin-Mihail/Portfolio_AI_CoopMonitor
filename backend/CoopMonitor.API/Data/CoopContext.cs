@@ -33,6 +33,9 @@ public class CoopContext : IdentityDbContext<User>
     // Аудит
     public DbSet<AuditLog> AuditLogs { get; set; }
 
+    // Синхронизация
+    public DbSet<SyncUsage> SyncUsages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -202,6 +205,14 @@ public class CoopContext : IdentityDbContext<User>
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Action).IsRequired().HasMaxLength(50);
             entity.HasIndex(e => e.Timestamp); // Индекс для сортировки по времени
+        });
+
+        // SyncUsage Configuration
+        modelBuilder.Entity<SyncUsage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Date).IsRequired();
+            entity.HasIndex(e => e.Date).IsUnique(); // Одна запись на день
         });
     }
 }

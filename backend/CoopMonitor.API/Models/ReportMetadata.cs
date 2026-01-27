@@ -45,4 +45,13 @@ public class ReportMetadata
     /// </summary>
     [MaxLength(20)]
     public string Status { get; set; } = "Success";
+
+    // --- SaaS Sync Fields ---
+
+    /// <summary>
+    /// Флаг успешной отправки в Облако
+    /// </summary>
+    public bool IsSynced { get; set; } = false;
+
+    public DateTime? SyncedAt { get; set; }
 }
