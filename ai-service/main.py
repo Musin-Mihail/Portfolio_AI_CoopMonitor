@@ -1,10 +1,11 @@
 import uvicorn
 import logging
-from fastapi import FastAPI, HTTPException
-from app.settings import settings
-from app.models import AnalysisRequest, AnalysisResponse
-from app.services.storage import minio_client
 import uuid
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from app.settings import settings
+from app.models import AnalysisRequest, AnalysisResponse, AnalysisStatus
+from app.services.storage import minio_client
+from app.services.vision import vision_pipeline
 
 # Configure Logging
 logging.basicConfig(
@@ -21,7 +22,7 @@ async def health_check():
 
 
 @app.post("/analyze", response_model=AnalysisResponse)
-async def analyze_media(request: AnalysisRequest):
+async def analyze_media(request: AnalysisRequest, background_tasks: BackgroundTasks):
     logger.info(f"Received analysis request for {request.bucket}/{request.file_path}")
 
     # 1. Validate file existence
@@ -29,17 +30,19 @@ async def analyze_media(request: AnalysisRequest):
         logger.warning(f"File not found: {request.bucket}/{request.file_path}")
         raise HTTPException(status_code=404, detail="Source file not found in storage")
 
-    # 2. Mock Job Creation
-    # In a real scenario, this would push a task to a queue (e.g., Celery/Redis)
-    # or start a background task. For MVP, we'll just acknowledge.
+    # 2. Create Job ID
     job_id = str(uuid.uuid4())
 
-    # TODO: Step 5.2 - Implement Vision Pipeline trigger here
+    # 3. Trigger Background Processing
+    # This runs in the background after the response is sent
+    background_tasks.add_task(
+        vision_pipeline.process_job, job_id, request.bucket, request.file_path
+    )
 
     return AnalysisResponse(
         job_id=job_id,
-        status="queued",
-        message=f"Analysis started for {request.file_path}",
+        status=AnalysisStatus.QUEUED,
+        message=f"Analysis queued for {request.file_path}",
     )
 
 
