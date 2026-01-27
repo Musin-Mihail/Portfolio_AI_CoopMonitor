@@ -20,10 +20,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-// 2. Add services to the container
+// 2. Add services
 builder.Services.AddControllers();
 
-// OpenAPI Config
+// OpenAPI
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -37,25 +37,18 @@ builder.Services.AddOpenApi(options =>
             In = ParameterLocation.Header,
             Description = "JWT Authorization header using the Bearer scheme."
         };
-
         document.Components ??= new OpenApiComponents();
         document.Components.SecuritySchemes.Add("Bearer", securityScheme);
-
         var securityRequirement = new OpenApiSecurityRequirement
         {
             {
                 new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
                 },
                 Array.Empty<string>()
             }
         };
-
         document.SecurityRequirements.Add(securityRequirement);
         return Task.CompletedTask;
     });
@@ -64,71 +57,49 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IFileStorageService, MinioStorageService>();
 
-// --- Phase 10: Notifications & Alerts ---
+// Notifications & Alerts
 builder.Services.AddSingleton<TelegramBotService>();
 builder.Services.AddHostedService<TelegramBotService>(provider => provider.GetRequiredService<TelegramBotService>());
 builder.Services.AddSingleton<INotificationService>(provider => provider.GetRequiredService<TelegramBotService>());
-
 builder.Services.AddScoped<IAlertService, AlertService>();
-// ----------------------------------------
 
 builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
 
-// Quartz Configuration
+// Quartz
 builder.Services.AddQuartz(q =>
 {
-    // OBSOLETE METHOD REMOVED: q.UseMicrosoftDependencyInjectionJobFactory();
-
-    // Daily Report Job (06:00)
     var dailyReportJobKey = new JobKey("DailyReportJob");
     q.AddJob<DailyReportJob>(opts => opts.WithIdentity(dailyReportJobKey));
-    q.AddTrigger(opts => opts
-        .ForJob(dailyReportJobKey)
-        .WithIdentity("DailyReportTrigger")
-        .WithCronSchedule("0 0 6 * * ?"));
+    q.AddTrigger(opts => opts.ForJob(dailyReportJobKey).WithIdentity("DailyReportTrigger").WithCronSchedule("0 0 6 * * ?"));
 
-    // Backup Job (02:00)
     var backupJobKey = new JobKey("BackupJob");
     q.AddJob<BackupJob>(opts => opts.WithIdentity(backupJobKey));
-    q.AddTrigger(opts => opts
-        .ForJob(backupJobKey)
-        .WithIdentity("BackupTrigger")
-        .WithCronSchedule("0 0 2 * * ?"));
+    q.AddTrigger(opts => opts.ForJob(backupJobKey).WithIdentity("BackupTrigger").WithCronSchedule("0 0 2 * * ?"));
 
-    // Cleanup Job (03:00)
     var cleanupJobKey = new JobKey("CleanupJob");
     q.AddJob<CleanupJob>(opts => opts.WithIdentity(cleanupJobKey));
-    q.AddTrigger(opts => opts
-        .ForJob(cleanupJobKey)
-        .WithIdentity("CleanupTrigger")
-        .WithCronSchedule("0 0 3 * * ?"));
+    q.AddTrigger(opts => opts.ForJob(cleanupJobKey).WithIdentity("CleanupTrigger").WithCronSchedule("0 0 3 * * ?"));
 });
-
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-// 3. Database & Identity
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                       ?? "Data Source=coop_monitor.db";
-
-builder.Services.AddDbContext<CoopContext>(options =>
-{
-    options.UseSqlite(connectionString);
-});
+// 3. Database
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=coop_monitor.db";
+builder.Services.AddDbContext<CoopContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
-    {
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequiredLength = 4;
-    })
-    .AddEntityFrameworkStores<CoopContext>()
-    .AddDefaultTokenProviders();
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 4;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+})
+.AddEntityFrameworkStores<CoopContext>()
+.AddDefaultTokenProviders();
 
-// 4. JWT Authentication
-var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is missing");
+// 4. JWT Auth
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key missing");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
 
@@ -136,13 +107,12 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
@@ -150,25 +120,37 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtIssuer,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
+
+    // Чтение токена из Query String (для видео плеера и скачивания)
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+
+            // Если запрос идет к API файлов и есть токен в URL
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/api/Files"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
-// 5. CORS Policy
-var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
-                     ?? ["http://localhost:4200"];
-
+// 5. CORS
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? ["http://localhost:4200"];
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AngularClient", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
     });
 });
 
 var app = builder.Build();
 
-// 6. Configure Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -177,47 +159,36 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 app.UseCors("AngularClient");
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
-// 7. Init DB
+// Init DB
 try
 {
     using (var scope = app.Services.CreateScope())
     {
-        var services = scope.ServiceProvider;
-        var dbContext = services.GetRequiredService<CoopContext>();
-        var userManager = services.GetRequiredService<UserManager<User>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var db = scope.ServiceProvider.GetRequiredService<CoopContext>();
+        var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        db.Database.Migrate();
+        db.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL;");
 
-        dbContext.Database.Migrate();
-        dbContext.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL;");
-
-        string adminName = "admin";
-        if (await userManager.FindByNameAsync(adminName) == null)
+        if (await userMgr.FindByNameAsync("admin") == null)
         {
-            var adminUser = new User { UserName = adminName, Email = "admin@coop.local" };
-            var result = await userManager.CreateAsync(adminUser, "admin123");
-            if (result.Succeeded)
+            var admin = new User { UserName = "admin", Email = "admin@coop.local" };
+            if ((await userMgr.CreateAsync(admin, "admin123")).Succeeded)
             {
-                if (!await roleManager.RoleExistsAsync("Admin"))
-                    await roleManager.CreateAsync(new IdentityRole("Admin"));
-
-                await userManager.AddToRoleAsync(adminUser, "Admin");
-                Log.Information("Default admin user created.");
+                if (!await roleMgr.RoleExistsAsync("Admin")) await roleMgr.CreateAsync(new IdentityRole("Admin"));
+                await userMgr.AddToRoleAsync(admin, "Admin");
             }
         }
     }
-
-    Log.Information("Starting CoopMonitor API...");
     app.Run();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Application terminated unexpectedly");
+    Log.Fatal(ex, "App crash");
 }
 finally
 {

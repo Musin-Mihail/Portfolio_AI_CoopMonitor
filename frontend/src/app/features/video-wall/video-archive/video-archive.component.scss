@@ -1,0 +1,93 @@
+.video-wall-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 20px;
+  h1 {
+    margin: 0;
+  }
+}
+
+/* LIVE STREAMS */
+.live-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.stream-card {
+  .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-top: 8px;
+    margin-right: 8px;
+
+    &.online {
+      background-color: #4caf50;
+      box-shadow: 0 0 8px #4caf50;
+    }
+  }
+
+  .video-placeholder {
+    height: 200px;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #555;
+
+    .placeholder-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+/* ARCHIVE */
+.archive-layout {
+  display: flex;
+  gap: 24px;
+  padding-top: 20px;
+  min-height: 500px;
+
+  .sidebar {
+    width: 200px;
+    flex-shrink: 0;
+
+    .bucket-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      mat-chip-option {
+        width: 100%;
+      }
+    }
+  }
+
+  .file-list-container {
+    flex-grow: 1;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+}
+
+.empty-state {
+  padding: 40px;
+  text-align: center;
+  color: #888;
+}
+
+.file-title {
+  font-weight: 500;
+}

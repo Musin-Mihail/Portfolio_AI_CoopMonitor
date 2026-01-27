@@ -1,0 +1,93 @@
+<div class="video-wall-container">
+  <div class="header">
+    <h1>Video Wall & Archive</h1>
+  </div>
+
+  <mat-tab-group
+    animationDuration="0ms"
+    (selectedIndexChange)="onTabChange($event)">
+    <mat-tab label="Live Streams">
+      <div class="live-grid">
+        <mat-card
+          class="stream-card"
+          *ngFor="let cam of liveStreams">
+          <mat-card-header>
+            <div
+              mat-card-avatar
+              class="status-indicator"
+              [class.online]="cam.status === 'Online'"></div>
+            <mat-card-title>{{ cam.name }}</mat-card-title>
+            <mat-card-subtitle>{{ cam.status }}</mat-card-subtitle>
+          </mat-card-header>
+          <div class="video-placeholder">
+            <mat-icon class="placeholder-icon">videocam</mat-icon>
+            <span>LIVE FEED MOCK</span>
+          </div>
+          <mat-card-actions align="end">
+            <button
+              mat-button
+              disabled>
+              SETTINGS
+            </button>
+            <button mat-button>FULLSCREEN</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Archive / Storage">
+      <div class="archive-layout">
+        <div class="sidebar">
+          <h3>Buckets</h3>
+          <mat-chip-listbox
+            class="bucket-list"
+            [value]="selectedBucket()"
+            (change)="selectBucket($event.value)">
+            <mat-chip-option
+              *ngFor="let b of buckets"
+              [value]="b">
+              {{ b }}
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+
+        <div class="file-list-container">
+          <mat-progress-bar
+            *ngIf="isLoading()"
+            mode="indeterminate"></mat-progress-bar>
+
+          <div
+            class="empty-state"
+            *ngIf="!isLoading() && files().length === 0">
+            No files found in {{ selectedBucket() }}
+          </div>
+
+          <mat-nav-list *ngIf="files().length > 0">
+            <h3 matSubheader>Files in {{ selectedBucket() }}</h3>
+            <mat-list-item
+              *ngFor="let file of files()"
+              class="file-item">
+              <mat-icon
+                matListItemIcon
+                [fontIcon]="isPlayable(file) ? 'movie' : 'description'"></mat-icon>
+              <div
+                matListItemTitle
+                class="file-title">
+                {{ file.name }}
+              </div>
+              <div matListItemLine>{{ formatSize(file.size) }} • {{ file.lastModified | date: "medium" }}</div>
+              <button
+                mat-icon-button
+                matListItemMeta
+                *ngIf="isPlayable(file)"
+                (click)="playVideo(file)"
+                color="primary">
+                <mat-icon>play_circle</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-nav-list>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

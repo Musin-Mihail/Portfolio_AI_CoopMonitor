@@ -13,6 +13,7 @@ import { WeighingListComponent } from './features/logs/weighing-list/weighing-li
 import { MarkingListComponent } from './features/logs/marking-list/marking-list.component';
 import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
 import { UserListComponent } from './features/admin/user-list/user-list.component';
+import { VideoArchiveComponent } from './features/video-wall/video-archive/video-archive.component';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,11 @@ export const routes: Routes = [
       {
         path: '',
         component: DashboardComponent,
+      },
+      // Video Wall
+      {
+        path: 'video-wall',
+        component: VideoArchiveComponent,
       },
       // Logs
       {

@@ -1,3 +1,4 @@
+using CoopMonitor.API.DTOs;
 using Minio;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
@@ -20,14 +21,12 @@ public class MinioStorageService : IFileStorageService
         _httpClientFactory = httpClientFactory;
         _logger = logger;
 
-        // Чтение конфигурации
         var minioSection = configuration.GetSection("Minio");
         _endpoint = minioSection["Endpoint"] ?? "localhost:9000";
         var accessKey = minioSection["AccessKey"];
         var secretKey = minioSection["SecretKey"];
         _useSsl = minioSection.GetValue<bool>("UseSSL", false);
 
-        // Инициализация MinIO Client
         _minioClient = new MinioClient()
             .WithEndpoint(_endpoint)
             .WithCredentials(accessKey, secretKey)
@@ -37,7 +36,6 @@ public class MinioStorageService : IFileStorageService
 
     public async Task UploadFileAsync(string bucketName, string objectName, Stream data, string contentType)
     {
-        // Проверяем существование бакета
         var beArgs = new BucketExistsArgs().WithBucket(bucketName);
         bool found = await _minioClient.BucketExistsAsync(beArgs).ConfigureAwait(false);
         if (!found)
@@ -46,11 +44,7 @@ public class MinioStorageService : IFileStorageService
             await _minioClient.MakeBucketAsync(mbArgs).ConfigureAwait(false);
         }
 
-        // Загрузка
-        if (data.CanSeek)
-        {
-            data.Position = 0;
-        }
+        if (data.CanSeek) data.Position = 0;
 
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(bucketName)
@@ -64,20 +58,15 @@ public class MinioStorageService : IFileStorageService
 
     public async Task<(Stream FileStream, string ContentType, string FileName)> GetFileStreamAsync(string bucketName, string objectName)
     {
-        var statArgs = new StatObjectArgs()
-            .WithBucket(bucketName)
-            .WithObject(objectName);
-
+        var statArgs = new StatObjectArgs().WithBucket(bucketName).WithObject(objectName);
         var stat = await _minioClient.StatObjectAsync(statArgs).ConfigureAwait(false);
 
-        var scheme = _useSsl ? "https" : "http";
         var presignedArgs = new PresignedGetObjectArgs()
             .WithBucket(bucketName)
             .WithObject(objectName)
             .WithExpiry(60);
 
         var presignedUrl = await _minioClient.PresignedGetObjectAsync(presignedArgs);
-
         var httpClient = _httpClientFactory.CreateClient();
         var response = await httpClient.GetAsync(presignedUrl, HttpCompletionOption.ResponseHeadersRead);
 
@@ -93,84 +82,84 @@ public class MinioStorageService : IFileStorageService
     {
         try
         {
-            var args = new StatObjectArgs()
-                .WithBucket(bucketName)
-                .WithObject(objectName);
-            await _minioClient.StatObjectAsync(args).ConfigureAwait(false);
+            await _minioClient.StatObjectAsync(new StatObjectArgs().WithBucket(bucketName).WithObject(objectName));
             return true;
         }
-        catch (MinioException)
-        {
-            return false;
-        }
+        catch (MinioException) { return false; }
     }
 
     public async Task<int> CleanupOldFilesAsync(string bucketName, TimeSpan retentionPeriod)
     {
-        // Проверяем существование бакета
-        if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName)))
-        {
-            _logger.LogWarning("Cleanup skipped: Bucket {Bucket} does not exist.", bucketName);
-            return 0;
-        }
+        if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName))) return 0;
 
         var cutoffDate = DateTime.UtcNow.Subtract(retentionPeriod);
         var objectsToDelete = new List<string>();
 
-        _logger.LogInformation("Starting cleanup for bucket {Bucket}. Cutoff: {Cutoff}", bucketName, cutoffDate);
+        var listArgs = new ListObjectsArgs().WithBucket(bucketName).WithRecursive(true);
+        var fileList = _minioClient.ListObjectsEnumAsync(listArgs);
+
+        await foreach (var item in fileList)
+        {
+            if (item.LastModifiedDateTime.HasValue && item.LastModifiedDateTime.Value.ToUniversalTime() < cutoffDate)
+            {
+                objectsToDelete.Add(item.Key);
+            }
+        }
+
+        if (objectsToDelete.Count == 0) return 0;
+
+        var removeArgs = new RemoveObjectsArgs().WithBucket(bucketName).WithObjects(objectsToDelete);
+        var errors = await _minioClient.RemoveObjectsAsync(removeArgs);
+
+        return objectsToDelete.Count - errors.Count;
+    }
+
+    public async Task<IEnumerable<FileMetadataDto>> ListFilesAsync(string bucketName, string? prefix = null)
+    {
+        var result = new List<FileMetadataDto>();
+
+        // Проверяем существование бакета, чтобы не падать с ошибкой
+        if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName)))
+        {
+            return result;
+        }
 
         var listArgs = new ListObjectsArgs()
             .WithBucket(bucketName)
             .WithRecursive(true);
 
-        try
+        if (!string.IsNullOrEmpty(prefix))
         {
-            // Используем IAsyncEnumerable (ListObjectsEnumAsync) вместо Observable
-            var fileList = _minioClient.ListObjectsEnumAsync(listArgs);
+            listArgs = listArgs.WithPrefix(prefix);
+        }
 
-            await foreach (var item in fileList)
+        var fileList = _minioClient.ListObjectsEnumAsync(listArgs);
+
+        await foreach (var item in fileList)
+        {
+            // Исключаем директории (если MinIO их возвращает как объекты)
+            if (!item.IsDir)
             {
-                if (item.LastModifiedDateTime.HasValue && item.LastModifiedDateTime.Value.ToUniversalTime() < cutoffDate)
-                {
-                    objectsToDelete.Add(item.Key);
-                }
+                // Попытка определить ContentType по расширению (упрощенно), 
+                // так как ListObjects не всегда возвращает metadata
+                string contentType = "application/octet-stream";
+                var ext = Path.GetExtension(item.Key).ToLower();
+                if (ext == ".mp4") contentType = "video/mp4";
+                else if (ext == ".jpg" || ext == ".jpeg") contentType = "image/jpeg";
+                else if (ext == ".png") contentType = "image/png";
+                else if (ext == ".html") contentType = "text/html";
+                else if (ext == ".json") contentType = "application/json";
+
+                result.Add(new FileMetadataDto(
+                    item.Key,
+                    bucketName,
+                    (long)item.Size,
+                    item.LastModifiedDateTime?.ToUniversalTime(),
+                    contentType
+                ));
             }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error listing objects in bucket {Bucket}", bucketName);
-            throw;
-        }
 
-        if (objectsToDelete.Count == 0)
-        {
-            return 0;
-        }
-
-        _logger.LogInformation("Found {Count} files to delete in {Bucket}.", objectsToDelete.Count, bucketName);
-
-        var removeArgs = new RemoveObjectsArgs()
-            .WithBucket(bucketName)
-            .WithObjects(objectsToDelete);
-
-        try
-        {
-            // Исправлено: await возвращает список ошибок, .ToList() не нужен (или уже является списком)
-            var errors = await _minioClient.RemoveObjectsAsync(removeArgs);
-
-            if (errors.Count > 0)
-            {
-                _logger.LogError("Failed to delete {ErrorCount} objects in {Bucket}. First error: {Msg}",
-                    errors.Count, bucketName, errors.First().Message);
-                return objectsToDelete.Count - errors.Count;
-            }
-
-            return objectsToDelete.Count;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error executing batch delete in {Bucket}", bucketName);
-            throw;
-        }
+        return result.OrderByDescending(f => f.LastModified);
     }
 }
