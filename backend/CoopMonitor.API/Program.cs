@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +18,44 @@ builder.Host.UseSerilog((context, configuration) =>
 
 // 2. Add services to the container
 builder.Services.AddControllers();
-// Заменяем Swagger на Native OpenAPI
-builder.Services.AddOpenApi();
+
+// Настройка Native OpenAPI (работает с пакетом 9.0.0)
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        var securityScheme = new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization header using the Bearer scheme."
+        };
+
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes.Add("Bearer", securityScheme);
+
+        var securityRequirement = new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        };
+
+        document.SecurityRequirements.Add(securityRequirement);
+        return Task.CompletedTask;
+    });
+});
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IFileStorageService, MinioStorageService>();
@@ -39,7 +76,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
         options.Password.RequireLowercase = false;
         options.Password.RequireUppercase = false;
         options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequiredLength = 4; // Упрощенные требования для MVP
+        options.Password.RequiredLength = 4;
     })
     .AddEntityFrameworkStores<CoopContext>()
     .AddDefaultTokenProviders();
@@ -88,7 +125,6 @@ var app = builder.Build();
 // 6. Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    // Используем Native OpenAPI + Scalar UI вместо SwaggerUI
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
@@ -96,12 +132,12 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 app.UseCors("AngularClient");
 
-app.UseAuthentication(); // Добавлено Authentication Middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// 7. Database Initialization (Migrations, WAL Mode & Seeding)
+// 7. Database Initialization
 try
 {
     using (var scope = app.Services.CreateScope())
@@ -111,10 +147,7 @@ try
         var userManager = services.GetRequiredService<UserManager<User>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-        // Apply pending migrations
         dbContext.Database.Migrate();
-
-        // Enable WAL Journal Mode
         dbContext.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL;");
 
         // Seed Default Admin
@@ -122,10 +155,9 @@ try
         if (await userManager.FindByNameAsync(adminName) == null)
         {
             var adminUser = new User { UserName = adminName, Email = "admin@coop.local" };
-            var result = await userManager.CreateAsync(adminUser, "admin123"); // Пароль
+            var result = await userManager.CreateAsync(adminUser, "admin123");
             if (result.Succeeded)
             {
-                // Ensure Role Exists (Optional for now)
                 if (!await roleManager.RoleExistsAsync("Admin"))
                     await roleManager.CreateAsync(new IdentityRole("Admin"));
 
