@@ -1,12 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
 import { DiseaseService } from '../../../core/services/disease.service';
 import { DiseaseRecord } from '../../../core/models/logs.models';
 import { DiseaseDialogComponent } from '../disease-dialog/disease-dialog.component';
@@ -15,170 +13,9 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
 @Component({
   selector: 'app-disease-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    DatePipe,
-  ],
-  template: `
-    <div class="container">
-      <div class="header">
-        <h1>Disease Log</h1>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="openDialog()">
-          <mat-icon>add</mat-icon>
-          Add Record
-        </button>
-      </div>
-
-      <table
-        mat-table
-        [dataSource]="dataSource()"
-        class="mat-elevation-z8">
-        <ng-container matColumnDef="date">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Date
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            {{ element.date | date: 'mediumDate' }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="house">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            House
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            {{ element.houseName }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="diagnosis">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Diagnosis
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            {{ element.diagnosis }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="treatment">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Treatment
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            <span *ngIf="element.medicine">{{ element.medicine }} ({{ element.dosage }})</span>
-            <span
-              *ngIf="!element.medicine"
-              style="color: grey">
-              -
-            </span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="personnel">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Responsible
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            {{ element.personnelName || '-' }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="attachment">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Evidence
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            <a
-              *ngIf="element.attachmentUrl"
-              mat-icon-button
-              color="accent"
-              [href]="getDownloadUrl(element.attachmentUrl)"
-              target="_blank"
-              matTooltip="View Photo">
-              <mat-icon>image</mat-icon>
-            </a>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Actions
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="deleteRecord(element.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </div>
-  `,
-  styles: [
-    `
-      .container {
-        padding: 0;
-      }
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-      }
-      h1 {
-        margin: 0;
-      }
-      table {
-        width: 100%;
-      }
-    `,
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
+  templateUrl: './disease-list.component.html',
+  styleUrls: ['./disease-list.component.scss'],
 })
 export class DiseaseListComponent implements OnInit {
   private service = inject(DiseaseService);
@@ -186,50 +23,51 @@ export class DiseaseListComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  displayedColumns: string[] = ['date', 'house', 'diagnosis', 'treatment', 'personnel', 'attachment', 'actions'];
+  displayedColumns: string[] = ['date', 'houseName', 'diagnosis', 'medicine', 'photo', 'actions'];
   dataSource = signal<DiseaseRecord[]>([]);
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadData();
   }
 
-  loadData(): void {
+  loadData() {
     this.service.getRecords().subscribe({
       next: (data) => this.dataSource.set(data),
       error: () => this.snackBar.open('Error loading records', 'Close', { duration: 3000 }),
     });
   }
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(DiseaseDialogComponent, { width: '450px' });
-
+  openDialog() {
+    const dialogRef = this.dialog.open(DiseaseDialogComponent, { width: '400px' });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.service.createRecord(result).subscribe({
           next: () => {
             this.loadData();
-            this.snackBar.open('Saved successfully', 'Close', { duration: 3000 });
+            this.snackBar.open('Record added', 'Close', { duration: 3000 });
           },
-          error: () => this.snackBar.open('Error saving record', 'Close', { duration: 3000 }),
+          error: () => this.snackBar.open('Error creating record', 'Close', { duration: 3000 }),
         });
       }
     });
   }
 
-  deleteRecord(id: number): void {
-    if (confirm('Are you sure?')) {
-      this.service.deleteRecord(id).subscribe(() => {
-        this.loadData();
-        this.snackBar.open('Deleted', 'Close', { duration: 3000 });
+  deleteRecord(id: number) {
+    if (confirm('Delete record?')) {
+      this.service.deleteRecord(id).subscribe({
+        next: () => {
+          this.loadData();
+          this.snackBar.open('Deleted', 'Close', { duration: 3000 });
+        },
       });
     }
   }
 
-  getDownloadUrl(fullPath: string): string {
-    const parts = fullPath.split('/');
-    if (parts.length >= 2) {
-      return this.fileService.getDownloadUrl(parts[0], parts.slice(1).join('/'));
-    }
-    return '#';
+  viewPhoto(url: string | undefined) {
+    if (!url) return;
+    const [bucket, ...rest] = url.split('/');
+    const path = rest.join('/');
+    const fullUrl = this.fileService.getDownloadUrl(bucket, path);
+    window.open(fullUrl, '_blank');
   }
 }

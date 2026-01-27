@@ -35,7 +35,8 @@ public class RazorReportGenerator : IReportGenerator
         // Простой HTML шаблон для ежедневного отчета
         if (key == "DailyReport")
         {
-            return @"
+            // FIX: Добавлено @using System для доступа к DateTime.UtcNow
+            return @"@using System
 <!DOCTYPE html>
 <html>
 <head>

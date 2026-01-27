@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -9,8 +9,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { HousesService } from '../../../core/services/houses.service';
 import { PersonnelService } from '../../../core/services/personnel.service';
@@ -30,10 +28,9 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
-    MatProgressBarModule,
   ],
   template: `
-    <h2 mat-dialog-title>New Mortality Record</h2>
+    <h2 mat-dialog-title>Add Mortality Record</h2>
     <form
       [formGroup]="form"
       (ngSubmit)="onSubmit()">
@@ -43,7 +40,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
             <mat-label>House</mat-label>
             <mat-select formControlName="houseId">
               <mat-option
-                *ngFor="let h of houses"
+                *ngFor="let h of houses()"
                 [value]="h.id">
                 {{ h.name }}
               </mat-option>
@@ -52,10 +49,10 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Personnel</mat-label>
+            <mat-label>Responsible Person</mat-label>
             <mat-select formControlName="personnelId">
               <mat-option
-                *ngFor="let p of personnel"
+                *ngFor="let p of personnel()"
                 [value]="p.id">
                 {{ p.fullName }}
               </mat-option>
@@ -80,8 +77,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
             <input
               matInput
               type="number"
-              formControlName="quantity"
-              min="1" />
+              formControlName="quantity" />
             <mat-error *ngIf="form.get('quantity')?.hasError('required')">Required</mat-error>
           </mat-form-field>
 
@@ -90,7 +86,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
             <input
               matInput
               formControlName="reason"
-              placeholder="e.g. Heart attack" />
+              placeholder="e.g. Heart failure" />
           </mat-form-field>
 
           <div class="file-upload">
@@ -99,7 +95,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
               mat-stroked-button
               (click)="fileInput.click()">
               <mat-icon>attach_file</mat-icon>
-              Attach Photo
+              {{ selectedFile ? selectedFile.name : 'Attach Photo' }}
             </button>
             <input
               #fileInput
@@ -107,15 +103,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
               (change)="onFileSelected($event)"
               style="display: none"
               accept="image/*" />
-            <span
-              class="file-name"
-              *ngIf="selectedFile">
-              {{ selectedFile.name }}
-            </span>
           </div>
-          <mat-progress-bar
-            *ngIf="isUploading"
-            mode="indeterminate"></mat-progress-bar>
         </div>
       </mat-dialog-content>
 
@@ -131,7 +119,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
           color="primary"
           type="submit"
           [disabled]="form.invalid || isUploading">
-          Save
+          {{ isUploading ? 'Uploading...' : 'Save' }}
         </button>
       </mat-dialog-actions>
     </form>
@@ -141,88 +129,85 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
       .form-container {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
         min-width: 350px;
       }
       mat-form-field {
         width: 100%;
       }
       .file-upload {
+        margin-top: 8px;
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 8px;
-      }
-      .file-name {
-        font-size: 0.9em;
-        color: gray;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 200px;
       }
     `,
   ],
 })
 export class MortalityDialogComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private houseService = inject(HousesService);
-  private personnelService = inject(PersonnelService);
-  private fileService = inject(FileUploadService);
-
   form: FormGroup;
-  houses: House[] = [];
-  personnel: Personnel[] = [];
+  houses = signal<House[]>([]);
+  personnel = signal<Personnel[]>([]);
   selectedFile: File | null = null;
   isUploading = false;
 
-  constructor(public dialogRef: MatDialogRef<MortalityDialogComponent>) {
+  constructor(
+    private fb: FormBuilder,
+    private housesService: HousesService,
+    private personnelService: PersonnelService,
+    private fileUploadService: FileUploadService,
+    public dialogRef: MatDialogRef<MortalityDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {
     this.form = this.fb.group({
-      houseId: ['', Validators.required],
-      personnelId: [''],
+      houseId: [null, Validators.required],
+      personnelId: [null],
       date: [new Date(), Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]],
+      quantity: [null, [Validators.required, Validators.min(1)]],
       reason: [''],
-      attachmentUrl: [''],
     });
   }
 
-  ngOnInit(): void {
-    this.houseService.getHouses().subscribe((data) => (this.houses = data));
-    this.personnelService.getPersonnels().subscribe((data) => (this.personnel = data));
+  ngOnInit() {
+    this.housesService.getHouses().subscribe((data) => this.houses.set(data));
+    this.personnelService.getPersonnels().subscribe((data) => this.personnel.set(data));
   }
 
-  onFileSelected(event: any): void {
+  onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
     }
   }
 
-  onSubmit(): void {
-    if (this.form.valid) {
-      if (this.selectedFile) {
-        this.isUploading = true;
-        this.fileService.uploadFile(this.selectedFile).subscribe({
-          next: (res) => {
-            // Save full relative path "bucket/fileName"
-            const fullPath = `${res.bucket}/${res.fileName}`;
-            this.form.patchValue({ attachmentUrl: fullPath });
-            this.isUploading = false;
-            this.dialogRef.close(this.form.value);
-          },
-          error: () => {
-            this.isUploading = false;
-            alert('Failed to upload file');
-          },
-        });
-      } else {
-        this.dialogRef.close(this.form.value);
-      }
+  onSubmit() {
+    if (this.form.invalid) return;
+
+    this.isUploading = true;
+    const formValue = this.form.value;
+
+    // 1. If file exists, upload it first
+    if (this.selectedFile) {
+      this.fileUploadService.uploadFile(this.selectedFile, 'user-uploads').subscribe({
+        next: (response) => {
+          // 2. Prepare DTO with attachmentUrl
+          const dto = {
+            ...formValue,
+            attachmentUrl: `${response.bucket}/${response.fileName}`,
+          };
+          this.dialogRef.close(dto);
+        },
+        error: () => {
+          this.isUploading = false;
+          alert('Failed to upload image');
+        },
+      });
+    } else {
+      // No file, just close with form data
+      this.dialogRef.close(formValue);
     }
   }
 
-  onCancel(): void {
+  onCancel() {
     this.dialogRef.close();
   }
 }

@@ -1,14 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-
 import { House, Personnel, Feed } from '../../../core/models/master-data.models';
 import { HousesService } from '../../../core/services/houses.service';
 import { PersonnelService } from '../../../core/services/personnel.service';
@@ -29,7 +28,7 @@ import { FeedsService } from '../../../core/services/feeds.service';
     MatNativeDateModule,
   ],
   template: `
-    <h2 mat-dialog-title>Feed & Water Record</h2>
+    <h2 mat-dialog-title>Add Feed & Water Record</h2>
     <form
       [formGroup]="form"
       (ngSubmit)="onSubmit()">
@@ -39,7 +38,7 @@ import { FeedsService } from '../../../core/services/feeds.service';
             <mat-label>House</mat-label>
             <mat-select formControlName="houseId">
               <mat-option
-                *ngFor="let h of houses"
+                *ngFor="let h of houses()"
                 [value]="h.id">
                 {{ h.name }}
               </mat-option>
@@ -48,10 +47,10 @@ import { FeedsService } from '../../../core/services/feeds.service';
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Personnel</mat-label>
+            <mat-label>Responsible</mat-label>
             <mat-select formControlName="personnelId">
               <mat-option
-                *ngFor="let p of personnel"
+                *ngFor="let p of personnel()"
                 [value]="p.id">
                 {{ p.fullName }}
               </mat-option>
@@ -74,35 +73,36 @@ import { FeedsService } from '../../../core/services/feeds.service';
             <mat-label>Feed Type</mat-label>
             <mat-select formControlName="feedId">
               <mat-option
-                *ngFor="let f of feeds"
+                *ngFor="let f of feeds()"
                 [value]="f.id">
-                {{ f.name }}
+                {{ f.name }} ({{ f.type }})
               </mat-option>
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Feed Quantity (kg)</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="feedQuantityKg"
-              min="0" />
-            <mat-error *ngIf="form.get('feedQuantityKg')?.hasError('required')">Required</mat-error>
-          </mat-form-field>
+          <div class="row">
+            <mat-form-field
+              appearance="outline"
+              class="half-width">
+              <mat-label>Feed (kg)</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="feedQuantityKg" />
+            </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Water Quantity (L)</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="waterQuantityLiters"
-              min="0" />
-            <mat-error *ngIf="form.get('waterQuantityLiters')?.hasError('required')">Required</mat-error>
-          </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              class="half-width">
+              <mat-label>Water (L)</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="waterQuantityLiters" />
+            </mat-form-field>
+          </div>
         </div>
       </mat-dialog-content>
-
       <mat-dialog-actions align="end">
         <button
           mat-button
@@ -125,8 +125,15 @@ import { FeedsService } from '../../../core/services/feeds.service';
       .form-container {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
         min-width: 350px;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+      }
+      .half-width {
+        flex: 1;
       }
       mat-form-field {
         width: 100%;
@@ -135,40 +142,41 @@ import { FeedsService } from '../../../core/services/feeds.service';
   ],
 })
 export class FeedWaterDialogComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private houseService = inject(HousesService);
-  private personnelService = inject(PersonnelService);
-  private feedService = inject(FeedsService);
-
   form: FormGroup;
-  houses: House[] = [];
-  personnel: Personnel[] = [];
-  feeds: Feed[] = [];
+  houses = signal<House[]>([]);
+  personnel = signal<Personnel[]>([]);
+  feeds = signal<Feed[]>([]);
 
-  constructor(public dialogRef: MatDialogRef<FeedWaterDialogComponent>) {
+  constructor(
+    private fb: FormBuilder,
+    private housesService: HousesService,
+    private personnelService: PersonnelService,
+    private feedsService: FeedsService,
+    public dialogRef: MatDialogRef<FeedWaterDialogComponent>,
+  ) {
     this.form = this.fb.group({
-      houseId: ['', Validators.required],
-      personnelId: [''],
+      houseId: [null, Validators.required],
+      personnelId: [null],
       date: [new Date(), Validators.required],
-      feedId: [''],
-      feedQuantityKg: [0, Validators.required],
-      waterQuantityLiters: [0, Validators.required],
+      feedId: [null],
+      feedQuantityKg: [0, [Validators.required, Validators.min(0)]],
+      waterQuantityLiters: [0, [Validators.required, Validators.min(0)]],
     });
   }
 
-  ngOnInit(): void {
-    this.houseService.getHouses().subscribe((data) => (this.houses = data));
-    this.personnelService.getPersonnels().subscribe((data) => (this.personnel = data));
-    this.feedService.getFeeds().subscribe((data) => (this.feeds = data));
+  ngOnInit() {
+    this.housesService.getHouses().subscribe((data) => this.houses.set(data));
+    this.personnelService.getPersonnels().subscribe((data) => this.personnel.set(data));
+    this.feedsService.getFeeds().subscribe((data) => this.feeds.set(data));
   }
 
-  onSubmit(): void {
+  onSubmit() {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value);
     }
   }
 
-  onCancel(): void {
+  onCancel() {
     this.dialogRef.close();
   }
 }
