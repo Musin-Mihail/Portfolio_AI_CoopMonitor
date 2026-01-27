@@ -1,0 +1,14 @@
+{
+  "singleAttributePerLine": true,
+  "bracketSameLine": true,
+  "printWidth": 120,
+  "htmlWhitespaceSensitivity": "ignore",
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
+}

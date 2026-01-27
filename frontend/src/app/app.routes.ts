@@ -11,6 +11,7 @@ import { FeedWaterListComponent } from './features/logs/feed-water-list/feed-wat
 import { DiseaseListComponent } from './features/logs/disease-list/disease-list.component';
 import { WeighingListComponent } from './features/logs/weighing-list/weighing-list.component';
 import { MarkingListComponent } from './features/logs/marking-list/marking-list.component';
+import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,11 @@ export const routes: Routes = [
       {
         path: 'logs/marking',
         component: MarkingListComponent,
+      },
+      // Reports
+      {
+        path: 'reports',
+        component: ReportsListComponent,
       },
       // Master Data
       {
