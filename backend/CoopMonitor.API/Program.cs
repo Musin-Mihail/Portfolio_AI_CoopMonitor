@@ -1,11 +1,13 @@
 using System.Text;
 using CoopMonitor.API.Data;
+using CoopMonitor.API.Jobs;
 using CoopMonitor.API.Models;
 using CoopMonitor.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
 using Scalar.AspNetCore;
 using Serilog;
 using Microsoft.OpenApi.Models;
@@ -19,7 +21,7 @@ builder.Host.UseSerilog((context, configuration) =>
 // 2. Add services to the container
 builder.Services.AddControllers();
 
-// Настройка Native OpenAPI (работает с пакетом 9.0.0)
+// Настройка Native OpenAPI
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -59,7 +61,31 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IFileStorageService, MinioStorageService>();
-builder.Services.AddScoped<ICalculationService, CalculationService>(); // Registration of Calc Service
+builder.Services.AddScoped<ICalculationService, CalculationService>();
+
+// --- Phase 6: Reporting & Scheduler ---
+builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
+
+// Quartz Configuration
+builder.Services.AddQuartz(q =>
+{
+    // Use Microsoft Dependency Injection Job Factory
+    q.UseMicrosoftDependencyInjectionJobFactory();
+
+    // Register Job
+    var dailyReportJobKey = new JobKey("DailyReportJob");
+    q.AddJob<DailyReportJob>(opts => opts.WithIdentity(dailyReportJobKey));
+
+    // Register Trigger (Every day at 06:00)
+    q.AddTrigger(opts => opts
+        .ForJob(dailyReportJobKey)
+        .WithIdentity("DailyReportTrigger")
+        .WithCronSchedule("0 0 6 * * ?")); // 6:00 AM daily
+});
+
+// Quartz Hosted Service (Daemon)
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+// -------------------------------------
 
 // 3. Database Context (SQLite) & Identity
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -165,13 +191,7 @@ try
                 await userManager.AddToRoleAsync(adminUser, "Admin");
                 Log.Information("Default admin user created.");
             }
-            else
-            {
-                Log.Error("Failed to create admin user: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
-            }
         }
-
-        Log.Information("Database migrated and initialized.");
     }
 
     Log.Information("Starting CoopMonitor API...");

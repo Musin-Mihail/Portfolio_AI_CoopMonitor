@@ -26,6 +26,9 @@ public class CoopContext : IdentityDbContext<User>
     // Телеметрия
     public DbSet<SensorReading> SensorReadings { get; set; }
 
+    // Отчеты
+    public DbSet<ReportMetadata> Reports { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -155,8 +158,21 @@ public class CoopContext : IdentityDbContext<User>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Date).IsRequired();
-            // Индекс для ускорения выборок по птичнику и дате (для графиков)
+            // Индекс для ускорения выборок по птичнику и дате
             entity.HasIndex(e => new { e.HouseId, e.Date });
+
+            entity.HasOne(e => e.House)
+                .WithMany()
+                .HasForeignKey(e => e.HouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ReportMetadata Configuration
+        modelBuilder.Entity<ReportMetadata>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.ReportType).IsRequired();
+            entity.Property(e => e.FilePath).IsRequired();
 
             entity.HasOne(e => e.House)
                 .WithMany()
