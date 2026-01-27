@@ -10,43 +10,54 @@ import { House } from '../../../core/models/master-data.models';
 @Component({
   selector: 'app-house-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   template: `
     <h2 mat-dialog-title>{{ data ? 'Edit House' : 'New House' }}</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="form-container">
           <mat-form-field appearance="outline">
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name" placeholder="House #1" />
+            <input
+              matInput
+              formControlName="name"
+              placeholder="House #1" />
             <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Area (m²)</mat-label>
-            <input matInput type="number" formControlName="area" />
+            <input
+              matInput
+              type="number"
+              formControlName="area" />
             <mat-error *ngIf="form.get('area')?.hasError('required')">Area is required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Capacity (Birds)</mat-label>
-            <input matInput type="number" formControlName="capacity" />
-            <mat-error *ngIf="form.get('capacity')?.hasError('required')"
-              >Capacity is required</mat-error
-            >
+            <input
+              matInput
+              type="number"
+              formControlName="capacity" />
+            <mat-error *ngIf="form.get('capacity')?.hasError('required')">Capacity is required</mat-error>
           </mat-form-field>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()">
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid">
           Save
         </button>
       </mat-dialog-actions>

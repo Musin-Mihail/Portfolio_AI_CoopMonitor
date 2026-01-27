@@ -12,14 +12,7 @@ import { WeighingDialogComponent } from '../weighing-dialog/weighing-dialog.comp
 @Component({
   selector: 'app-weighing-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './weighing-list.component.html',
   styles: [
     `

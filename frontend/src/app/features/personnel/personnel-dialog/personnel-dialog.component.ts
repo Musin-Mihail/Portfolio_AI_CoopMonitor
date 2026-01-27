@@ -22,39 +22,60 @@ import { Personnel } from '../../../core/models/master-data.models';
   ],
   template: `
     <h2 mat-dialog-title>{{ data ? 'Edit Personnel' : 'New Personnel' }}</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="form-container">
           <mat-form-field appearance="outline">
             <mat-label>Full Name</mat-label>
-            <input matInput formControlName="fullName" />
-            <mat-error *ngIf="form.get('fullName')?.hasError('required')"
-              >Name is required</mat-error
-            >
+            <input
+              matInput
+              formControlName="fullName" />
+            <mat-error *ngIf="form.get('fullName')?.hasError('required')">Name is required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Job Title</mat-label>
-            <input matInput formControlName="jobTitle" />
+            <input
+              matInput
+              formControlName="jobTitle" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Phone Number</mat-label>
-            <input matInput formControlName="phoneNumber" />
+            <input
+              matInput
+              formControlName="phoneNumber" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
-            <input matInput formControlName="email" />
+            <input
+              matInput
+              formControlName="email" />
             <mat-error *ngIf="form.get('email')?.hasError('email')">Invalid email</mat-error>
           </mat-form-field>
 
-          <mat-slide-toggle formControlName="isActive" *ngIf="data">Active</mat-slide-toggle>
+          <mat-slide-toggle
+            formControlName="isActive"
+            *ngIf="data">
+            Active
+          </mat-slide-toggle>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()">
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid">
           Save
         </button>
       </mat-dialog-actions>

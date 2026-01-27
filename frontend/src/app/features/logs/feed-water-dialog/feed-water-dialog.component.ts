@@ -30,13 +30,19 @@ import { FeedsService } from '../../../core/services/feeds.service';
   ],
   template: `
     <h2 mat-dialog-title>Feed & Water Record</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="form-container">
           <mat-form-field appearance="outline">
             <mat-label>House</mat-label>
             <mat-select formControlName="houseId">
-              <mat-option *ngFor="let h of houses" [value]="h.id">{{ h.name }}</mat-option>
+              <mat-option
+                *ngFor="let h of houses"
+                [value]="h.id">
+                {{ h.name }}
+              </mat-option>
             </mat-select>
             <mat-error *ngIf="form.get('houseId')?.hasError('required')">Required</mat-error>
           </mat-form-field>
@@ -44,43 +50,71 @@ import { FeedsService } from '../../../core/services/feeds.service';
           <mat-form-field appearance="outline">
             <mat-label>Personnel</mat-label>
             <mat-select formControlName="personnelId">
-              <mat-option *ngFor="let p of personnel" [value]="p.id">{{ p.fullName }}</mat-option>
+              <mat-option
+                *ngFor="let p of personnel"
+                [value]="p.id">
+                {{ p.fullName }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="date" />
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="date" />
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Feed Type</mat-label>
             <mat-select formControlName="feedId">
-              <mat-option *ngFor="let f of feeds" [value]="f.id">{{ f.name }}</mat-option>
+              <mat-option
+                *ngFor="let f of feeds"
+                [value]="f.id">
+                {{ f.name }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Feed Quantity (kg)</mat-label>
-            <input matInput type="number" formControlName="feedQuantityKg" min="0" />
+            <input
+              matInput
+              type="number"
+              formControlName="feedQuantityKg"
+              min="0" />
             <mat-error *ngIf="form.get('feedQuantityKg')?.hasError('required')">Required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Water Quantity (L)</mat-label>
-            <input matInput type="number" formControlName="waterQuantityLiters" min="0" />
-            <mat-error *ngIf="form.get('waterQuantityLiters')?.hasError('required')"
-              >Required</mat-error
-            >
+            <input
+              matInput
+              type="number"
+              formControlName="waterQuantityLiters"
+              min="0" />
+            <mat-error *ngIf="form.get('waterQuantityLiters')?.hasError('required')">Required</mat-error>
           </mat-form-field>
         </div>
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()">
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid">
           Save
         </button>
       </mat-dialog-actions>

@@ -32,24 +32,34 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
   template: `
     <h2 mat-dialog-title>New Weighing Record</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="form-container">
           <div class="row">
-            <mat-form-field appearance="outline" class="half-width">
+            <mat-form-field
+              appearance="outline"
+              class="half-width">
               <mat-label>House</mat-label>
               <mat-select formControlName="houseId">
-                <mat-option *ngFor="let h of houses()" [value]="h.id">
+                <mat-option
+                  *ngFor="let h of houses()"
+                  [value]="h.id">
                   {{ h.name }}
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="form.get('houseId')?.hasError('required')">Required</mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="half-width">
+            <mat-form-field
+              appearance="outline"
+              class="half-width">
               <mat-label>Responsible</mat-label>
               <mat-select formControlName="personnelId">
-                <mat-option *ngFor="let p of personnel()" [value]="p.id">
+                <mat-option
+                  *ngFor="let p of personnel()"
+                  [value]="p.id">
                   {{ p.fullName }}
                 </mat-option>
               </mat-select>
@@ -58,20 +68,30 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
           <mat-form-field appearance="outline">
             <mat-label>Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="date" />
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="date" />
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="form.get('date')?.hasError('required')">Required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Weight (grams)</mat-label>
-            <input matInput type="number" formControlName="weightGrams" />
+            <input
+              matInput
+              type="number"
+              formControlName="weightGrams" />
             <mat-error *ngIf="form.get('weightGrams')?.hasError('required')">Required</mat-error>
           </mat-form-field>
 
           <div class="checkbox-container">
-            <mat-checkbox formControlName="isMusicPlayed" color="primary">
+            <mat-checkbox
+              formControlName="isMusicPlayed"
+              color="primary">
               Calming Music Played (Stress Reduction)
             </mat-checkbox>
           </div>
@@ -79,8 +99,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
           <div class="file-upload">
             <label>Video Evidence (Required)</label>
             <div class="file-input-wrapper">
-              <button type="button" mat-stroked-button (click)="fileInput.click()">
-                <mat-icon>videocam</mat-icon> Select Video
+              <button
+                type="button"
+                mat-stroked-button
+                (click)="fileInput.click()">
+                <mat-icon>videocam</mat-icon>
+                Select Video
               </button>
               <span class="file-name">{{ selectedFile?.name || 'No file selected' }}</span>
               <input
@@ -88,18 +112,28 @@ import { toSignal } from '@angular/core/rxjs-interop';
                 type="file"
                 accept="video/*"
                 (change)="onFileSelected($event)"
-                style="display: none;"
-              />
+                style="display: none;" />
             </div>
-            <mat-error *ngIf="form.hasError('fileRequired') && form.touched" class="custom-error">
+            <mat-error
+              *ngIf="form.hasError('fileRequired') && form.touched"
+              class="custom-error">
               Video evidence is mandatory
             </mat-error>
           </div>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()">
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid">
           Save Record
         </button>
       </mat-dialog-actions>

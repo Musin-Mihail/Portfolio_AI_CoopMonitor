@@ -12,14 +12,7 @@ import { HouseDialogComponent } from '../house-dialog/house-dialog.component';
 @Component({
   selector: 'app-house-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './house-list.component.html',
   styleUrls: ['./house-list.component.scss'],
 })

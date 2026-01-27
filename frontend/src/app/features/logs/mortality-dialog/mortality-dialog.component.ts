@@ -34,13 +34,19 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
   ],
   template: `
     <h2 mat-dialog-title>New Mortality Record</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="form-container">
           <mat-form-field appearance="outline">
             <mat-label>House</mat-label>
             <mat-select formControlName="houseId">
-              <mat-option *ngFor="let h of houses" [value]="h.id">{{ h.name }}</mat-option>
+              <mat-option
+                *ngFor="let h of houses"
+                [value]="h.id">
+                {{ h.name }}
+              </mat-option>
             </mat-select>
             <mat-error *ngIf="form.get('houseId')?.hasError('required')">Required</mat-error>
           </mat-form-field>
@@ -48,54 +54,83 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
           <mat-form-field appearance="outline">
             <mat-label>Personnel</mat-label>
             <mat-select formControlName="personnelId">
-              <mat-option *ngFor="let p of personnel" [value]="p.id">{{ p.fullName }}</mat-option>
+              <mat-option
+                *ngFor="let p of personnel"
+                [value]="p.id">
+                {{ p.fullName }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="date" />
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="date" />
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="form.get('date')?.hasError('required')">Required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Quantity</mat-label>
-            <input matInput type="number" formControlName="quantity" min="1" />
+            <input
+              matInput
+              type="number"
+              formControlName="quantity"
+              min="1" />
             <mat-error *ngIf="form.get('quantity')?.hasError('required')">Required</mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Reason</mat-label>
-            <input matInput formControlName="reason" placeholder="e.g. Heart attack" />
+            <input
+              matInput
+              formControlName="reason"
+              placeholder="e.g. Heart attack" />
           </mat-form-field>
 
           <div class="file-upload">
-            <button type="button" mat-stroked-button (click)="fileInput.click()">
-              <mat-icon>attach_file</mat-icon> Attach Photo
+            <button
+              type="button"
+              mat-stroked-button
+              (click)="fileInput.click()">
+              <mat-icon>attach_file</mat-icon>
+              Attach Photo
             </button>
             <input
               #fileInput
               type="file"
               (change)="onFileSelected($event)"
               style="display: none"
-              accept="image/*"
-            />
-            <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+              accept="image/*" />
+            <span
+              class="file-name"
+              *ngIf="selectedFile">
+              {{ selectedFile.name }}
+            </span>
           </div>
-          <mat-progress-bar *ngIf="isUploading" mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar
+            *ngIf="isUploading"
+            mode="indeterminate"></mat-progress-bar>
         </div>
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()">
+          Cancel
+        </button>
         <button
           mat-flat-button
           color="primary"
           type="submit"
-          [disabled]="form.invalid || isUploading"
-        >
+          [disabled]="form.invalid || isUploading">
           Save
         </button>
       </mat-dialog-actions>

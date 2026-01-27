@@ -12,14 +12,7 @@ import { MarkingDialogComponent } from '../marking-dialog/marking-dialog.compone
 @Component({
   selector: 'app-marking-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './marking-list.component.html',
   styles: [
     `

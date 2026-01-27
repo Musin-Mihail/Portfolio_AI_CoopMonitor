@@ -29,67 +29,134 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
     <div class="container">
       <div class="header">
         <h1>Disease Log</h1>
-        <button mat-flat-button color="primary" (click)="openDialog()">
-          <mat-icon>add</mat-icon> Add Record
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          Add Record
         </button>
       </div>
 
-      <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
+      <table
+        mat-table
+        [dataSource]="dataSource()"
+        class="mat-elevation-z8">
         <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date</th>
-          <td mat-cell *matCellDef="let element">{{ element.date | date: 'mediumDate' }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Date
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.date | date: 'mediumDate' }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="house">
-          <th mat-header-cell *matHeaderCellDef>House</th>
-          <td mat-cell *matCellDef="let element">{{ element.houseName }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            House
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.houseName }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="diagnosis">
-          <th mat-header-cell *matHeaderCellDef>Diagnosis</th>
-          <td mat-cell *matCellDef="let element">{{ element.diagnosis }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Diagnosis
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.diagnosis }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="treatment">
-          <th mat-header-cell *matHeaderCellDef>Treatment</th>
-          <td mat-cell *matCellDef="let element">
-            <span *ngIf="element.medicine"> {{ element.medicine }} ({{ element.dosage }}) </span>
-            <span *ngIf="!element.medicine" style="color: grey">-</span>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Treatment
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            <span *ngIf="element.medicine">{{ element.medicine }} ({{ element.dosage }})</span>
+            <span
+              *ngIf="!element.medicine"
+              style="color: grey">
+              -
+            </span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="personnel">
-          <th mat-header-cell *matHeaderCellDef>Responsible</th>
-          <td mat-cell *matCellDef="let element">{{ element.personnelName || '-' }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Responsible
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.personnelName || '-' }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="attachment">
-          <th mat-header-cell *matHeaderCellDef>Evidence</th>
-          <td mat-cell *matCellDef="let element">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Evidence
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
             <a
               *ngIf="element.attachmentUrl"
               mat-icon-button
               color="accent"
               [href]="getDownloadUrl(element.attachmentUrl)"
               target="_blank"
-              matTooltip="View Photo"
-            >
+              matTooltip="View Photo">
               <mat-icon>image</mat-icon>
             </a>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="warn" (click)="deleteRecord(element.id)">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Actions
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteRecord(element.id)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
   `,
@@ -119,15 +186,7 @@ export class DiseaseListComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  displayedColumns: string[] = [
-    'date',
-    'house',
-    'diagnosis',
-    'treatment',
-    'personnel',
-    'attachment',
-    'actions',
-  ];
+  displayedColumns: string[] = ['date', 'house', 'diagnosis', 'treatment', 'personnel', 'attachment', 'actions'];
   dataSource = signal<DiseaseRecord[]>([]);
 
   ngOnInit(): void {

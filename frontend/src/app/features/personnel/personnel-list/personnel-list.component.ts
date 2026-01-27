@@ -12,47 +12,77 @@ import { PersonnelDialogComponent } from '../personnel-dialog/personnel-dialog.c
 @Component({
   selector: 'app-personnel-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
   template: `
     <div class="container">
       <div class="header">
         <h1>Personnel</h1>
-        <button mat-flat-button color="primary" (click)="openDialog()">
-          <mat-icon>add</mat-icon> Add Personnel
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          Add Personnel
         </button>
       </div>
 
-      <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
+      <table
+        mat-table
+        [dataSource]="dataSource()"
+        class="mat-elevation-z8">
         <ng-container matColumnDef="fullName">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let element">{{ element.fullName }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Name
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.fullName }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="jobTitle">
-          <th mat-header-cell *matHeaderCellDef>Job Title</th>
-          <td mat-cell *matCellDef="let element">{{ element.jobTitle }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Job Title
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.jobTitle }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="contacts">
-          <th mat-header-cell *matHeaderCellDef>Contacts</th>
-          <td mat-cell *matCellDef="let element">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Contacts
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
             <div *ngIf="element.phoneNumber">{{ element.phoneNumber }}</div>
-            <div *ngIf="element.email" style="font-size: 0.8em; color: gray;">
+            <div
+              *ngIf="element.email"
+              style="font-size: 0.8em; color: gray;">
               {{ element.email }}
             </div>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let element">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Status
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
             <span [style.color]="element.isActive ? 'green' : 'red'">
               {{ element.isActive ? 'Active' : 'Inactive' }}
             </span>
@@ -60,19 +90,35 @@ import { PersonnelDialogComponent } from '../personnel-dialog/personnel-dialog.c
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary" (click)="openDialog(element)">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Actions
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="openDialog(element)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="deletePersonnel(element.id)">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deletePersonnel(element.id)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
   `,

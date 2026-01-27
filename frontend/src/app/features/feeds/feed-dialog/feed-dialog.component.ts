@@ -22,12 +22,16 @@ import { Feed } from '../../../core/models/master-data.models';
   ],
   template: `
     <h2 mat-dialog-title>{{ data ? 'Edit Feed' : 'New Feed' }}</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()">
       <mat-dialog-content>
         <div class="form-container">
           <mat-form-field appearance="outline">
             <mat-label>Feed Name</mat-label>
-            <input matInput formControlName="name" />
+            <input
+              matInput
+              formControlName="name" />
             <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
           </mat-form-field>
 
@@ -44,13 +48,25 @@ import { Feed } from '../../../core/models/master-data.models';
 
           <mat-form-field appearance="outline">
             <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description" rows="3"></textarea>
+            <textarea
+              matInput
+              formControlName="description"
+              rows="3"></textarea>
           </mat-form-field>
         </div>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()">
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid">
           Save
         </button>
       </mat-dialog-actions>

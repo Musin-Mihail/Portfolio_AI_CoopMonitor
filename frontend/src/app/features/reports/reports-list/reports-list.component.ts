@@ -18,14 +18,7 @@ export class ReportsListComponent implements OnInit {
   private service = inject(ReportsService);
   private snackBar = inject(MatSnackBar);
 
-  displayedColumns: string[] = [
-    'reportDate',
-    'reportType',
-    'houseName',
-    'generatedAt',
-    'status',
-    'actions',
-  ];
+  displayedColumns: string[] = ['reportDate', 'reportType', 'houseName', 'generatedAt', 'status', 'actions'];
   dataSource = signal<ReportMetadata[]>([]);
   isGenerating = signal<boolean>(false);
 

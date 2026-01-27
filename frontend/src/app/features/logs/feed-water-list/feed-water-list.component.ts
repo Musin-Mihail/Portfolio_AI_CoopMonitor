@@ -13,63 +13,113 @@ import { FeedWaterDialogComponent } from '../feed-water-dialog/feed-water-dialog
 @Component({
   selector: 'app-feed-water-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    DatePipe,
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule, DatePipe],
   template: `
     <div class="container">
       <div class="header">
         <h1>Feed & Water Log</h1>
-        <button mat-flat-button color="primary" (click)="openDialog()">
-          <mat-icon>add</mat-icon> Add Record
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          Add Record
         </button>
       </div>
 
-      <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
+      <table
+        mat-table
+        [dataSource]="dataSource()"
+        class="mat-elevation-z8">
         <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date</th>
-          <td mat-cell *matCellDef="let element">{{ element.date | date: 'mediumDate' }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Date
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.date | date: 'mediumDate' }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="house">
-          <th mat-header-cell *matHeaderCellDef>House</th>
-          <td mat-cell *matCellDef="let element">{{ element.houseName }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            House
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.houseName }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="feed">
-          <th mat-header-cell *matHeaderCellDef>Feed Info</th>
-          <td mat-cell *matCellDef="let element">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Feed Info
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
             {{ element.feedName || '-' }} ({{ element.feedQuantityKg }} kg)
           </td>
         </ng-container>
 
         <ng-container matColumnDef="water">
-          <th mat-header-cell *matHeaderCellDef>Water (L)</th>
-          <td mat-cell *matCellDef="let element">{{ element.waterQuantityLiters }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Water (L)
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.waterQuantityLiters }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="personnel">
-          <th mat-header-cell *matHeaderCellDef>Responsible</th>
-          <td mat-cell *matCellDef="let element">{{ element.personnelName || '-' }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Responsible
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.personnelName || '-' }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="warn" (click)="deleteRecord(element.id)">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Actions
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteRecord(element.id)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
   `,

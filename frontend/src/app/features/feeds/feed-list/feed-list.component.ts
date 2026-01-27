@@ -12,53 +12,93 @@ import { FeedDialogComponent } from '../feed-dialog/feed-dialog.component';
 @Component({
   selector: 'app-feed-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
   template: `
     <div class="container">
       <div class="header">
         <h1>Feeds</h1>
-        <button mat-flat-button color="primary" (click)="openDialog()">
-          <mat-icon>add</mat-icon> Add Feed
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          Add Feed
         </button>
       </div>
 
-      <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
+      <table
+        mat-table
+        [dataSource]="dataSource()"
+        class="mat-elevation-z8">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Name
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.name }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Type
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.type }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef>Description</th>
-          <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Description
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            {{ element.description }}
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary" (click)="openDialog(element)">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Actions
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="openDialog(element)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="deleteFeed(element.id)">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteFeed(element.id)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
   `,
