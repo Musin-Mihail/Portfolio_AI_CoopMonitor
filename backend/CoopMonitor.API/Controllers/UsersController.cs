@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using CoopMonitor.API.Data;
 using CoopMonitor.API.DTOs;
 using CoopMonitor.API.Models;
+using CoopMonitor.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,23 +12,26 @@ namespace CoopMonitor.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")] // Только администраторы могут управлять пользователями
+[Authorize(Roles = "Admin")]
 public class UsersController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly CoopContext _context;
+    private readonly IAuditService _auditService;
     private readonly ILogger<UsersController> _logger;
 
     public UsersController(
         UserManager<User> userManager,
         RoleManager<IdentityRole> roleManager,
         CoopContext context,
+        IAuditService auditService,
         ILogger<UsersController> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _context = context;
+        _auditService = auditService;
         _logger = logger;
     }
 
@@ -36,7 +41,6 @@ public class UsersController : ControllerBase
         var users = await _userManager.Users.ToListAsync();
         var userDtos = new List<UserDto>();
 
-        // Получаем всех сотрудников для маппинга
         var personnels = await _context.Personnels
             .Where(p => p.UserId != null)
             .ToListAsync();
@@ -87,13 +91,16 @@ public class UsersController : ControllerBase
             return BadRequest(result.Errors);
         }
 
-        // Назначение роли
         if (!await _roleManager.RoleExistsAsync(dto.Role))
         {
-            // Если роли нет, создадим (для упрощения MVP, в проде лучше через миграции)
             await _roleManager.CreateAsync(new IdentityRole(dto.Role));
         }
         await _userManager.AddToRoleAsync(user, dto.Role);
+
+        // Audit
+        var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var adminName = User.Identity?.Name;
+        await _auditService.LogAsync(adminId, adminName, "CreateUser", user.UserName, $"Role: {dto.Role}");
 
         _logger.LogInformation("User created: {User}", dto.UserName);
 
@@ -113,18 +120,15 @@ public class UsersController : ControllerBase
         var user = await _userManager.FindByIdAsync(id);
         if (user == null) return NotFound();
 
-        // Запрет удаления самого себя (простая проверка)
         if (User.Identity?.Name == user.UserName)
         {
             return BadRequest("Cannot delete your own account.");
         }
 
-        // Отвязываем сотрудника, если есть
         var personnel = await _context.Personnels.FirstOrDefaultAsync(p => p.UserId == id);
         if (personnel != null)
         {
             personnel.UserId = null;
-            // Можно не сохранять явно, если каскад не настроен, но лучше сохранить
         }
 
         var result = await _userManager.DeleteAsync(user);
@@ -133,8 +137,12 @@ public class UsersController : ControllerBase
             return BadRequest(result.Errors);
         }
 
-        // Сохраняем отвязку сотрудника
         await _context.SaveChangesAsync();
+
+        // Audit
+        var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var adminName = User.Identity?.Name;
+        await _auditService.LogAsync(adminId, adminName, "DeleteUser", user.UserName);
 
         _logger.LogInformation("User deleted: {User}", user.UserName);
         return NoContent();

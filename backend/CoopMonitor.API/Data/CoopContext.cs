@@ -30,6 +30,9 @@ public class CoopContext : IdentityDbContext<User>
     // Отчеты
     public DbSet<ReportMetadata> Reports { get; set; }
 
+    // Аудит
+    public DbSet<AuditLog> AuditLogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -159,7 +162,6 @@ public class CoopContext : IdentityDbContext<User>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Date).IsRequired();
-            // Индекс для ускорения выборок по птичнику и дате
             entity.HasIndex(e => new { e.HouseId, e.Date });
 
             entity.HasOne(e => e.House)
@@ -192,6 +194,14 @@ public class CoopContext : IdentityDbContext<User>
                 .WithMany()
                 .HasForeignKey(e => e.HouseId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // AuditLog Configuration
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Action).IsRequired().HasMaxLength(50);
+            entity.HasIndex(e => e.Timestamp); // Индекс для сортировки по времени
         });
     }
 }

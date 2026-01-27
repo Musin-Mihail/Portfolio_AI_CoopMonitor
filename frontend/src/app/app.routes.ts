@@ -14,6 +14,7 @@ import { MarkingListComponent } from './features/logs/marking-list/marking-list.
 import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
 import { UserListComponent } from './features/admin/user-list/user-list.component';
 import { VideoArchiveComponent } from './features/video-wall/video-archive/video-archive.component';
+import { AuditListComponent } from './features/admin/audit-list/audit-list.component';
 
 export const routes: Routes = [
   {
@@ -64,6 +65,10 @@ export const routes: Routes = [
       {
         path: 'users',
         component: UserListComponent,
+      },
+      {
+        path: 'audit',
+        component: AuditListComponent,
       },
       {
         path: 'houses',

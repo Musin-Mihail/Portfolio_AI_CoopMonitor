@@ -66,6 +66,10 @@ builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
 
+// Audit Service (Scoped because it might use HttpContext accessor logic in future, but implementing as separate creates scope internally)
+// However, we inject it into Controllers. Let's keep it Transient or Singleton since it creates its own Scope for DB access.
+builder.Services.AddSingleton<IAuditService, AuditService>();
+
 // Quartz
 builder.Services.AddQuartz(q =>
 {

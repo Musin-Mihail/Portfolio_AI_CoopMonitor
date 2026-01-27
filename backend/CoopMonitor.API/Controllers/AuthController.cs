@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using CoopMonitor.API.Models;
+using CoopMonitor.API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,11 +15,16 @@ public class AuthController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly IAuditService _auditService;
 
-    public AuthController(UserManager<User> userManager, IConfiguration configuration)
+    public AuthController(
+        UserManager<User> userManager,
+        IConfiguration configuration,
+        IAuditService auditService)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _auditService = auditService;
     }
 
     public record LoginDto(string Username, string Password);
@@ -26,6 +32,8 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
         var user = await _userManager.FindByNameAsync(model.Username);
         if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
         {
@@ -53,12 +61,19 @@ public class AuthController : ControllerBase
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
 
+            // Audit Success
+            await _auditService.LogAsync(user.Id, user.UserName, "Login", "Auth", "Success", ip);
+
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
                 expiration = token.ValidTo
             });
         }
+
+        // Audit Failure
+        await _auditService.LogAsync(null, model.Username, "Login", "Auth", "Failed", ip);
+
         return Unauthorized();
     }
 }

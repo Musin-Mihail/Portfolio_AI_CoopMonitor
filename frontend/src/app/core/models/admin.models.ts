@@ -13,3 +13,14 @@ export interface CreateUserDto {
   password: string;
   role: string;
 }
+
+export interface AuditLogDto {
+  id: number;
+  userId?: string;
+  userName?: string;
+  action: string;
+  resource?: string;
+  details?: string;
+  ipAddress?: string;
+  timestamp: string;
+}

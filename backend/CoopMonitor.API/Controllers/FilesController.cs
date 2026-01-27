@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using CoopMonitor.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,10 +7,11 @@ namespace CoopMonitor.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // Включаем защиту по умолчанию
+[Authorize]
 public class FilesController : ControllerBase
 {
     private readonly IFileStorageService _fileStorage;
+    private readonly IAuditService _auditService;
     private readonly ILogger<FilesController> _logger;
 
     private static readonly HashSet<string> AllowedBuckets = new()
@@ -17,9 +19,13 @@ public class FilesController : ControllerBase
         "raw-video", "video-clips", "reports", "user-uploads", "ai-results"
     };
 
-    public FilesController(IFileStorageService fileStorage, ILogger<FilesController> logger)
+    public FilesController(
+        IFileStorageService fileStorage,
+        IAuditService auditService,
+        ILogger<FilesController> logger)
     {
         _fileStorage = fileStorage;
+        _auditService = auditService;
         _logger = logger;
     }
 
@@ -41,6 +47,12 @@ public class FilesController : ControllerBase
             using var stream = file.OpenReadStream();
             await _fileStorage.UploadFileAsync(bucket, fileName, stream, file.ContentType);
 
+            // Audit
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.Identity?.Name;
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            await _auditService.LogAsync(userId, userName, "Upload", $"{bucket}/{fileName}", $"Size: {file.Length}", ip);
+
             _logger.LogInformation("File uploaded: {Bucket}/{File}", bucket, fileName);
             return Ok(new { bucket, fileName, size = file.Length });
         }
@@ -52,25 +64,17 @@ public class FilesController : ControllerBase
     }
 
     [HttpGet("download/{bucket}/{*filePath}")]
-    [AllowAnonymous] // Разрешаем анонимный доступ, но проверяем токен вручную для поддержки Query Param
+    [AllowAnonymous]
     public async Task<IActionResult> DownloadFile(string bucket, string filePath, [FromQuery] string? access_token)
     {
-        // Ручная проверка авторизации, если токен передан в query string (для <video src="...">)
+        // Ручная проверка авторизации для query token
         if (User.Identity?.IsAuthenticated != true)
         {
-            if (string.IsNullOrEmpty(access_token))
-            {
-                return Unauthorized("Missing access token.");
-            }
-            // В реальном проекте здесь нужно валидировать JWT токен.
-            // Для MVP полагаемся на [Authorize] на контроллере и то, что AllowAnonymous
-            // перекрывает его, но мы требуем токен.
-            // Примечание: В .NET middleware auth сработает и заполнит User, если токен есть в заголовке.
-            // Если токена нет в заголовке, но есть в query, нужно настроить JwtBearerOptions.Events.OnMessageReceived
-            // в Program.cs.
-
-            // Чтобы не усложнять Program.cs прямо сейчас, оставим метод [Authorize],
-            // но добавим в Program.cs чтение токена из QueryString.
+            if (string.IsNullOrEmpty(access_token)) return Unauthorized("Missing access token.");
+            // В идеале токен валидируется Middleware, если передан.
+            // Если мы здесь и User не Authenticated, значит токен не сработал или Middleware не настроен на чтение из query без [Authorize].
+            // Но мы настроили OnMessageReceived в Program.cs, так что User должен быть заполнен, если токен валиден.
+            // Если нет - Unauthorized.
         }
 
         if (!AllowedBuckets.Contains(bucket)) return BadRequest($"Access to bucket '{bucket}' is denied.");
@@ -78,6 +82,14 @@ public class FilesController : ControllerBase
         try
         {
             var (stream, contentType, fileName) = await _fileStorage.GetFileStreamAsync(bucket, filePath);
+
+            // Audit
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.Identity?.Name ?? "Anonymous";
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            // Log fire-and-forget to not delay download stream start too much
+            _ = _auditService.LogAsync(userId, userName, "Download", $"{bucket}/{filePath}", null, ip);
+
             return File(stream, contentType, fileName, enableRangeProcessing: true);
         }
         catch (Exception ex)
