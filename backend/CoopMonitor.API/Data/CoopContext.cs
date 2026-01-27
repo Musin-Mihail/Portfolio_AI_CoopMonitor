@@ -1,9 +1,11 @@
 using CoopMonitor.API.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoopMonitor.API.Data;
 
-public class CoopContext : DbContext
+// Заменяем наследование от DbContext на IdentityDbContext<User>
+public class CoopContext : IdentityDbContext<User>
 {
     public CoopContext(DbContextOptions<CoopContext> options) : base(options)
     {
@@ -15,7 +17,7 @@ public class CoopContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder); // Обязательно вызываем base для настройки таблиц Identity
 
         // House Configuration
         modelBuilder.Entity<House>(entity =>
@@ -31,9 +33,8 @@ public class CoopContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.FullName).IsRequired().HasMaxLength(150);
-            entity.Property(e => e.UserId).IsRequired(false); // Explicitly nullable
+            entity.Property(e => e.UserId).IsRequired(false);
 
-            // Index for fast lookup by UserID
             entity.HasIndex(e => e.UserId).IsUnique().HasFilter("[UserId] IS NOT NULL");
         });
 
