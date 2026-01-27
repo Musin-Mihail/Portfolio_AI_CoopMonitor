@@ -51,3 +51,16 @@ public record ClimateHistoryPoint(
     double Co2,
     double Nh3
 );
+
+// --- Production Metrics DTO ---
+
+public record ProductionMetricsDto(
+    double FeedConsumedKg,
+    double WaterConsumedLiters,
+    int MortalityCount,
+    double MortalityRatePercent,
+    double StartWeightGrams,
+    double EndWeightGrams,
+    double FCR, // Feed Conversion Ratio
+    double StockingDensityKgM2 // Плотность посадки
+);

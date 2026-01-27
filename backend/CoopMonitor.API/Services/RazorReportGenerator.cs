@@ -9,65 +9,56 @@ public class RazorReportGenerator : IReportGenerator
 
     public RazorReportGenerator()
     {
-        // Инициализация RazorLight для работы с внедренными ресурсами или строками.
-        // Используем Builder для создания движка.
         _engine = new RazorLightEngineBuilder()
-            // .UseEmbeddedResourcesProject(Assembly.GetEntryAssembly()) // Если шаблоны в ресурсах
-            // Для упрощения MVP используем MemoryProject, где шаблоны задаются строками в коде,
-            // либо можно подключить файловую систему.
             .UseMemoryCachingProvider()
             .Build();
     }
 
     public async Task<string> GenerateReportHtmlAsync<TModel>(string templateKey, TModel model)
     {
-        // В реальном проекте шаблоны лежат в .cshtml файлах.
-        // Здесь для демонстрации и надежности (чтобы не создавать кучу файлов) 
-        // мы определим шаблон прямо в коде.
-
         string templateContent = GetTemplateContent(templateKey);
-
         return await _engine.CompileRenderStringAsync(templateKey, templateContent, model);
     }
 
     private string GetTemplateContent(string key)
     {
-        // Простой HTML шаблон для ежедневного отчета
+        // DAILY REPORT TEMPLATE
         if (key == "DailyReport")
         {
-            // FIX: Добавлено @using System для доступа к DateTime.UtcNow
             return @"@using System
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset='utf-8'>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; }
-        h1 { color: #2c3e50; }
-        .card { border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
+        .header-info { margin-bottom: 20px; color: #555; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .metric-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; }
-        .label { font-weight: bold; color: #555; }
-        .value { color: #000; }
-        .alert { color: red; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        .metric-row:last-child { border-bottom: none; }
+        .label { font-weight: 600; color: #555; }
+        .value { font-weight: bold; color: #000; }
+        .alert { color: #d32f2f; font-weight: bold; padding: 5px 0; }
+        footer { margin-top: 40px; font-size: 12px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
 <body>
     <h1>@Model.Title</h1>
-    <h3>@Model.HouseName | @Model.Date.ToString(""dd.MM.yyyy"")</h3>
-    <p>Day of Cycle: @Model.DayOfCycle</p>
+    <div class='header-info'>
+        <h3>House: @Model.HouseName</h3>
+        <p>Date: @Model.Date.ToString(""dd.MM.yyyy"") | Cycle Day: @Model.DayOfCycle</p>
+    </div>
 
     <div class='card'>
-        <h4>Production Metrics</h4>
+        <h4>📊 Production Metrics</h4>
         <div class='metric-row'>
             <span class='label'>Mortality Today:</span>
-            <span class='value'>@Model.MortalityCount</span>
+            <span class='value'>@Model.MortalityCount birds</span>
         </div>
         <div class='metric-row'>
             <span class='label'>Current Population:</span>
-            <span class='value'>@Model.TotalPopulation</span>
+            <span class='value'>@Model.TotalPopulation birds</span>
         </div>
         <div class='metric-row'>
             <span class='label'>Feed Consumed:</span>
@@ -80,14 +71,14 @@ public class RazorReportGenerator : IReportGenerator
     </div>
 
     <div class='card'>
-        <h4>Climate Summary</h4>
+        <h4>🌡️ Climate Summary</h4>
         <div class='metric-row'>
             <span class='label'>Avg Temperature:</span>
             <span class='value'>@Model.AvgTemp.ToString(""F1"") °C</span>
         </div>
         <div class='metric-row'>
             <span class='label'>Avg Humidity:</span>
-            <span class='value'>@Model.AvgHumidity.ToString(""F1"") %</span>
+            <span class='value'>@Model.AvgHumidity.ToString(""F0"") %</span>
         </div>
         <div class='metric-row'>
             <span class='label'>Time in Range:</span>
@@ -97,8 +88,8 @@ public class RazorReportGenerator : IReportGenerator
 
     @if(Model.Alerts != null && Model.Alerts.Count > 0)
     {
-        <div class='card' style='border-color: red;'>
-            <h4 style='color: red;'>Alerts & Critical Events</h4>
+        <div class='card' style='border-left: 5px solid #d32f2f;'>
+            <h4 style='color: #d32f2f;'>⚠️ Alerts & Events</h4>
             <ul>
                 @foreach(var alert in Model.Alerts)
                 {
@@ -109,7 +100,107 @@ public class RazorReportGenerator : IReportGenerator
     }
     
     <footer>
-        <small>Generated by CoopMonitor System at @DateTime.UtcNow</small>
+        Generated by CoopMonitor System at @DateTime.UtcNow (UTC)
+    </footer>
+</body>
+</html>";
+        }
+
+        // WEEKLY REPORT TEMPLATE
+        if (key == "WeeklyReport")
+        {
+            return @"@using System
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
+        h1 { color: #1565c0; border-bottom: 2px solid #1565c0; padding-bottom: 10px; }
+        .header-info { margin-bottom: 20px; color: #555; background: #e3f2fd; padding: 15px; border-radius: 5px; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; background: #fff; }
+        .metric-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .label { color: #666; }
+        .value { font-weight: bold; }
+        .highlight { font-size: 1.1em; color: #1565c0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>@Model.Title</h1>
+    <div class='header-info'>
+        <h2>House: @Model.HouseName</h2>
+        <p><strong>Period:</strong> @Model.StartDate.ToString(""dd.MM.yyyy"") — @Model.EndDate.ToString(""dd.MM.yyyy"")</p>
+        <p><strong>Week Number:</strong> @Model.WeekNumber</p>
+    </div>
+
+    <div class='card'>
+        <h3>📈 Efficiency Indicators</h3>
+        <table class='metrics-table'>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Target (Mock)</th>
+            </tr>
+            <tr>
+                <td>Feed Conversion Ratio (FCR)</td>
+                <td class='highlight'>@Model.FCR.ToString(""F3"")</td>
+                <td>1.450</td>
+            </tr>
+            <tr>
+                <td>Stocking Density</td>
+                <td>@Model.StockingDensity.ToString(""F2"") kg/m²</td>
+                <td>< 38.0</td>
+            </tr>
+            <tr>
+                <td>Weight Gain (Week)</td>
+                <td>@Model.WeightGain.ToString(""F0"") g</td>
+                <td>450 g</td>
+            </tr>
+            <tr>
+                <td>Mortality Rate (Week)</td>
+                <td>@Model.MortalityRate.ToString(""F2"") %</td>
+                <td>< 0.5%</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class='card'>
+        <h3>🥗 Consumption & Growth</h3>
+        <div class='metric-row'>
+            <span class='label'>Total Feed Consumed:</span>
+            <span class='value'>@Model.TotalFeed.ToString(""N1"") kg</span>
+        </div>
+        <div class='metric-row'>
+            <span class='label'>Total Water Consumed:</span>
+            <span class='value'>@Model.TotalWater.ToString(""N1"") L</span>
+        </div>
+        <div class='metric-row'>
+            <span class='label'>Start Avg Weight:</span>
+            <span class='value'>@Model.StartWeight.ToString(""F0"") g</span>
+        </div>
+        <div class='metric-row'>
+            <span class='label'>End Avg Weight:</span>
+            <span class='value'>@Model.EndWeight.ToString(""F0"") g</span>
+        </div>
+    </div>
+
+    <div class='card'>
+        <h3>🌡️ Average Climate</h3>
+        <div class='metric-row'>
+            <span class='label'>Avg Temperature:</span>
+            <span class='value'>@Model.AvgTemp.ToString(""F1"") °C</span>
+        </div>
+        <div class='metric-row'>
+            <span class='label'>Avg Humidity:</span>
+            <span class='value'>@Model.AvgHumidity.ToString(""F1"") %</span>
+        </div>
+    </div>
+
+    <footer>
+        Automated Report | CoopMonitor System | @DateTime.UtcNow (UTC)
     </footer>
 </body>
 </html>";

@@ -15,6 +15,11 @@ public interface ICalculationService
     Task<List<ClimateHistoryPoint>> GetHouseHistoryAsync(int houseId, int hours = 24);
 
     /// <summary>
+    /// Рассчитывает производственные метрики за указанный период (неделя, месяц).
+    /// </summary>
+    Task<ProductionMetricsDto> CalculateProductionMetricsAsync(int houseId, DateTime startDate, DateTime endDate);
+
+    /// <summary>
     /// Валидирует показания сенсоров перед сохранением.
     /// </summary>
     bool ValidateSensorData(double temp, double humidity, double co2, double nh3);

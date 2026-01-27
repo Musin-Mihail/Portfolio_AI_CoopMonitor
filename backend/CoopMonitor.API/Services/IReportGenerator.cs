@@ -34,3 +34,28 @@ public class DailyReportModel
 
     public List<string> Alerts { get; set; } = new();
 }
+
+public class WeeklyReportModel
+{
+    public string Title { get; set; } = string.Empty;
+    public string HouseName { get; set; } = string.Empty;
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public int WeekNumber { get; set; }
+
+    // Производство
+    public double StartWeight { get; set; }
+    public double EndWeight { get; set; }
+    public double WeightGain { get; set; } // Привес за неделю (г)
+    public double FCR { get; set; }
+    public double StockingDensity { get; set; } // кг/м2
+
+    public double TotalFeed { get; set; }
+    public double TotalWater { get; set; }
+    public int TotalMortality { get; set; }
+    public double MortalityRate { get; set; }
+
+    // Климат
+    public double AvgTemp { get; set; }
+    public double AvgHumidity { get; set; }
+}

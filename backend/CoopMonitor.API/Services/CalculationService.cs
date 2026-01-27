@@ -152,10 +152,92 @@ public class CalculationService : ICalculationService
             ))
             .ToListAsync();
 
-        // Если точек слишком много, можно проредить (downsampling), но для MVP вернем всё.
-        // Обычно для графиков достаточно 1 точки раз в 10-15 минут.
-
         return readings;
+    }
+
+    public async Task<ProductionMetricsDto> CalculateProductionMetricsAsync(int houseId, DateTime startDate, DateTime endDate)
+    {
+        // Нормализация дат
+        startDate = startDate.Date;
+        endDate = endDate.Date.AddDays(1).AddTicks(-1);
+
+        // 1. Потребление
+        var feedWater = await _context.FeedWaterRecords
+            .Where(x => x.HouseId == houseId && x.Date >= startDate && x.Date <= endDate)
+            .ToListAsync();
+
+        double totalFeed = feedWater.Sum(x => x.FeedQuantityKg);
+        double totalWater = feedWater.Sum(x => x.WaterQuantityLiters);
+
+        // 2. Падеж
+        var mortalityList = await _context.MortalityRecords
+            .Where(x => x.HouseId == houseId && x.Date >= startDate && x.Date <= endDate)
+            .ToListAsync();
+
+        int periodMortality = mortalityList.Sum(x => x.Quantity);
+
+        // Общий падеж до начала периода (для расчета популяции на начало периода)
+        var preMortality = await _context.MortalityRecords
+            .Where(x => x.HouseId == houseId && x.Date < startDate)
+            .SumAsync(x => x.Quantity);
+
+        var house = await _context.Houses.FindAsync(houseId);
+        int startPopulation = house != null ? house.Capacity - preMortality : 0;
+        int endPopulation = startPopulation - periodMortality;
+
+        double mortalityRate = startPopulation > 0 ? (double)periodMortality / startPopulation * 100.0 : 0;
+
+        // 3. Вес и Биомасса
+        // Находим ближайшее взвешивание К началу периода (не позднее 3 дней до или после)
+        var startWeighing = await _context.WeighingRecords
+            .Where(w => w.HouseId == houseId && w.Date >= startDate.AddDays(-3) && w.Date <= startDate.AddDays(3))
+            .OrderBy(w => Math.Abs((w.Date - startDate).TotalSeconds))
+            .FirstOrDefaultAsync();
+
+        // Находим ближайшее взвешивание К концу периода
+        var endWeighing = await _context.WeighingRecords
+            .Where(w => w.HouseId == houseId && w.Date >= endDate.AddDays(-3) && w.Date <= endDate.AddDays(3))
+            .OrderBy(w => Math.Abs((w.Date - endDate).TotalSeconds))
+            .FirstOrDefaultAsync();
+
+        double startWeight = startWeighing?.WeightGrams ?? 0;
+        double endWeight = endWeighing?.WeightGrams ?? 0;
+
+        // 4. FCR (Feed Conversion Ratio) = Feed Consumed / Weight Gain
+        // Biomass Gain = (EndPop * EndWeight) - (StartPop * StartWeight)
+        // Упрощенный расчет FCR (Field FCR)
+        double fcr = 0;
+        if (startWeight > 0 && endWeight > 0 && startWeight < endWeight)
+        {
+            double startBiomassKg = startPopulation * (startWeight / 1000.0);
+            double endBiomassKg = endPopulation * (endWeight / 1000.0);
+            double gainKg = endBiomassKg - startBiomassKg;
+
+            // Если есть привес, считаем конверсию
+            if (gainKg > 0)
+            {
+                fcr = totalFeed / gainKg;
+            }
+        }
+
+        // 5. Density (Kg/m2)
+        double density = 0;
+        if (house != null && house.Area > 0 && endWeight > 0)
+        {
+            double currentBiomassKg = endPopulation * (endWeight / 1000.0);
+            density = currentBiomassKg / house.Area;
+        }
+
+        return new ProductionMetricsDto(
+            totalFeed,
+            totalWater,
+            periodMortality,
+            Math.Round(mortalityRate, 2),
+            startWeight,
+            endWeight,
+            Math.Round(fcr, 3),
+            Math.Round(density, 2)
+        );
     }
 
     public bool ValidateSensorData(double temp, double humidity, double co2, double nh3)

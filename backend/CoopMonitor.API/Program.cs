@@ -66,17 +66,23 @@ builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
 
-// Audit Service (Scoped because it might use HttpContext accessor logic in future, but implementing as separate creates scope internally)
-// However, we inject it into Controllers. Let's keep it Transient or Singleton since it creates its own Scope for DB access.
+// Audit Service
 builder.Services.AddSingleton<IAuditService, AuditService>();
 
 // Quartz
 builder.Services.AddQuartz(q =>
 {
+    // Daily Report (06:00 Daily)
     var dailyReportJobKey = new JobKey("DailyReportJob");
     q.AddJob<DailyReportJob>(opts => opts.WithIdentity(dailyReportJobKey));
     q.AddTrigger(opts => opts.ForJob(dailyReportJobKey).WithIdentity("DailyReportTrigger").WithCronSchedule("0 0 6 * * ?"));
 
+    // Weekly Report (08:00 Monday)
+    var weeklyReportJobKey = new JobKey("WeeklyReportJob");
+    q.AddJob<WeeklyReportJob>(opts => opts.WithIdentity(weeklyReportJobKey));
+    q.AddTrigger(opts => opts.ForJob(weeklyReportJobKey).WithIdentity("WeeklyReportTrigger").WithCronSchedule("0 0 8 ? * MON"));
+
+    // Maintenance Jobs
     var backupJobKey = new JobKey("BackupJob");
     q.AddJob<BackupJob>(opts => opts.WithIdentity(backupJobKey));
     q.AddTrigger(opts => opts.ForJob(backupJobKey).WithIdentity("BackupTrigger").WithCronSchedule("0 0 2 * * ?"));
@@ -125,15 +131,12 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 
-    // Чтение токена из Query String (для видео плеера и скачивания)
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
         {
             var accessToken = context.Request.Query["access_token"];
             var path = context.HttpContext.Request.Path;
-
-            // Если запрос идет к API файлов и есть токен в URL
             if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/api/Files"))
             {
                 context.Token = accessToken;
