@@ -4,13 +4,44 @@
     <mat-nav-list>
       <a
         mat-list-item
-        *ngFor="let item of menuItems"
-        [routerLink]="item.route"
+        routerLink="/"
         routerLinkActive="active-link"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-        <span matListItemTitle>{{ item.label }}</span>
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+
+      <mat-divider></mat-divider>
+      <div mat-subheader>LOGS</div>
+
+      <a mat-list-item routerLink="/logs/mortality" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>dangerous</mat-icon>
+        <span matListItemTitle>Mortality</span>
+      </a>
+      <a mat-list-item routerLink="/logs/feed-water" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>water_drop</mat-icon>
+        <span matListItemTitle>Feed & Water</span>
+      </a>
+      <a mat-list-item routerLink="/logs/disease" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>healing</mat-icon>
+        <span matListItemTitle>Disease</span>
+      </a>
+
+      <mat-divider></mat-divider>
+      <div mat-subheader>SETTINGS</div>
+
+      <a mat-list-item routerLink="/houses" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>home_work</mat-icon>
+        <span matListItemTitle>Houses</span>
+      </a>
+      <a mat-list-item routerLink="/personnel" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Personnel</span>
+      </a>
+      <a mat-list-item routerLink="/feeds" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>grass</mat-icon>
+        <span matListItemTitle>Feeds</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
