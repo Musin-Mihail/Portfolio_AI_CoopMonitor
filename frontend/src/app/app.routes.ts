@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { authGuard } from './core/guards/auth.guard';
+import { HouseListComponent } from './features/houses/house-list/house-list.component';
+import { PersonnelListComponent } from './features/personnel/personnel-list/personnel-list.component';
+import { FeedListComponent } from './features/feeds/feed-list/feed-list.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
@@ -15,9 +19,20 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./app').then((m) => m.App), // Временная заглушка, позже заменим на Dashboard
+        component: DashboardComponent,
       },
-      // Здесь будут добавляться дочерние маршруты (houses, personnel, etc.)
+      {
+        path: 'houses',
+        component: HouseListComponent,
+      },
+      {
+        path: 'personnel',
+        component: PersonnelListComponent,
+      },
+      {
+        path: 'feeds',
+        component: FeedListComponent,
+      },
     ],
   },
   { path: '**', redirectTo: '' },
