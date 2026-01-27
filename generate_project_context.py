@@ -30,6 +30,13 @@ IGNORE_DIRS = {
     "coverage",
     "test-results",
     "migrations",
+    "Migrations",
+    "assets",
+    "public",
+    ".mypy_cache",
+    ".terraform",
+    "coverage",
+    "lib",
 }
 IGNORE_FILE_PATTERNS = {
     "package-lock.json",
@@ -67,6 +74,13 @@ IGNORE_FILE_PATTERNS = {
     "*.xlsx",
     "DS_Store",
     "thumbs.db",
+    "*.map",
+    "*.min.js",
+    "*.min.css",
+    "*.Designer.cs",
+    "*.generated.cs",
+    "LICENSE",
+    "*.lock",
 }
 
 
