@@ -1,0 +1,111 @@
+<div class="container">
+  <div class="header">
+    <h1>System Status</h1>
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="loadStatus()"
+      [disabled]="isLoading()"
+      title="Refresh">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  <mat-progress-bar
+    *ngIf="isLoading()"
+    mode="indeterminate"></mat-progress-bar>
+
+  <div
+    class="grid"
+    *ngIf="status() as data">
+    <mat-card class="status-card saas-card">
+      <mat-card-header>
+        <mat-icon
+          mat-card-avatar
+          class="cloud-icon">
+          cloud_sync
+        </mat-icon>
+        <mat-card-title>SaaS Synchronization</mat-card-title>
+        <mat-card-subtitle>
+          Status:
+          <span [class.online]="data.saaS.isConnected">{{ data.saaS.isConnected ? "Connected" : "Offline" }}</span>
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="usage-section">
+          <div class="usage-labels">
+            <span>Daily Traffic Usage</span>
+            <span>{{ data.saaS.usagePercent }}%</span>
+          </div>
+          <mat-progress-bar
+            class="usage-bar"
+            mode="determinate"
+            [value]="data.saaS.usagePercent"
+            [color]="data.saaS.usagePercent > 90 ? 'warn' : 'primary'"></mat-progress-bar>
+          <div class="usage-details">
+            {{ formatBytes(data.saaS.dailyUsageBytes) }} / {{ formatBytes(data.saaS.dailyLimitBytes) }}
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="info-row">
+          <span class="label">Last Sync:</span>
+          <span class="value">{{ (data.saaS.lastSync | date: "medium") || "Never" }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="status-card">
+      <mat-card-header>
+        <mat-icon
+          mat-card-avatar
+          class="notif-icon">
+          notifications_active
+        </mat-icon>
+        <mat-card-title>Notifications</mat-card-title>
+        <mat-card-subtitle>Channel: Telegram</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-row">
+          <span class="label">Status:</span>
+          <span
+            class="badge"
+            [class.active]="data.notifications.telegramEnabled">
+            {{ data.notifications.telegramEnabled ? "Enabled" : "Disabled" }}
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="label">Admin Chat ID:</span>
+          <span class="value">{{ data.notifications.adminChatId || "Not Configured" }}</span>
+        </div>
+        <p class="hint">To configure, edit backend/appsettings.json or use environment variables.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="status-card">
+      <mat-card-header>
+        <mat-icon
+          mat-card-avatar
+          color="accent">
+          info
+        </mat-icon>
+        <mat-card-title>Application Info</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-row">
+          <span class="label">Version:</span>
+          <span class="value">{{ data.appVersion }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Environment:</span>
+          <span class="value">{{ data.environment }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Server Time (UTC):</span>
+          <span class="value">{{ data.serverTimeUtc | date: "medium" }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 using CoopMonitor.API.Data;
+using CoopMonitor.API.DTOs;
 using CoopMonitor.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,5 +80,31 @@ public class SaaSService : ISaaSService
         _logger.LogInformation("Checking for config updates from SaaS...");
         await Task.Delay(300);
         _logger.LogInformation("No updates available (Mock).");
+    }
+
+    public async Task<SaaSStatusDto> GetStatusAsync()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<CoopContext>();
+        var today = DateTime.UtcNow.Date;
+
+        var usage = await context.SyncUsages.FirstOrDefaultAsync(u => u.Date == today);
+        long used = usage?.BytesSent ?? 0;
+
+        // Mock Last Sync time: take the latest SyncedAt from Reports
+        var lastReport = await context.Reports
+            .Where(r => r.IsSynced)
+            .OrderByDescending(r => r.SyncedAt)
+            .FirstOrDefaultAsync();
+
+        double percent = (double)used / DailyLimitBytes * 100.0;
+
+        return new SaaSStatusDto(
+            IsConnected: true, // Mock
+            DailyUsageBytes: used,
+            DailyLimitBytes: DailyLimitBytes,
+            UsagePercent: Math.Round(percent, 2),
+            LastSync: lastReport?.SyncedAt
+        );
     }
 }

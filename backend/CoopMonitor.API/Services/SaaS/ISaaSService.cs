@@ -1,3 +1,5 @@
+using CoopMonitor.API.DTOs;
+
 namespace CoopMonitor.API.Services.SaaS;
 
 public interface ISaaSService
@@ -21,4 +23,9 @@ public interface ISaaSService
     /// Имитирует получение обновлений конфигурации.
     /// </summary>
     Task CheckForUpdatesAsync();
+
+    /// <summary>
+    /// Возвращает текущий статус использования SaaS.
+    /// </summary>
+    Task<SaaSStatusDto> GetStatusAsync();
 }
