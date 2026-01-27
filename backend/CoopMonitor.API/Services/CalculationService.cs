@@ -135,6 +135,29 @@ public class CalculationService : ICalculationService
         );
     }
 
+    public async Task<List<ClimateHistoryPoint>> GetHouseHistoryAsync(int houseId, int hours = 24)
+    {
+        var cutoff = DateTime.UtcNow.AddHours(-hours);
+
+        var readings = await _context.SensorReadings
+            .AsNoTracking()
+            .Where(r => r.HouseId == houseId && r.Date >= cutoff)
+            .OrderBy(r => r.Date)
+            .Select(r => new ClimateHistoryPoint(
+                r.Date,
+                r.Temperature,
+                r.Humidity,
+                r.Co2,
+                r.Nh3
+            ))
+            .ToListAsync();
+
+        // Если точек слишком много, можно проредить (downsampling), но для MVP вернем всё.
+        // Обычно для графиков достаточно 1 точки раз в 10-15 минут.
+
+        return readings;
+    }
+
     public bool ValidateSensorData(double temp, double humidity, double co2, double nh3)
     {
         if (temp < -50 || temp > 60) return false;

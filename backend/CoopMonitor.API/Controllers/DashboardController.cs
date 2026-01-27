@@ -30,4 +30,11 @@ public class DashboardController : ControllerBase
             return NotFound($"House with ID {houseId} not found.");
         }
     }
+
+    [HttpGet("history/{houseId}")]
+    public async Task<ActionResult<IEnumerable<ClimateHistoryPoint>>> GetHistory(int houseId, [FromQuery] int hours = 24)
+    {
+        var history = await _calculationService.GetHouseHistoryAsync(houseId, hours);
+        return Ok(history);
+    }
 }

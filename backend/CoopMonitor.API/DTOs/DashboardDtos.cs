@@ -6,7 +6,7 @@ public record DashboardSummaryDto(
     int DayOfCycle,
     DailyMetricsDto TodayMetrics,
     CurrentClimateDto CurrentClimate,
-    AudioStatusDto AudioStatus, // New Field
+    AudioStatusDto AudioStatus,
     List<string> ActiveAlerts
 );
 
@@ -27,7 +27,6 @@ public record CurrentClimateDto(
     DateTime LastUpdate
 );
 
-// New DTO
 public record AudioStatusDto(
     string Status, // "Healthy", "Warning", "Unknown"
     string LastClassification,
@@ -36,6 +35,16 @@ public record AudioStatusDto(
 
 public record SensorReadingDto(
     int HouseId,
+    DateTime Timestamp,
+    double Temperature,
+    double Humidity,
+    double Co2,
+    double Nh3
+);
+
+// --- New History DTOs ---
+
+public record ClimateHistoryPoint(
     DateTime Timestamp,
     double Temperature,
     double Humidity,
