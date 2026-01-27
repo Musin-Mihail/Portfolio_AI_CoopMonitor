@@ -9,6 +9,8 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MortalityListComponent } from './features/logs/mortality-list/mortality-list.component';
 import { FeedWaterListComponent } from './features/logs/feed-water-list/feed-water-list.component';
 import { DiseaseListComponent } from './features/logs/disease-list/disease-list.component';
+import { WeighingListComponent } from './features/logs/weighing-list/weighing-list.component';
+import { MarkingListComponent } from './features/logs/marking-list/marking-list.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +38,14 @@ export const routes: Routes = [
       {
         path: 'logs/disease',
         component: DiseaseListComponent,
+      },
+      {
+        path: 'logs/weighing',
+        component: WeighingListComponent,
+      },
+      {
+        path: 'logs/marking',
+        component: MarkingListComponent,
       },
       // Master Data
       {

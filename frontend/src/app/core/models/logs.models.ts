@@ -72,3 +72,57 @@ export interface FileUploadResponse {
   fileName: string;
   size: number;
 }
+
+// --- Weighing ---
+
+export interface WeighingRecord {
+  id: number;
+  houseId: number;
+  houseName?: string;
+  personnelId?: number;
+  personnelName?: string;
+  date: string;
+  weightGrams: number;
+  isMusicPlayed: boolean;
+  videoUrl: string;
+  createdAt: string;
+}
+
+export interface CreateWeighingDto {
+  houseId: number;
+  personnelId?: number;
+  date: string;
+  weightGrams: number;
+  isMusicPlayed: boolean;
+  videoFile: File;
+}
+
+// --- Marking ---
+
+export interface MarkingRecord {
+  id: number;
+  houseId: number;
+  houseName?: string;
+  personnelId?: number;
+  personnelName?: string;
+  date: string;
+  birdAgeDays: number;
+  birdIdentifier?: string;
+  markingType: string;
+  color?: string;
+  ringNumber?: string;
+  attachmentUrl?: string;
+  createdAt: string;
+}
+
+export interface CreateMarkingDto {
+  houseId: number;
+  personnelId?: number;
+  date: string;
+  birdAgeDays: number;
+  birdIdentifier?: string;
+  markingType: string;
+  color?: string;
+  ringNumber?: string;
+  photoFile?: File;
+}
