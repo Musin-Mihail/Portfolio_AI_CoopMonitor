@@ -47,16 +47,29 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 
-// app.UseHttpsRedirection(); // Disabled for internal Docker/Local setup simplification initially
-
 app.UseCors("AngularClient");
 
 app.UseAuthorization();
 
 app.MapControllers();
 
+// 6. Database Initialization (Migrations & WAL Mode)
 try
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<CoopContext>();
+
+        // Apply pending migrations
+        dbContext.Database.Migrate();
+
+        // Enable WAL Journal Mode for performance
+        // This must be executed as a raw SQL command for SQLite
+        dbContext.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL;");
+
+        Log.Information("Database migrated and WAL mode enabled.");
+    }
+
     Log.Information("Starting CoopMonitor API...");
     app.Run();
 }
