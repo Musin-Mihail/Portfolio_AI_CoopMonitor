@@ -5,7 +5,7 @@ using CoopMonitor.API.Models;
 using CoopMonitor.API.Services;
 using CoopMonitor.API.Services.Alerting;
 using CoopMonitor.API.Services.Notifications;
-using CoopMonitor.API.Services.SaaS; // New Namespace
+using CoopMonitor.API.Services.SaaS;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -58,19 +58,23 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IFileStorageService, MinioStorageService>();
 
-// Notifications & Alerts
+// Notifications: Telegram & Email
 builder.Services.AddSingleton<TelegramBotService>();
 builder.Services.AddHostedService<TelegramBotService>(provider => provider.GetRequiredService<TelegramBotService>());
-builder.Services.AddSingleton<INotificationService>(provider => provider.GetRequiredService<TelegramBotService>());
-builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddSingleton<EmailService>();
 
+// Notification Router (Facade)
+builder.Services.AddSingleton<INotificationRouter, NotificationRouter>();
+
+// Legacy Interface Support (если где-то еще используется INotificationService напрямую)
+// Но AlertService теперь использует INotificationRouter, так что это опционально, 
+// однако для совместимости можно зарегистрировать Telegram как дефолтный.
+builder.Services.AddSingleton<INotificationService>(provider => provider.GetRequiredService<TelegramBotService>());
+
+builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
-
-// Audit Service
 builder.Services.AddSingleton<IAuditService, AuditService>();
-
-// SaaS Service (New)
 builder.Services.AddScoped<ISaaSService, SaaSService>();
 
 // Quartz

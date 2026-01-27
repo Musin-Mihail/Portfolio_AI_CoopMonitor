@@ -8,16 +8,16 @@ namespace CoopMonitor.API.Services.Alerting;
 public class AlertService : IAlertService
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly INotificationService _notificationService;
+    private readonly INotificationRouter _notificationRouter;
     private readonly ILogger<AlertService> _logger;
 
     public AlertService(
         IServiceProvider serviceProvider,
-        INotificationService notificationService,
+        INotificationRouter notificationRouter,
         ILogger<AlertService> logger)
     {
         _serviceProvider = serviceProvider;
-        _notificationService = notificationService;
+        _notificationRouter = notificationRouter;
         _logger = logger;
     }
 
@@ -63,7 +63,7 @@ public class AlertService : IAlertService
             alerts.Add($"High Mortality Alert ({deadToday} birds today)");
         }
 
-        // 3. Аудио (Unhealthy за последний час)
+        // 3. Аудио
         var lastAudio = await context.AudioEvents
             .Where(a => a.HouseId == houseId)
             .OrderByDescending(a => a.Timestamp)
@@ -83,34 +83,44 @@ public class AlertService : IAlertService
     public async Task CheckSensorIngestionAsync(int houseId, SensorReading reading)
     {
         var criticalAlerts = new List<string>();
+        var warningAlerts = new List<string>();
 
-        if (reading.Temperature > 35.0)
-            criticalAlerts.Add($"🔥 CRITICAL High Temp: {reading.Temperature:F1}°C");
+        // Critical Rules
+        if (reading.Temperature > 35.0) criticalAlerts.Add($"🔥 CRITICAL High Temp: {reading.Temperature:F1}°C");
+        if (reading.Temperature < 15.0) criticalAlerts.Add($"❄️ CRITICAL Low Temp: {reading.Temperature:F1}°C");
+        if (reading.Nh3 > 25.0) criticalAlerts.Add($"☣️ CRITICAL Ammonia: {reading.Nh3:F1} ppm");
 
-        if (reading.Temperature < 15.0)
-            criticalAlerts.Add($"❄️ CRITICAL Low Temp: {reading.Temperature:F1}°C");
+        // Warning Rules (пример)
+        if (reading.Co2 > 2500 && reading.Co2 < 3000) warningAlerts.Add($"⚠️ High CO2: {reading.Co2:F0} ppm");
 
-        if (reading.Nh3 > 25.0)
-            criticalAlerts.Add($"☣️ CRITICAL Ammonia: {reading.Nh3:F1} ppm");
-
+        // Send Critical
         if (criticalAlerts.Count > 0)
         {
             string details = string.Join("\n", criticalAlerts);
-            await _notificationService.SendAlertAsync($"House #{houseId} Sensor Alert", details);
-            _logger.LogWarning("Critical sensor alert sent for House {HouseId}", houseId);
+            await _notificationRouter.RouteAlertAsync($"House #{houseId} Critical Sensor Alert", details, AlertSeverity.Critical);
+            _logger.LogWarning("Critical sensor alert routed for House {HouseId}", houseId);
+        }
+
+        // Send Warnings
+        if (warningAlerts.Count > 0)
+        {
+            string details = string.Join("\n", warningAlerts);
+            await _notificationRouter.RouteAlertAsync($"House #{houseId} Sensor Warning", details, AlertSeverity.Warning);
         }
     }
 
     public async Task CheckAudioIngestionAsync(int houseId, AudioEvent audioEvent)
     {
-        // Проверяем только с высокой уверенностью
         if (audioEvent.Confidence < 0.8) return;
 
-        if (audioEvent.Classification == "Panic" || audioEvent.Classification == "Unhealthy")
+        var severity = AlertSeverity.Warning;
+        if (audioEvent.Classification == "Panic") severity = AlertSeverity.Critical;
+
+        if (audioEvent.Classification == "Unhealthy" || audioEvent.Classification == "Panic")
         {
             string msg = $"🔊 Audio Alert: {audioEvent.Classification} detected (Conf: {audioEvent.Confidence:P0})";
-            await _notificationService.SendAlertAsync($"House #{houseId} Audio Alert", msg);
-            _logger.LogInformation("Audio alert sent for House {HouseId}", houseId);
+            await _notificationRouter.RouteAlertAsync($"House #{houseId} Audio Event", msg, severity);
+            _logger.LogInformation("Audio alert routed for House {HouseId}", houseId);
         }
     }
 }
