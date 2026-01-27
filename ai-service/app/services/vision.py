@@ -6,6 +6,7 @@ import json
 import random
 import time
 from uuid import uuid4
+from typing import List
 from app.services.storage import minio_client
 from app.models import AnalysisResult, FrameResult, DetectionBox
 from app.settings import settings
