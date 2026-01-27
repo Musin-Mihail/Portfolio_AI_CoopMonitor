@@ -23,8 +23,9 @@ public class CoopContext : IdentityDbContext<User>
     public DbSet<WeighingRecord> WeighingRecords { get; set; }
     public DbSet<MarkingRecord> MarkingRecords { get; set; }
 
-    // Телеметрия
+    // Телеметрия и События
     public DbSet<SensorReading> SensorReadings { get; set; }
+    public DbSet<AudioEvent> AudioEvents { get; set; }
 
     // Отчеты
     public DbSet<ReportMetadata> Reports { get; set; }
@@ -160,6 +161,19 @@ public class CoopContext : IdentityDbContext<User>
             entity.Property(e => e.Date).IsRequired();
             // Индекс для ускорения выборок по птичнику и дате
             entity.HasIndex(e => new { e.HouseId, e.Date });
+
+            entity.HasOne(e => e.House)
+                .WithMany()
+                .HasForeignKey(e => e.HouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // AudioEvent Configuration
+        modelBuilder.Entity<AudioEvent>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Classification).IsRequired();
+            entity.HasIndex(e => new { e.HouseId, e.Timestamp });
 
             entity.HasOne(e => e.House)
                 .WithMany()

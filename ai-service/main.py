@@ -3,9 +3,15 @@ import logging
 import uuid
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from app.settings import settings
-from app.models import AnalysisRequest, AnalysisResponse, AnalysisStatus
+from app.models import (
+    AnalysisRequest,
+    AnalysisResponse,
+    AnalysisStatus,
+    AudioAnalysisRequest,
+)
 from app.services.storage import minio_client
 from app.services.vision import vision_pipeline
+from app.services.audio import audio_pipeline
 
 # Configure Logging
 logging.basicConfig(
@@ -34,7 +40,6 @@ async def analyze_media(request: AnalysisRequest, background_tasks: BackgroundTa
     job_id = str(uuid.uuid4())
 
     # 3. Trigger Background Processing
-    # This runs in the background after the response is sent
     background_tasks.add_task(
         vision_pipeline.process_job, job_id, request.bucket, request.file_path
     )
@@ -43,6 +48,33 @@ async def analyze_media(request: AnalysisRequest, background_tasks: BackgroundTa
         job_id=job_id,
         status=AnalysisStatus.QUEUED,
         message=f"Analysis queued for {request.file_path}",
+    )
+
+
+@app.post("/analyze-audio", response_model=AnalysisResponse)
+async def analyze_audio(
+    request: AudioAnalysisRequest, background_tasks: BackgroundTasks
+):
+    logger.info(f"Received audio analysis request for {request.file_path}")
+
+    # 1. Validate file
+    if not minio_client.check_file_exists(request.bucket, request.file_path):
+        raise HTTPException(status_code=404, detail="Audio file not found")
+
+    job_id = str(uuid.uuid4())
+
+    # 2. Trigger Audio Pipeline
+    background_tasks.add_task(
+        audio_pipeline.process_audio,
+        request.house_id,
+        request.bucket,
+        request.file_path,
+    )
+
+    return AnalysisResponse(
+        job_id=job_id,
+        status=AnalysisStatus.QUEUED,
+        message=f"Audio analysis queued for {request.file_path}",
     )
 
 

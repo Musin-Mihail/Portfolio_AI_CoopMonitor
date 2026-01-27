@@ -14,4 +14,9 @@ public interface IAlertService
     /// Проверяет входящие данные сенсоров на критические отклонения и отправляет уведомления немедленно.
     /// </summary>
     Task CheckSensorIngestionAsync(int houseId, SensorReading reading);
+
+    /// <summary>
+    /// Проверяет аудио события на наличие патологий (кашель, паника) и отправляет уведомления.
+    /// </summary>
+    Task CheckAudioIngestionAsync(int houseId, AudioEvent audioEvent);
 }

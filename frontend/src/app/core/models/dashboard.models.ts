@@ -4,6 +4,7 @@ export interface DashboardSummary {
   dayOfCycle: number;
   todayMetrics: DailyMetrics;
   currentClimate: CurrentClimate;
+  audioStatus: AudioStatus; // Added
   activeAlerts: string[];
 }
 
@@ -21,5 +22,11 @@ export interface CurrentClimate {
   co2: number;
   nh3: number;
   timeInRangePercent: number;
+  lastUpdate: string;
+}
+
+export interface AudioStatus {
+  status: 'Healthy' | 'Warning' | 'Unknown';
+  lastClassification: string;
   lastUpdate: string;
 }

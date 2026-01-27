@@ -38,6 +38,9 @@ services:
     restart: unless-stopped
     ports:
       - "${AI_SERVICE_PORT}:5001"
+    # ЭТА СЕКЦИЯ ВАЖНА ДЛЯ ТВОЕГО ТИПА ЗАПУСКА:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - PYTHONUNBUFFERED=1
       - MINIO_ENDPOINT=minio:9000

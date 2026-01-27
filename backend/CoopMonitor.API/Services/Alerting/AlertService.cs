@@ -37,7 +37,6 @@ public class AlertService : IAlertService
 
         if (lastReading != null)
         {
-            // Проверка свежести данных (если данные старше 15 минут)
             if ((DateTime.UtcNow - lastReading.Date).TotalMinutes > 15)
             {
                 alerts.Add($"Data Obsolete (Last: {lastReading.Date:HH:mm})");
@@ -59,9 +58,23 @@ public class AlertService : IAlertService
             .Where(m => m.HouseId == houseId && m.Date.Date == today)
             .SumAsync(m => m.Quantity);
 
-        if (deadToday > 15) // Порог заглушка, в идеале % от поголовья
+        if (deadToday > 15)
         {
             alerts.Add($"High Mortality Alert ({deadToday} birds today)");
+        }
+
+        // 3. Аудио (Unhealthy за последний час)
+        var lastAudio = await context.AudioEvents
+            .Where(a => a.HouseId == houseId)
+            .OrderByDescending(a => a.Timestamp)
+            .FirstOrDefaultAsync();
+
+        if (lastAudio != null && (DateTime.UtcNow - lastAudio.Timestamp).TotalHours < 1)
+        {
+            if (lastAudio.Classification == "Unhealthy" || lastAudio.Classification == "Panic")
+            {
+                alerts.Add($"Audio Warning: {lastAudio.Classification} detected");
+            }
         }
 
         return alerts;
@@ -69,9 +82,6 @@ public class AlertService : IAlertService
 
     public async Task CheckSensorIngestionAsync(int houseId, SensorReading reading)
     {
-        // Проверка критических значений для пуш-уведомлений
-        // Отправляем пуш только если это действительно КРИТИЧНО, чтобы не спамить
-
         var criticalAlerts = new List<string>();
 
         if (reading.Temperature > 35.0)
@@ -88,6 +98,19 @@ public class AlertService : IAlertService
             string details = string.Join("\n", criticalAlerts);
             await _notificationService.SendAlertAsync($"House #{houseId} Sensor Alert", details);
             _logger.LogWarning("Critical sensor alert sent for House {HouseId}", houseId);
+        }
+    }
+
+    public async Task CheckAudioIngestionAsync(int houseId, AudioEvent audioEvent)
+    {
+        // Проверяем только с высокой уверенностью
+        if (audioEvent.Confidence < 0.8) return;
+
+        if (audioEvent.Classification == "Panic" || audioEvent.Classification == "Unhealthy")
+        {
+            string msg = $"🔊 Audio Alert: {audioEvent.Classification} detected (Conf: {audioEvent.Confidence:P0})";
+            await _notificationService.SendAlertAsync($"House #{houseId} Audio Alert", msg);
+            _logger.LogInformation("Audio alert sent for House {HouseId}", houseId);
         }
     }
 }

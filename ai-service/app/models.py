@@ -7,6 +7,7 @@ class AnalysisType(str, Enum):
     FULL = "full_pipeline"
     DETECTION = "detection_only"
     BEHAVIOR = "behavior"
+    AUDIO = "audio_only"
 
 
 class AnalysisRequest(BaseModel):
@@ -14,6 +15,12 @@ class AnalysisRequest(BaseModel):
     bucket: str
     file_path: str
     analysis_type: AnalysisType = AnalysisType.FULL
+
+
+class AudioAnalysisRequest(BaseModel):
+    house_id: int
+    bucket: str
+    file_path: str
 
 
 class AnalysisStatus(str, Enum):

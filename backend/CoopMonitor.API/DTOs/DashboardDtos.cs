@@ -1,14 +1,12 @@
 namespace CoopMonitor.API.DTOs;
 
-/// <summary>
-/// Сводка для Dashboard (GET /api/dashboard/summary)
-/// </summary>
 public record DashboardSummaryDto(
     int HouseId,
     string HouseName,
-    int DayOfCycle, // Текущий день цикла (относительно даты посадки, пока заглушка)
+    int DayOfCycle,
     DailyMetricsDto TodayMetrics,
     CurrentClimateDto CurrentClimate,
+    AudioStatusDto AudioStatus, // New Field
     List<string> ActiveAlerts
 );
 
@@ -17,7 +15,7 @@ public record DailyMetricsDto(
     double MortalityRatePercent,
     double FeedConsumedKg,
     double WaterConsumedLiters,
-    double? EstimatedADG // Average Daily Gain (г/сут), если есть данные взвешивания
+    double? EstimatedADG
 );
 
 public record CurrentClimateDto(
@@ -25,13 +23,17 @@ public record CurrentClimateDto(
     double Humidity,
     double Co2,
     double Nh3,
-    double TimeInRangePercent, // % времени в целевом диапазоне за 24ч
+    double TimeInRangePercent,
     DateTime LastUpdate
 );
 
-/// <summary>
-/// DTO для отправки данных сенсоров (POST /api/sensors)
-/// </summary>
+// New DTO
+public record AudioStatusDto(
+    string Status, // "Healthy", "Warning", "Unknown"
+    string LastClassification,
+    DateTime LastUpdate
+);
+
 public record SensorReadingDto(
     int HouseId,
     DateTime Timestamp,

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDividerModule } from '@angular/material/divider'; // Added
+import { MatDividerModule } from '@angular/material/divider';
 
 import { DashboardService } from '../../core/services/dashboard.service';
 import { HousesService } from '../../core/services/houses.service';
@@ -30,7 +30,7 @@ import { House } from '../../core/models/master-data.models';
     MatProgressBarModule,
     MatChipsModule,
     MatSnackBarModule,
-    MatDividerModule, // Added
+    MatDividerModule,
   ],
   template: `
     <div class="dashboard-container">
@@ -144,6 +144,38 @@ import { House } from '../../core/models/master-data.models';
                   mode="determinate"
                   [value]="data.currentClimate.timeInRangePercent"
                   [color]="data.currentClimate.timeInRangePercent > 70 ? 'primary' : 'warn'"></mat-progress-bar>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="dashboard-card audio-card">
+            <mat-card-header>
+              <mat-icon
+                mat-card-avatar
+                [class.green-icon]="data.audioStatus.status === 'Healthy'"
+                [class.red-icon]="data.audioStatus.status === 'Warning'">
+                graphic_eq
+              </mat-icon>
+              <mat-card-title>Audio & Welfare</mat-card-title>
+              <mat-card-subtitle>Status: {{ data.audioStatus.status }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="centered-content">
+              <div
+                class="audio-status-box"
+                [class.warning-box]="data.audioStatus.status === 'Warning'">
+                <div class="status-icon">
+                  <mat-icon *ngIf="data.audioStatus.status === 'Healthy'">check</mat-icon>
+                  <mat-icon *ngIf="data.audioStatus.status === 'Warning'">priority_high</mat-icon>
+                  <mat-icon *ngIf="data.audioStatus.status === 'Unknown'">question_mark</mat-icon>
+                </div>
+                <div class="status-label">
+                  {{ data.audioStatus.lastClassification || 'No Data' }}
+                </div>
+              </div>
+              <div
+                class="sub-text"
+                *ngIf="data.audioStatus.lastUpdate && data.audioStatus.status !== 'Unknown'">
+                Updated: {{ data.audioStatus.lastUpdate | date: 'mediumTime' }}
               </div>
             </mat-card-content>
           </mat-card>
@@ -343,6 +375,42 @@ import { House } from '../../core/models/master-data.models';
       .orange-icon {
         color: #ed6c02;
       }
+      .green-icon {
+        color: #4caf50;
+      }
+      .red-icon {
+        color: #f44336;
+      }
+
+      /* Audio Card Styles */
+      .audio-status-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background-color: #e8f5e9;
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        margin-bottom: 10px;
+        color: #2e7d32;
+
+        &.warning-box {
+          background-color: #ffebee;
+          color: #c62828;
+        }
+
+        .status-icon mat-icon {
+          font-size: 40px;
+          height: 40px;
+          width: 40px;
+        }
+        .status-label {
+          font-weight: bold;
+          margin-top: 5px;
+        }
+      }
 
       /* Mortality Card Styles */
       .centered-content {
@@ -351,6 +419,7 @@ import { House } from '../../core/models/master-data.models';
         align-items: center;
         justify-content: center;
         padding: 24px 0;
+        flex-grow: 1;
       }
 
       .big-number {

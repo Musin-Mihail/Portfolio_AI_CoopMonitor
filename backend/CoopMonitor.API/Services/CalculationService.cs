@@ -34,7 +34,6 @@ public class CalculationService : ICalculationService
 
         int deadToday = mortalityRecords.Sum(m => m.Quantity);
 
-        // Примерная популяция
         var totalDead = await _context.MortalityRecords
             .Where(m => m.HouseId == houseId)
             .SumAsync(m => m.Quantity);
@@ -50,13 +49,13 @@ public class CalculationService : ICalculationService
         double feedKg = feedWater.Sum(r => r.FeedQuantityKg);
         double waterL = feedWater.Sum(r => r.WaterQuantityLiters);
 
-        // 3. Последние данные климата
+        // 3. Климат
         var lastReading = await _context.SensorReadings
             .Where(r => r.HouseId == houseId)
             .OrderByDescending(r => r.Date)
             .FirstOrDefaultAsync();
 
-        // 4. Time-in-Range (за последние 24 часа)
+        // 4. Time-in-Range
         var dayAgo = now.AddHours(-24);
         var last24hReadings = await _context.SensorReadings
             .Where(r => r.HouseId == houseId && r.Date >= dayAgo)
@@ -71,7 +70,7 @@ public class CalculationService : ICalculationService
             timeInRange = (double)inRangeCount / last24hReadings.Count * 100;
         }
 
-        // 5. ADG (Привес)
+        // 5. ADG
         double? adg = null;
         var weighings = await _context.WeighingRecords
             .Where(w => w.HouseId == houseId)
@@ -90,7 +89,26 @@ public class CalculationService : ICalculationService
             }
         }
 
-        // 6. Алерты (используем централизованный сервис)
+        // 6. Аудио статус
+        var lastAudio = await _context.AudioEvents
+            .Where(a => a.HouseId == houseId)
+            .OrderByDescending(a => a.Timestamp)
+            .FirstOrDefaultAsync();
+
+        var audioDto = new AudioStatusDto("Unknown", "N/A", DateTime.MinValue);
+        if (lastAudio != null)
+        {
+            // Считаем актуальным, если событие было за последний час
+            bool isRecent = (DateTime.UtcNow - lastAudio.Timestamp).TotalHours < 1;
+            string status = "Unknown";
+            if (isRecent)
+            {
+                status = (lastAudio.Classification == "Healthy" || lastAudio.Classification == "Noise") ? "Healthy" : "Warning";
+            }
+            audioDto = new AudioStatusDto(status, lastAudio.Classification, lastAudio.Timestamp);
+        }
+
+        // 7. Алерты
         var alerts = await _alertService.GetActiveAlertsAsync(houseId);
 
         return new DashboardSummaryDto(
@@ -112,6 +130,7 @@ public class CalculationService : ICalculationService
                 TimeInRangePercent: Math.Round(timeInRange, 1),
                 LastUpdate: lastReading?.Date ?? DateTime.MinValue
             ),
+            AudioStatus: audioDto,
             ActiveAlerts: alerts
         );
     }
