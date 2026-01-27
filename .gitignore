@@ -47,6 +47,7 @@ testem.log
 typing_directory/
 safari-pinned-tab.svg
 /frontend/client/.editorconfig
+.angular/
 
 # --- Python ---
 __pycache__/
