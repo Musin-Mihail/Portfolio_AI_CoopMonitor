@@ -25,4 +25,12 @@ public interface IFileStorageService
     /// Проверяет существование файла.
     /// </summary>
     Task<bool> FileExistsAsync(string bucketName, string objectName);
+
+    /// <summary>
+    /// Удаляет файлы в бакете, которые старше указанного возраста.
+    /// </summary>
+    /// <param name="bucketName">Имя бакета.</param>
+    /// <param name="retentionPeriod">Период хранения (все что старше - удаляется).</param>
+    /// <returns>Количество удаленных файлов.</returns>
+    Task<int> CleanupOldFilesAsync(string bucketName, TimeSpan retentionPeriod);
 }

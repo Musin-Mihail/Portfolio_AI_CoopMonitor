@@ -65,8 +65,6 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IFileStorageService, MinioStorageService>();
 
 // --- Phase 10: Notifications & Alerts ---
-// Регистрируем Telegram сервис как Singleton (так как это BackgroundService)
-// и как INotificationService для внедрения зависимостей.
 builder.Services.AddSingleton<TelegramBotService>();
 builder.Services.AddHostedService<TelegramBotService>(provider => provider.GetRequiredService<TelegramBotService>());
 builder.Services.AddSingleton<INotificationService>(provider => provider.GetRequiredService<TelegramBotService>());
@@ -80,15 +78,31 @@ builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
 // Quartz Configuration
 builder.Services.AddQuartz(q =>
 {
-    q.UseMicrosoftDependencyInjectionJobFactory();
+    // OBSOLETE METHOD REMOVED: q.UseMicrosoftDependencyInjectionJobFactory();
 
+    // Daily Report Job (06:00)
     var dailyReportJobKey = new JobKey("DailyReportJob");
     q.AddJob<DailyReportJob>(opts => opts.WithIdentity(dailyReportJobKey));
-
     q.AddTrigger(opts => opts
         .ForJob(dailyReportJobKey)
         .WithIdentity("DailyReportTrigger")
         .WithCronSchedule("0 0 6 * * ?"));
+
+    // Backup Job (02:00)
+    var backupJobKey = new JobKey("BackupJob");
+    q.AddJob<BackupJob>(opts => opts.WithIdentity(backupJobKey));
+    q.AddTrigger(opts => opts
+        .ForJob(backupJobKey)
+        .WithIdentity("BackupTrigger")
+        .WithCronSchedule("0 0 2 * * ?"));
+
+    // Cleanup Job (03:00)
+    var cleanupJobKey = new JobKey("CleanupJob");
+    q.AddJob<CleanupJob>(opts => opts.WithIdentity(cleanupJobKey));
+    q.AddTrigger(opts => opts
+        .ForJob(cleanupJobKey)
+        .WithIdentity("CleanupTrigger")
+        .WithCronSchedule("0 0 3 * * ?"));
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
