@@ -59,6 +59,7 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IFileStorageService, MinioStorageService>();
+builder.Services.AddScoped<ICalculationService, CalculationService>(); // Registration of Calc Service
 
 // 3. Database Context (SQLite) & Identity
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")

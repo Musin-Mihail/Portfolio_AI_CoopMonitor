@@ -23,6 +23,9 @@ public class CoopContext : IdentityDbContext<User>
     public DbSet<WeighingRecord> WeighingRecords { get; set; }
     public DbSet<MarkingRecord> MarkingRecords { get; set; }
 
+    // Телеметрия
+    public DbSet<SensorReading> SensorReadings { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -145,6 +148,20 @@ public class CoopContext : IdentityDbContext<User>
                 .WithMany()
                 .HasForeignKey(e => e.PersonnelId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // SensorReading Configuration
+        modelBuilder.Entity<SensorReading>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Date).IsRequired();
+            // Индекс для ускорения выборок по птичнику и дате (для графиков)
+            entity.HasIndex(e => new { e.HouseId, e.Date });
+
+            entity.HasOne(e => e.House)
+                .WithMany()
+                .HasForeignKey(e => e.HouseId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
