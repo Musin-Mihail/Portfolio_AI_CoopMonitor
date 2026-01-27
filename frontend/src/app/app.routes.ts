@@ -12,6 +12,7 @@ import { DiseaseListComponent } from './features/logs/disease-list/disease-list.
 import { WeighingListComponent } from './features/logs/weighing-list/weighing-list.component';
 import { MarkingListComponent } from './features/logs/marking-list/marking-list.component';
 import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
+import { UserListComponent } from './features/admin/user-list/user-list.component';
 
 export const routes: Routes = [
   {
@@ -48,12 +49,16 @@ export const routes: Routes = [
         path: 'logs/marking',
         component: MarkingListComponent,
       },
-      // Reports
+      // Analytics
       {
         path: 'reports',
         component: ReportsListComponent,
       },
-      // Master Data
+      // Admin / Master Data
+      {
+        path: 'users',
+        component: UserListComponent,
+      },
       {
         path: 'houses',
         component: HouseListComponent,

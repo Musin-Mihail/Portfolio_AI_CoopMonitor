@@ -37,6 +37,7 @@ IGNORE_DIRS = {
     ".terraform",
     "coverage",
     "lib",
+    "Logs",
 }
 IGNORE_FILE_PATTERNS = {
     "package-lock.json",
