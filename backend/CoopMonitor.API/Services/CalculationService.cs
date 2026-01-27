@@ -1,6 +1,7 @@
 using CoopMonitor.API.Data;
 using CoopMonitor.API.DTOs;
 using CoopMonitor.API.Models;
+using CoopMonitor.API.Services.Alerting;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoopMonitor.API.Services;
@@ -8,15 +9,13 @@ namespace CoopMonitor.API.Services;
 public class CalculationService : ICalculationService
 {
     private readonly CoopContext _context;
+    private readonly IAlertService _alertService;
     private readonly ILogger<CalculationService> _logger;
 
-    // Константы для упрощенной валидации (в будущем вынести в настройки)
-    private const double TargetTempMin = 20.0;
-    private const double TargetTempMax = 32.0; // Широкий диапазон, точнее зависит от возраста
-
-    public CalculationService(CoopContext context, ILogger<CalculationService> logger)
+    public CalculationService(CoopContext context, IAlertService alertService, ILogger<CalculationService> logger)
     {
         _context = context;
+        _alertService = alertService;
         _logger = logger;
     }
 
@@ -35,8 +34,7 @@ public class CalculationService : ICalculationService
 
         int deadToday = mortalityRecords.Sum(m => m.Quantity);
 
-        // Примерная популяция (Вместимость - общий падеж за все время). 
-        // В реальном проекте нужно хранить StartDate цикла.
+        // Примерная популяция
         var totalDead = await _context.MortalityRecords
             .Where(m => m.HouseId == houseId)
             .SumAsync(m => m.Quantity);
@@ -68,15 +66,12 @@ public class CalculationService : ICalculationService
         double timeInRange = 0;
         if (last24hReadings.Count > 0)
         {
-            // Упрощенная логика: считаем диапазон 29-31 градус целевым (примерно для 10-20 дней)
-            // В идеале Target должен зависеть от возраста
             double target = 30.0;
             int inRangeCount = last24hReadings.Count(t => t >= target - 1.0 && t <= target + 1.0);
             timeInRange = (double)inRangeCount / last24hReadings.Count * 100;
         }
 
-        // 5. ADG (Привес) - расчет на основе последних взвешиваний
-        // Берем 2 последних взвешивания
+        // 5. ADG (Привес)
         double? adg = null;
         var weighings = await _context.WeighingRecords
             .Where(w => w.HouseId == houseId)
@@ -95,22 +90,13 @@ public class CalculationService : ICalculationService
             }
         }
 
-        // 6. Алерты (Генерация на лету)
-        var alerts = new List<string>();
-        if (lastReading != null)
-        {
-            if (lastReading.Temperature > 33) alerts.Add("High Temperature Warning");
-            if (lastReading.Co2 > 3000) alerts.Add("High CO2 Level");
-            if (lastReading.Nh3 > 20) alerts.Add("High Ammonia Level");
-            // Проверка на "зависшие" датчики
-            if (!lastReading.IsValid) alerts.Add("Sensor Malfunction Detected");
-        }
-        if (deadToday > 10) alerts.Add("High Mortality Alert"); // Пример порога
+        // 6. Алерты (используем централизованный сервис)
+        var alerts = await _alertService.GetActiveAlertsAsync(houseId);
 
         return new DashboardSummaryDto(
             HouseId: house.Id,
             HouseName: house.Name,
-            DayOfCycle: 20, // Заглушка, пока нет управления циклами
+            DayOfCycle: 20,
             TodayMetrics: new DailyMetricsDto(
                 MortalityCount: deadToday,
                 MortalityRatePercent: Math.Round(mortalityRate, 3),
@@ -132,16 +118,9 @@ public class CalculationService : ICalculationService
 
     public bool ValidateSensorData(double temp, double humidity, double co2, double nh3)
     {
-        // 4.2 Sensor Check: Пометка данных Invalid, если значения NH3/CO2 равны 0 (подозрительно для живого птичника)
-        // Ноль допустим для калибровки, но в эксплуатации редкость.
-        // Здесь реализуем "Soft Validation" - данные сохраняем, но флаг ставим false
-
-        if (temp < -50 || temp > 60) return false; // Явный сбой датчика
+        if (temp < -50 || temp > 60) return false;
         if (humidity < 0 || humidity > 100) return false;
-
-        // Если CO2 и NH3 равны нулю, скорее всего датчик отключен
         if (co2 <= 0 && nh3 <= 0) return false;
-
         return true;
     }
 }

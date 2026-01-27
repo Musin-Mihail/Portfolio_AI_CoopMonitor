@@ -3,6 +3,8 @@ using CoopMonitor.API.Data;
 using CoopMonitor.API.Jobs;
 using CoopMonitor.API.Models;
 using CoopMonitor.API.Services;
+using CoopMonitor.API.Services.Alerting;
+using CoopMonitor.API.Services.Notifications;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +23,7 @@ builder.Host.UseSerilog((context, configuration) =>
 // 2. Add services to the container
 builder.Services.AddControllers();
 
-// Настройка Native OpenAPI
+// OpenAPI Config
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -61,33 +63,37 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IFileStorageService, MinioStorageService>();
-builder.Services.AddScoped<ICalculationService, CalculationService>();
 
-// --- Phase 6: Reporting & Scheduler ---
+// --- Phase 10: Notifications & Alerts ---
+// Регистрируем Telegram сервис как Singleton (так как это BackgroundService)
+// и как INotificationService для внедрения зависимостей.
+builder.Services.AddSingleton<TelegramBotService>();
+builder.Services.AddHostedService<TelegramBotService>(provider => provider.GetRequiredService<TelegramBotService>());
+builder.Services.AddSingleton<INotificationService>(provider => provider.GetRequiredService<TelegramBotService>());
+
+builder.Services.AddScoped<IAlertService, AlertService>();
+// ----------------------------------------
+
+builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IReportGenerator, RazorReportGenerator>();
 
 // Quartz Configuration
 builder.Services.AddQuartz(q =>
 {
-    // Use Microsoft Dependency Injection Job Factory
     q.UseMicrosoftDependencyInjectionJobFactory();
 
-    // Register Job
     var dailyReportJobKey = new JobKey("DailyReportJob");
     q.AddJob<DailyReportJob>(opts => opts.WithIdentity(dailyReportJobKey));
 
-    // Register Trigger (Every day at 06:00)
     q.AddTrigger(opts => opts
         .ForJob(dailyReportJobKey)
         .WithIdentity("DailyReportTrigger")
-        .WithCronSchedule("0 0 6 * * ?")); // 6:00 AM daily
+        .WithCronSchedule("0 0 6 * * ?"));
 });
 
-// Quartz Hosted Service (Daemon)
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-// -------------------------------------
 
-// 3. Database Context (SQLite) & Identity
+// 3. Database & Identity
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? "Data Source=coop_monitor.db";
 
@@ -96,7 +102,6 @@ builder.Services.AddDbContext<CoopContext>(options =>
     options.UseSqlite(connectionString);
 });
 
-// Настройка Identity
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
         options.Password.RequireDigit = false;
@@ -149,7 +154,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 6. Configure the HTTP request pipeline
+// 6. Configure Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -164,7 +169,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// 7. Database Initialization
+// 7. Init DB
 try
 {
     using (var scope = app.Services.CreateScope())
@@ -177,7 +182,6 @@ try
         dbContext.Database.Migrate();
         dbContext.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL;");
 
-        // Seed Default Admin
         string adminName = "admin";
         if (await userManager.FindByNameAsync(adminName) == null)
         {
