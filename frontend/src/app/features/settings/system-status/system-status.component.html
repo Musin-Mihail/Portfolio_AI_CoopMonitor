@@ -1,111 +1,132 @@
-<div class="container">
-  <div class="header">
-    <h1>System Status</h1>
-    <button
-      mat-icon-button
-      color="primary"
-      (click)="loadStatus()"
-      [disabled]="isLoading()"
-      title="Refresh">
-      <mat-icon>refresh</mat-icon>
-    </button>
+<div class="max-w-[1200px] mx-auto p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold m-0 text-slate-800 dark:text-slate-100">System Status</h1>
+    <p-button
+      icon="pi pi-refresh"
+      (onClick)="loadStatus()"
+      [loading]="isLoading()"
+      [rounded]="true"
+      [text]="true"
+      severity="secondary"
+      pTooltip="Refresh Status" />
   </div>
 
-  <mat-progress-bar
-    *ngIf="isLoading()"
-    mode="indeterminate"></mat-progress-bar>
+  <div
+    class="mb-4"
+    *ngIf="isLoading()">
+    <p-progressbar
+      mode="indeterminate"
+      [style]="{ height: '4px' }" />
+  </div>
 
   <div
-    class="grid"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
     *ngIf="status() as data">
-    <mat-card class="status-card saas-card">
-      <mat-card-header>
-        <mat-icon
-          mat-card-avatar
-          class="cloud-icon">
-          cloud_sync
-        </mat-icon>
-        <mat-card-title>SaaS Synchronization</mat-card-title>
-        <mat-card-subtitle>
-          Status:
-          <span [class.online]="data.saaS.isConnected">{{ data.saaS.isConnected ? "Connected" : "Offline" }}</span>
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="usage-section">
-          <div class="usage-labels">
-            <span>Daily Traffic Usage</span>
-            <span>{{ data.saaS.usagePercent }}%</span>
+    <p-card styleClass="h-full shadow-sm">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-4 pt-4 pb-0">
+          <div
+            class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <i class="pi pi-cloud-upload text-xl"></i>
           </div>
-          <mat-progress-bar
-            class="usage-bar"
-            mode="determinate"
-            [value]="data.saaS.usagePercent"
-            [color]="data.saaS.usagePercent > 90 ? 'warn' : 'primary'"></mat-progress-bar>
-          <div class="usage-details">
-            {{ formatBytes(data.saaS.dailyUsageBytes) }} / {{ formatBytes(data.saaS.dailyLimitBytes) }}
+          <div>
+            <div class="font-semibold text-lg">SaaS Synchronization</div>
+            <div class="text-sm text-slate-500">
+              <span
+                [class.text-green-600]="data.saaS.isConnected"
+                [class.text-red-500]="!data.saaS.isConnected"
+                class="font-medium">
+                {{ data.saaS.isConnected ? "Connected" : "Offline" }}
+              </span>
+            </div>
           </div>
         </div>
+      </ng-template>
 
-        <mat-divider></mat-divider>
-
-        <div class="info-row">
-          <span class="label">Last Sync:</span>
-          <span class="value">{{ (data.saaS.lastSync | date: "medium") || "Never" }}</span>
+      <div class="mt-4">
+        <div class="flex justify-between text-sm text-slate-600 mb-2">
+          <span>Daily Traffic Usage</span>
+          <span class="font-medium">{{ data.saaS.usagePercent }}%</span>
         </div>
-      </mat-card-content>
-    </mat-card>
+        <p-progressbar
+          [value]="data.saaS.usagePercent"
+          [showValue]="false"
+          [style]="{ height: '10px' }"
+          [color]="data.saaS.usagePercent > 90 ? 'var(--p-red-500)' : 'var(--p-primary-color)'" />
+        <div class="text-xs text-slate-500 text-right mt-1">
+          {{ formatBytes(data.saaS.dailyUsageBytes) }} / {{ formatBytes(data.saaS.dailyLimitBytes) }}
+        </div>
 
-    <mat-card class="status-card">
-      <mat-card-header>
-        <mat-icon
-          mat-card-avatar
-          class="notif-icon">
-          notifications_active
-        </mat-icon>
-        <mat-card-title>Notifications</mat-card-title>
-        <mat-card-subtitle>Channel: Telegram</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="info-row">
-          <span class="label">Status:</span>
-          <span
-            class="badge"
-            [class.active]="data.notifications.telegramEnabled">
-            {{ data.notifications.telegramEnabled ? "Enabled" : "Disabled" }}
+        <p-divider />
+
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-slate-500">Last Sync:</span>
+          <span class="font-mono">{{ (data.saaS.lastSync | date: "medium") || "Never" }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card styleClass="h-full shadow-sm">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-4 pt-4 pb-0">
+          <div
+            class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+            <i class="pi pi-bell text-xl"></i>
+          </div>
+          <div>
+            <div class="font-semibold text-lg">Notifications</div>
+            <div class="text-sm text-slate-500">Channel: Telegram</div>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="mt-4 flex flex-col gap-4">
+        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+          <span class="text-slate-600">Status</span>
+          <p-tag
+            [value]="data.notifications.telegramEnabled ? 'Enabled' : 'Disabled'"
+            [severity]="data.notifications.telegramEnabled ? 'success' : 'secondary'"
+            [rounded]="true" />
+        </div>
+        <div class="flex justify-between items-center py-2">
+          <span class="text-slate-600">Admin Chat ID</span>
+          <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-sm">
+            {{ data.notifications.adminChatId || "Not Configured" }}
           </span>
         </div>
-        <div class="info-row">
-          <span class="label">Admin Chat ID:</span>
-          <span class="value">{{ data.notifications.adminChatId || "Not Configured" }}</span>
-        </div>
-        <p class="hint">To configure, edit backend/appsettings.json or use environment variables.</p>
-      </mat-card-content>
-    </mat-card>
+        <p class="text-xs text-slate-400 italic text-center mt-2">
+          To configure, edit backend/appsettings.json or use environment variables.
+        </p>
+      </div>
+    </p-card>
 
-    <mat-card class="status-card">
-      <mat-card-header>
-        <mat-icon
-          mat-card-avatar
-          color="accent">
-          info
-        </mat-icon>
-        <mat-card-title>Application Info</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="info-row">
-          <span class="label">Version:</span>
-          <span class="value">{{ data.appVersion }}</span>
+    <p-card styleClass="h-full shadow-sm">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-4 pt-4 pb-0">
+          <div
+            class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+            <i class="pi pi-info-circle text-xl"></i>
+          </div>
+          <div>
+            <div class="font-semibold text-lg">Application Info</div>
+          </div>
         </div>
-        <div class="info-row">
-          <span class="label">Environment:</span>
-          <span class="value">{{ data.environment }}</span>
+      </ng-template>
+
+      <div class="mt-4 flex flex-col gap-3">
+        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+          <span class="text-slate-600">Version</span>
+          <span class="font-semibold">{{ data.appVersion }}</span>
         </div>
-        <div class="info-row">
-          <span class="label">Server Time (UTC):</span>
-          <span class="value">{{ data.serverTimeUtc | date: "medium" }}</span>
+        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+          <span class="text-slate-600">Environment</span>
+          <span class="font-semibold">{{ data.environment }}</span>
         </div>
-      </mat-card-content>
-    </mat-card>
+        <div class="flex justify-between items-center py-2">
+          <span class="text-slate-600">Server Time (UTC)</span>
+          <span class="font-mono text-sm">{{ data.serverTimeUtc | date: "medium" }}</span>
+        </div>
+      </div>
+    </p-card>
   </div>
 </div>

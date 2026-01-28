@@ -1,10 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
+import { CardModule } from 'primeng/card';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { DividerModule } from 'primeng/divider';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { SettingsService } from '../../../core/services/settings.service';
 import { SystemStatus } from '../../../core/models/settings.models';
@@ -12,7 +13,7 @@ import { SystemStatus } from '../../../core/models/settings.models';
 @Component({
   selector: 'app-system-status',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatProgressBarModule, MatIconModule, MatButtonModule, MatDividerModule],
+  imports: [CommonModule, CardModule, ProgressBarModule, ButtonModule, TagModule, DividerModule, TooltipModule],
   templateUrl: './system-status.component.html',
   styleUrls: ['./system-status.component.scss'],
 })

@@ -1,8 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ReportsService } from '../../../core/services/reports.service';
 import { ReportMetadata } from '../../../core/models/reports.models';
@@ -10,7 +11,7 @@ import { ReportMetadata } from '../../../core/models/reports.models';
 @Component({
   selector: 'app-reports-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, TableModule, ButtonModule, TagModule, TooltipModule],
   templateUrl: './reports-list.component.html',
   styleUrls: ['./reports-list.component.scss'],
 })
@@ -18,33 +19,36 @@ export class ReportsListComponent implements OnInit {
   private service = inject(ReportsService);
   private messageService = inject(MessageService);
 
-  displayedColumns: string[] = ['reportDate', 'reportType', 'houseName', 'generatedAt', 'status', 'actions'];
   dataSource = signal<ReportMetadata[]>([]);
   isGenerating = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
 
   ngOnInit(): void {
     this.loadReports();
   }
 
   loadReports(): void {
+    this.isLoading.set(true);
     this.service.getReports().subscribe({
-      next: (data) => this.dataSource.set(data),
-      error: () => this.showError('Failed to load reports'),
+      next: (data) => {
+        this.dataSource.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.showError('Failed to load reports');
+        this.isLoading.set(false);
+      },
     });
   }
 
   viewReport(report: ReportMetadata): void {
     this.service.downloadReport(report.id).subscribe({
       next: (blob) => {
-        // Create a secure URL for the blob and open it
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        // Open in new tab for viewing
         link.target = '_blank';
         link.click();
-
-        // Cleanup after delay
         setTimeout(() => window.URL.revokeObjectURL(url), 10000);
       },
       error: () => this.showError('Failed to download report file'),
@@ -59,7 +63,7 @@ export class ReportsListComponent implements OnInit {
 
     this.service
       .triggerGeneration({
-        houseId: 0, // 0 usually implies 'all' or handled by Job logic
+        houseId: 0,
         date: today,
         reportType: 'Daily',
       })
@@ -67,14 +71,27 @@ export class ReportsListComponent implements OnInit {
         next: () => {
           this.showSuccess('Report generation triggered. Check back in a few seconds.');
           this.isGenerating.set(false);
-          // Auto-refresh after a small delay to see the new entry if job is fast
-          setTimeout(() => this.loadReports(), 2000);
+          // Auto-refresh after delay
+          setTimeout(() => this.loadReports(), 3000);
         },
         error: () => {
           this.showError('Failed to trigger generation');
           this.isGenerating.set(false);
         },
       });
+  }
+
+  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | undefined {
+    switch (status) {
+      case 'Success':
+        return 'success';
+      case 'Failed':
+        return 'danger';
+      case 'Pending':
+        return 'warn';
+      default:
+        return 'info';
+    }
   }
 
   private showSuccess(message: string): void {
