@@ -14,13 +14,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
   standalone: true,
   imports: [CommonModule, TableModule, ButtonModule],
   templateUrl: './disease-list.component.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  styleUrl: './disease-list.component.scss',
 })
 export class DiseaseListComponent implements OnInit {
   private service = inject(DiseaseService);

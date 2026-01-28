@@ -13,38 +13,8 @@ export interface VideoPlayerData {
   selector: 'app-video-player-dialog',
   standalone: true,
   imports: [CommonModule, ButtonModule],
-  template: `
-    <div class="w-full h-full flex flex-col bg-black">
-      <div class="flex-grow flex items-center justify-center overflow-hidden">
-        <video
-          #player
-          controls
-          autoplay
-          [src]="data.streamUrl"
-          class="max-w-full max-h-[70vh] w-auto h-auto outline-none">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      <div class="flex justify-end p-2 bg-black border-t border-slate-800">
-        <p-button
-          label="Close"
-          icon="pi pi-times"
-          [text]="true"
-          severity="secondary"
-          styleClass="text-white hover:text-slate-300"
-          (onClick)="close()" />
-      </div>
-    </div>
-  `,
-  styles: [
-    `
-      :host {
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-    `,
-  ],
+  templateUrl: './video-player-dialog.component.html',
+  styleUrl: './video-player-dialog.component.scss',
 })
 export class VideoPlayerDialogComponent {
   public ref = inject(DynamicDialogRef);

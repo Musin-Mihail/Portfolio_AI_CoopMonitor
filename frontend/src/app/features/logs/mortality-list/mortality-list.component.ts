@@ -14,13 +14,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
   standalone: true,
   imports: [CommonModule, TableModule, ButtonModule],
   templateUrl: './mortality-list.component.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  styleUrl: './mortality-list.component.scss',
 })
 export class MortalityListComponent implements OnInit {
   private service = inject(MortalityService);

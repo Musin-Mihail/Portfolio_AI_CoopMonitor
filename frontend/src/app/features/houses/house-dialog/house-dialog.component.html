@@ -1,0 +1,71 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex flex-col gap-6 pt-2">
+  <div class="flex flex-col gap-2">
+    <label
+      for="name"
+      class="font-medium text-slate-700 dark:text-slate-300">
+      Name
+    </label>
+    <input
+      pInputText
+      id="name"
+      formControlName="name"
+      placeholder="House #1"
+      [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+    <small
+      class="text-red-500"
+      *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
+      Name is required
+    </small>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label
+      for="area"
+      class="font-medium text-slate-700 dark:text-slate-300">
+      Area (m²)
+    </label>
+    <input
+      pInputText
+      id="area"
+      type="number"
+      formControlName="area" />
+    <small
+      class="text-red-500"
+      *ngIf="form.get('area')?.hasError('required') && form.get('area')?.touched">
+      Area is required
+    </small>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label
+      for="capacity"
+      class="font-medium text-slate-700 dark:text-slate-300">
+      Capacity (Birds)
+    </label>
+    <input
+      pInputText
+      id="capacity"
+      type="number"
+      formControlName="capacity" />
+    <small
+      class="text-red-500"
+      *ngIf="form.get('capacity')?.hasError('required') && form.get('capacity')?.touched">
+      Capacity is required
+    </small>
+  </div>
+
+  <div class="flex justify-end gap-2 pt-4">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      [text]="true"
+      (onClick)="onCancel()" />
+    <p-button
+      label="Save"
+      type="submit"
+      [disabled]="form.invalid" />
+  </div>
+</form>

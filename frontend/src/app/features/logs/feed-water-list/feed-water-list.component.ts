@@ -13,13 +13,7 @@ import { FeedWaterDialogComponent } from '../feed-water-dialog/feed-water-dialog
   standalone: true,
   imports: [CommonModule, TableModule, ButtonModule],
   templateUrl: './feed-water-list.component.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  styleUrl: './feed-water-list.component.scss',
 })
 export class FeedWaterListComponent implements OnInit {
   private service = inject(FeedWaterService);

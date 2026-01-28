@@ -14,13 +14,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
   standalone: true,
   imports: [CommonModule, TableModule, ButtonModule],
   templateUrl: './weighing-list.component.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  styleUrl: './weighing-list.component.scss',
 })
 export class WeighingListComponent implements OnInit {
   private service = inject(WeighingService);

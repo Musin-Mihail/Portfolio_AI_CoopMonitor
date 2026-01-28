@@ -14,13 +14,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
   standalone: true,
   imports: [CommonModule, TableModule, ButtonModule],
   templateUrl: './marking-list.component.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  styleUrl: './marking-list.component.scss',
 })
 export class MarkingListComponent implements OnInit {
   private service = inject(MarkingService);
