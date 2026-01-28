@@ -1,113 +1,116 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { TextareaModule } from 'primeng/textarea';
+import { SelectModule } from 'primeng/select';
 import { Feed } from '../../../core/models/master-data.models';
 
 @Component({
   selector: 'app-feed-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, TextareaModule, SelectModule],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit Feed' : 'New Feed' }}</h2>
     <form
       [formGroup]="form"
-      (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <mat-form-field appearance="outline">
-            <mat-label>Feed Name</mat-label>
-            <input
-              matInput
-              formControlName="name" />
-            <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
-          </mat-form-field>
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-6 pt-2">
+      <div class="flex flex-col gap-2">
+        <label
+          for="name"
+          class="font-medium">
+          Feed Name
+        </label>
+        <input
+          pInputText
+          id="name"
+          formControlName="name"
+          class="w-full"
+          [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
+          Name is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Type</mat-label>
-            <mat-select formControlName="type">
-              <mat-option value="Starter">Starter</mat-option>
-              <mat-option value="Grower">Grower</mat-option>
-              <mat-option value="Finisher">Finisher</mat-option>
-              <mat-option value="Supplement">Supplement</mat-option>
-            </mat-select>
-            <mat-error *ngIf="form.get('type')?.hasError('required')">Type is required</mat-error>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="type"
+          class="font-medium">
+          Type
+        </label>
+        <p-select
+          id="type"
+          formControlName="type"
+          [options]="types"
+          placeholder="Select a type"
+          styleClass="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('type')?.hasError('required') && form.get('type')?.touched">
+          Type is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Description</mat-label>
-            <textarea
-              matInput
-              formControlName="description"
-              rows="3"></textarea>
-          </mat-form-field>
-        </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()">
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          color="primary"
+      <div class="flex flex-col gap-2">
+        <label
+          for="description"
+          class="font-medium">
+          Description
+        </label>
+        <textarea
+          pTextarea
+          id="description"
+          formControlName="description"
+          rows="3"
+          class="w-full"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Save"
           type="submit"
-          [disabled]="form.invalid">
-          Save
-        </button>
-      </mat-dialog-actions>
+          [disabled]="form.invalid" />
+      </div>
     </form>
   `,
-  styles: [
-    `
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        min-width: 300px;
-      }
-      mat-form-field {
-        width: 100%;
-      }
-    `,
-  ],
 })
 export class FeedDialogComponent {
-  form: FormGroup;
+  private fb = inject(FormBuilder);
+  public ref = inject(DynamicDialogRef);
+  public config = inject(DynamicDialogConfig);
 
-  constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<FeedDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Feed | null,
-  ) {
+  form: FormGroup;
+  data: Feed | null = null;
+  types = ['Starter', 'Grower', 'Finisher', 'Supplement'];
+
+  constructor() {
+    this.data = this.config.data;
+
     this.form = this.fb.group({
-      name: [data?.name || '', Validators.required],
-      type: [data?.type || '', Validators.required],
-      description: [data?.description || ''],
+      name: [this.data?.name || '', Validators.required],
+      type: [this.data?.type || '', Validators.required],
+      description: [this.data?.description || ''],
     });
   }
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      this.ref.close(this.form.value);
+    } else {
+      this.form.markAllAsTouched();
     }
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }

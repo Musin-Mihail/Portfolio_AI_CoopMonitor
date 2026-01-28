@@ -1,103 +1,77 @@
-<div class="container">
-  <div class="header">
-    <h1>Users Management</h1>
-    <button
-      mat-flat-button
-      color="primary"
-      (click)="openDialog()">
-      <mat-icon>add</mat-icon>
-      Create User
-    </button>
+<div class="card p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold m-0">Users</h1>
+    <p-button
+      label="Create User"
+      icon="pi pi-plus"
+      (onClick)="openDialog()" />
   </div>
 
-  <table
-    mat-table
-    [dataSource]="dataSource()"
-    class="mat-elevation-z8">
-    <ng-container matColumnDef="userName">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Username
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.userName }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="email">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Email
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.email }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="role">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Role
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        <span class="role-badge">{{ element.role }}</span>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="personnel">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Linked Personnel
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        <span *ngIf="element.personnelName">
-          <mat-icon style="font-size: 16px; height: 16px; width: 16px; vertical-align: middle">link</mat-icon>
-          {{ element.personnelName }}
-        </span>
-        <span
-          *ngIf="!element.personnelName"
-          style="color: #999; font-style: italic">
-          Not linked
-        </span>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Actions
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="deleteUser(element.id)"
-          [disabled]="element.userName === 'admin'">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-
-    <tr
-      mat-header-row
-      *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+  <p-table
+    [value]="dataSource()"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    stripedRows>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="userName">
+          Username
+          <p-sortIcon field="userName" />
+        </th>
+        <th pSortableColumn="email">
+          Email
+          <p-sortIcon field="email" />
+        </th>
+        <th pSortableColumn="role">
+          Role
+          <p-sortIcon field="role" />
+        </th>
+        <th>Linked Personnel</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-user>
+      <tr>
+        <td class="font-medium">{{ user.userName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-sm font-semibold border border-slate-200">
+            {{ user.role }}
+          </span>
+        </td>
+        <td>
+          <div
+            *ngIf="user.personnelName"
+            class="flex items-center gap-1 text-slate-600">
+            <i class="pi pi-link text-sm"></i>
+            <span>{{ user.personnelName }}</span>
+          </div>
+          <span
+            *ngIf="!user.personnelName"
+            class="text-slate-400 italic text-sm">
+            Not linked
+          </span>
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-trash"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            (onClick)="deleteUser(user.id)"
+            [disabled]="user.userName === 'admin'" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td
+          colspan="5"
+          class="text-center p-4">
+          No users found.
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

@@ -1,10 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Feed } from '../../../core/models/master-data.models';
 import { FeedsService } from '../../../core/services/feeds.service';
 import { FeedDialogComponent } from '../feed-dialog/feed-dialog.component';
@@ -12,122 +11,87 @@ import { FeedDialogComponent } from '../feed-dialog/feed-dialog.component';
 @Component({
   selector: 'app-feed-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
+  imports: [CommonModule, TableModule, ButtonModule],
   template: `
-    <div class="container">
-      <div class="header">
-        <h1>Feeds</h1>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="openDialog()">
-          <mat-icon>add</mat-icon>
-          Add Feed
-        </button>
+    <div class="card p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold m-0">Feeds</h1>
+        <p-button
+          label="Add Feed"
+          icon="pi pi-plus"
+          (onClick)="openDialog()" />
       </div>
 
-      <table
-        mat-table
-        [dataSource]="dataSource()"
-        class="mat-elevation-z8">
-        <ng-container matColumnDef="name">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Name
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            {{ element.name }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="type">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Type
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            {{ element.type }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="description">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Description
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            {{ element.description }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th
-            mat-header-cell
-            *matHeaderCellDef>
-            Actions
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element">
-            <button
-              mat-icon-button
-              color="primary"
-              (click)="openDialog(element)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="deleteFeed(element.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
+      <p-table
+        [value]="dataSource()"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [paginator]="true"
+        [rows]="10"
+        stripedRows>
+        <ng-template pTemplate="header">
+          <tr>
+            <th
+              pSortableColumn="name"
+              style="width: 25%">
+              Name
+              <p-sortIcon field="name" />
+            </th>
+            <th
+              pSortableColumn="type"
+              style="width: 25%">
+              Type
+              <p-sortIcon field="type" />
+            </th>
+            <th style="width: 40%">Description</th>
+            <th style="width: 10%">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-feed>
+          <tr>
+            <td class="font-medium">{{ feed.name }}</td>
+            <td>
+              <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm font-medium">{{ feed.type }}</span>
+            </td>
+            <td class="text-slate-600">{{ feed.description }}</td>
+            <td>
+              <div class="flex gap-2">
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  (onClick)="openDialog(feed)" />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  (onClick)="deleteFeed(feed.id)" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td
+              colspan="4"
+              class="text-center p-4">
+              No feeds found.
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   `,
-  styles: [
-    `
-      .container {
-        padding: 0;
-      }
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-      }
-      h1 {
-        margin: 0;
-      }
-      table {
-        width: 100%;
-      }
-    `,
-  ],
 })
 export class FeedListComponent implements OnInit {
   private service = inject(FeedsService);
-  private dialog = inject(MatDialog);
-  private snackBar = inject(MatSnackBar);
+  private dialogService = inject(DialogService);
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
-  displayedColumns: string[] = ['name', 'type', 'description', 'actions'];
   dataSource = signal<Feed[]>([]);
 
   ngOnInit(): void {
@@ -137,27 +101,28 @@ export class FeedListComponent implements OnInit {
   loadData(): void {
     this.service.getFeeds().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: () => this.snackBar.open('Error loading feeds', 'Close', { duration: 3000 }),
+      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error loading feeds' }),
     });
   }
 
   openDialog(feed?: Feed): void {
-    const dialogRef = this.dialog.open(FeedDialogComponent, {
+    const ref = this.dialogService.open(FeedDialogComponent, {
+      header: feed ? 'Edit Feed' : 'New Feed',
       width: '400px',
       data: feed || null,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    ref?.onClose.subscribe((result) => {
       if (result) {
         if (feed) {
           this.service.updateFeed(feed.id, result).subscribe(() => {
             this.loadData();
-            this.snackBar.open('Updated successfully', 'Close', { duration: 3000 });
+            this.showSuccess('Updated successfully');
           });
         } else {
           this.service.createFeed(result).subscribe(() => {
             this.loadData();
-            this.snackBar.open('Created successfully', 'Close', { duration: 3000 });
+            this.showSuccess('Created successfully');
           });
         }
       }
@@ -165,11 +130,25 @@ export class FeedListComponent implements OnInit {
   }
 
   deleteFeed(id: number): void {
-    if (confirm('Are you sure?')) {
-      this.service.deleteFeed(id).subscribe(() => {
-        this.loadData();
-        this.snackBar.open('Deleted successfully', 'Close', { duration: 3000 });
-      });
-    }
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this feed?',
+      header: 'Confirm Delete',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
+        this.service.deleteFeed(id).subscribe({
+          next: () => {
+            this.loadData();
+            this.showSuccess('Deleted successfully');
+          },
+          error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete' }),
+        });
+      },
+    });
+  }
+
+  private showSuccess(msg: string) {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: msg });
   }
 }

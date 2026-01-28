@@ -1,105 +1,117 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 import { House } from '../../../core/models/master-data.models';
 
 @Component({
   selector: 'app-house-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit House' : 'New House' }}</h2>
     <form
       [formGroup]="form"
-      (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <mat-form-field appearance="outline">
-            <mat-label>Name</mat-label>
-            <input
-              matInput
-              formControlName="name"
-              placeholder="House #1" />
-            <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
-          </mat-form-field>
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-6 pt-2">
+      <div class="flex flex-col gap-2">
+        <label
+          for="name"
+          class="font-medium text-slate-700 dark:text-slate-300">
+          Name
+        </label>
+        <input
+          pInputText
+          id="name"
+          formControlName="name"
+          placeholder="House #1"
+          [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
+          Name is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Area (m²)</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="area" />
-            <mat-error *ngIf="form.get('area')?.hasError('required')">Area is required</mat-error>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="area"
+          class="font-medium text-slate-700 dark:text-slate-300">
+          Area (m²)
+        </label>
+        <input
+          pInputText
+          id="area"
+          type="number"
+          formControlName="area" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('area')?.hasError('required') && form.get('area')?.touched">
+          Area is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Capacity (Birds)</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="capacity" />
-            <mat-error *ngIf="form.get('capacity')?.hasError('required')">Capacity is required</mat-error>
-          </mat-form-field>
-        </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()">
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          color="primary"
+      <div class="flex flex-col gap-2">
+        <label
+          for="capacity"
+          class="font-medium text-slate-700 dark:text-slate-300">
+          Capacity (Birds)
+        </label>
+        <input
+          pInputText
+          id="capacity"
+          type="number"
+          formControlName="capacity" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('capacity')?.hasError('required') && form.get('capacity')?.touched">
+          Capacity is required
+        </small>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Save"
           type="submit"
-          [disabled]="form.invalid">
-          Save
-        </button>
-      </mat-dialog-actions>
+          [disabled]="form.invalid" />
+      </div>
     </form>
   `,
-  styles: [
-    `
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        min-width: 300px;
-      }
-      mat-form-field {
-        width: 100%;
-      }
-    `,
-  ],
 })
 export class HouseDialogComponent {
-  form: FormGroup;
+  private fb = inject(FormBuilder);
+  public ref = inject(DynamicDialogRef);
+  public config = inject(DynamicDialogConfig);
 
-  constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<HouseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: House | null,
-  ) {
+  form: FormGroup;
+  data: House | null = null;
+
+  constructor() {
+    this.data = this.config.data;
+
     this.form = this.fb.group({
-      name: [data?.name || '', Validators.required],
-      area: [data?.area || 0, [Validators.required, Validators.min(1)]],
-      capacity: [data?.capacity || 0, [Validators.required, Validators.min(1)]],
-      configurationJson: [data?.configurationJson || null],
+      name: [this.data?.name || '', Validators.required],
+      area: [this.data?.area || 0, [Validators.required, Validators.min(1)]],
+      capacity: [this.data?.capacity || 0, [Validators.required, Validators.min(1)]],
+      configurationJson: [this.data?.configurationJson || null],
     });
   }
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      this.ref.close(this.form.value);
+    } else {
+      this.form.markAllAsTouched();
     }
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }

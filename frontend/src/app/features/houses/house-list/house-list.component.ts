@@ -1,10 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { House } from '../../../core/models/master-data.models';
 import { HousesService } from '../../../core/services/houses.service';
 import { HouseDialogComponent } from '../house-dialog/house-dialog.component';
@@ -12,16 +11,16 @@ import { HouseDialogComponent } from '../house-dialog/house-dialog.component';
 @Component({
   selector: 'app-house-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
+  imports: [CommonModule, TableModule, ButtonModule],
   templateUrl: './house-list.component.html',
   styleUrls: ['./house-list.component.scss'],
 })
 export class HouseListComponent implements OnInit {
   private housesService = inject(HousesService);
-  private dialog = inject(MatDialog);
-  private snackBar = inject(MatSnackBar);
+  private dialogService = inject(DialogService);
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
-  displayedColumns: string[] = ['id', 'name', 'area', 'capacity', 'actions'];
   dataSource = signal<House[]>([]);
 
   ngOnInit(): void {
@@ -31,17 +30,21 @@ export class HouseListComponent implements OnInit {
   loadHouses(): void {
     this.housesService.getHouses().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: (err) => this.showError('Failed to load houses'),
+      error: () => this.showError('Failed to load houses'),
     });
   }
 
   openDialog(house?: House): void {
-    const dialogRef = this.dialog.open(HouseDialogComponent, {
+    const ref = this.dialogService.open(HouseDialogComponent, {
+      header: house ? 'Edit House' : 'New House',
       width: '400px',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: false,
       data: house || null,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    ref?.onClose.subscribe((result) => {
       if (result) {
         if (house) {
           this.updateHouse(house.id, result);
@@ -73,22 +76,29 @@ export class HouseListComponent implements OnInit {
   }
 
   deleteHouse(id: number): void {
-    if (confirm('Are you sure you want to delete this house?')) {
-      this.housesService.deleteHouse(id).subscribe({
-        next: () => {
-          this.loadHouses();
-          this.showSuccess('House deleted successfully');
-        },
-        error: () => this.showError('Failed to delete house'),
-      });
-    }
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this house?',
+      header: 'Confirm Delete',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
+        this.housesService.deleteHouse(id).subscribe({
+          next: () => {
+            this.loadHouses();
+            this.showSuccess('House deleted successfully');
+          },
+          error: () => this.showError('Failed to delete house'),
+        });
+      },
+    });
   }
 
   private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000 });
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
   }
 
   private showError(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
   }
 }

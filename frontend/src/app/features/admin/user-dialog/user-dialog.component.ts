@@ -1,106 +1,118 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { PasswordModule } from 'primeng/password';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-user-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, PasswordModule, SelectModule],
   template: `
-    <h2 mat-dialog-title>New User</h2>
     <form
       [formGroup]="form"
-      (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <mat-form-field appearance="outline">
-            <mat-label>Username</mat-label>
-            <input
-              matInput
-              formControlName="userName" />
-            <mat-error *ngIf="form.get('userName')?.hasError('required')">Username is required</mat-error>
-          </mat-form-field>
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-5 pt-2">
+      <div class="flex flex-col gap-2">
+        <label
+          for="userName"
+          class="font-medium">
+          Username
+        </label>
+        <input
+          pInputText
+          id="userName"
+          formControlName="userName"
+          class="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('userName')?.hasError('required') && form.get('userName')?.touched">
+          Username is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input
-              matInput
-              type="email"
-              formControlName="email" />
-            <mat-error *ngIf="form.get('email')?.hasError('email')">Invalid email</mat-error>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="email"
+          class="font-medium">
+          Email
+        </label>
+        <input
+          pInputText
+          type="email"
+          id="email"
+          formControlName="email"
+          class="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
+          Invalid email
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Password</mat-label>
-            <input
-              matInput
-              type="password"
-              formControlName="password" />
-            <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
-            <mat-error *ngIf="form.get('password')?.hasError('minlength')">Minimum 4 characters</mat-error>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="password"
+          class="font-medium">
+          Password
+        </label>
+        <p-password
+          id="password"
+          formControlName="password"
+          [feedback]="true"
+          [toggleMask]="true"
+          styleClass="w-full"
+          inputStyleClass="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched">
+          Password is required
+        </small>
+        <small
+          class="text-red-500"
+          *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched">
+          Minimum 4 characters
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Role</mat-label>
-            <mat-select formControlName="role">
-              <mat-option value="Admin">Admin</mat-option>
-              <mat-option value="User">User</mat-option>
-              <mat-option value="Viewer">Viewer</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()">
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          color="primary"
+      <div class="flex flex-col gap-2">
+        <label
+          for="role"
+          class="font-medium">
+          Role
+        </label>
+        <p-select
+          id="role"
+          formControlName="role"
+          [options]="roles"
+          styleClass="w-full" />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Create"
           type="submit"
-          [disabled]="form.invalid">
-          Create
-        </button>
-      </mat-dialog-actions>
+          [disabled]="form.invalid" />
+      </div>
     </form>
   `,
-  styles: [
-    `
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        min-width: 300px;
-      }
-      mat-form-field {
-        width: 100%;
-      }
-    `,
-  ],
 })
 export class UserDialogComponent {
-  form: FormGroup;
+  private fb = inject(FormBuilder);
+  public ref = inject(DynamicDialogRef);
 
-  constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<UserDialogComponent>,
-  ) {
+  form: FormGroup;
+  roles = ['Admin', 'User', 'Viewer'];
+
+  constructor() {
     this.form = this.fb.group({
       userName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -111,11 +123,11 @@ export class UserDialogComponent {
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      this.ref.close(this.form.value);
     }
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }

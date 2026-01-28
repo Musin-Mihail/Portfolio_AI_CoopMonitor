@@ -1,10 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MessageService } from 'primeng/api';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { UserDto } from '../../../core/models/admin.models';
 import { UsersService } from '../../../core/services/users.service';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
@@ -12,16 +11,16 @@ import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule],
+  imports: [CommonModule, TableModule, ButtonModule],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent implements OnInit {
   private service = inject(UsersService);
-  private dialog = inject(MatDialog);
+  private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
-  displayedColumns: string[] = ['userName', 'email', 'role', 'personnel', 'actions'];
   dataSource = signal<UserDto[]>([]);
 
   ngOnInit(): void {
@@ -31,16 +30,17 @@ export class UserListComponent implements OnInit {
   loadData(): void {
     this.service.getUsers().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: () => this.showError('Failed to load users (Admin privileges required)'),
+      error: () => this.showError('Failed to load users (Admin only)'),
     });
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(UserDialogComponent, {
+    const ref = this.dialogService.open(UserDialogComponent, {
+      header: 'Create User',
       width: '400px',
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    ref?.onClose.subscribe((result) => {
       if (result) {
         this.service.createUser(result).subscribe({
           next: () => {
@@ -58,22 +58,29 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(id: string): void {
-    if (confirm('Are you sure you want to delete this user?')) {
-      this.service.deleteUser(id).subscribe({
-        next: () => {
-          this.loadData();
-          this.showSuccess('User deleted');
-        },
-        error: () => this.showError('Failed to delete user'),
-      });
-    }
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this user?',
+      header: 'Confirm Delete',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
+        this.service.deleteUser(id).subscribe({
+          next: () => {
+            this.loadData();
+            this.showSuccess('User deleted');
+          },
+          error: () => this.showError('Failed to delete user'),
+        });
+      },
+    });
   }
 
   private showSuccess(message: string): void {
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: message });
   }
 
   private showError(message: string): void {
-    this.messageService.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: message });
   }
 }

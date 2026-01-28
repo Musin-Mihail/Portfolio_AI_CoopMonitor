@@ -1,124 +1,138 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { Personnel } from '../../../core/models/master-data.models';
 
 @Component({
   selector: 'app-personnel-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSlideToggleModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, ToggleSwitchModule],
   template: `
-    <h2 mat-dialog-title>{{ data ? 'Edit Personnel' : 'New Personnel' }}</h2>
     <form
       [formGroup]="form"
-      (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <mat-form-field appearance="outline">
-            <mat-label>Full Name</mat-label>
-            <input
-              matInput
-              formControlName="fullName" />
-            <mat-error *ngIf="form.get('fullName')?.hasError('required')">Name is required</mat-error>
-          </mat-form-field>
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-6 pt-2">
+      <div class="flex flex-col gap-2">
+        <label
+          for="fullName"
+          class="font-medium">
+          Full Name
+        </label>
+        <input
+          pInputText
+          id="fullName"
+          formControlName="fullName"
+          class="w-full"
+          [class.ng-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('fullName')?.hasError('required') && form.get('fullName')?.touched">
+          Name is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Job Title</mat-label>
-            <input
-              matInput
-              formControlName="jobTitle" />
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="jobTitle"
+          class="font-medium">
+          Job Title
+        </label>
+        <input
+          pInputText
+          id="jobTitle"
+          formControlName="jobTitle"
+          class="w-full" />
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Phone Number</mat-label>
-            <input
-              matInput
-              formControlName="phoneNumber" />
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="phoneNumber"
+          class="font-medium">
+          Phone Number
+        </label>
+        <input
+          pInputText
+          id="phoneNumber"
+          formControlName="phoneNumber"
+          class="w-full" />
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input
-              matInput
-              formControlName="email" />
-            <mat-error *ngIf="form.get('email')?.hasError('email')">Invalid email</mat-error>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="email"
+          class="font-medium">
+          Email
+        </label>
+        <input
+          pInputText
+          id="email"
+          formControlName="email"
+          class="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('email')?.hasError('email')">
+          Invalid email address
+        </small>
+      </div>
 
-          <mat-slide-toggle
-            formControlName="isActive"
-            *ngIf="data">
-            Active
-          </mat-slide-toggle>
-        </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()">
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          color="primary"
+      <div
+        class="flex items-center gap-2"
+        *ngIf="data">
+        <p-toggleswitch
+          inputId="isActive"
+          formControlName="isActive" />
+        <label
+          for="isActive"
+          class="font-medium">
+          Active Personnel
+        </label>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Save"
           type="submit"
-          [disabled]="form.invalid">
-          Save
-        </button>
-      </mat-dialog-actions>
+          [disabled]="form.invalid" />
+      </div>
     </form>
   `,
-  styles: [
-    `
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        min-width: 300px;
-      }
-      mat-form-field {
-        width: 100%;
-      }
-    `,
-  ],
 })
 export class PersonnelDialogComponent {
-  form: FormGroup;
+  private fb = inject(FormBuilder);
+  public ref = inject(DynamicDialogRef);
+  public config = inject(DynamicDialogConfig);
 
-  constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<PersonnelDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Personnel | null,
-  ) {
+  form: FormGroup;
+  data: Personnel | null = null;
+
+  constructor() {
+    this.data = this.config.data;
+
     this.form = this.fb.group({
-      fullName: [data?.fullName || '', Validators.required],
-      jobTitle: [data?.jobTitle || ''],
-      phoneNumber: [data?.phoneNumber || ''],
-      email: [data?.email || '', [Validators.email]],
-      isActive: [data?.isActive ?? true],
+      fullName: [this.data?.fullName || '', Validators.required],
+      jobTitle: [this.data?.jobTitle || ''],
+      phoneNumber: [this.data?.phoneNumber || ''],
+      email: [this.data?.email || '', [Validators.email]],
+      isActive: [this.data?.isActive ?? true],
     });
   }
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      this.ref.close(this.form.value);
     }
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }
