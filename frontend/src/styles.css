@@ -1,40 +1,38 @@
-/* Tailwind CSS v4 */
+/* Сначала импорты */
 @import "tailwindcss";
-
-/* PrimeIcons */
 @import "primeicons/primeicons.css";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-/* Global Styles */
-html,
-body {
-  height: 100%;
-  margin: 0;
-  /* PrimeNG Theme Variables Defaults */
-  background-color: var(--p-surface-50);
-  color: var(--p-text-color);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Затем слои и стили */
+@font-face {
+  font-family: "RoadRadio";
+  src: local("Arial Black");
 }
 
-/* Layer Configuration for PrimeNG + Tailwind compatibility */
-@layer tailwind-base, primeng, tailwind-utilities;
+@layer base {
+  html {
+    font-family: "Inter", sans-serif;
+    background-color: #f8f9fb; /* Обновил под цвет макета */
+    color: #1a1c21;
+  }
+}
 
-/* Optional: Custom scrollbar for webkit */
+:root {
+  --p-surface-50: #f8f9fb;
+  --p-surface-100: #ffffff;
+  --p-primary-color: #4caf50; /* Green from Figma */
+  --p-primary-500: #4caf50;
+  --p-content-border-radius: 16px;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  background: var(--p-surface-100);
+  background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--p-surface-300);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--p-surface-400);
+  background: #d1d5db;
+  border-radius: 99px;
 }

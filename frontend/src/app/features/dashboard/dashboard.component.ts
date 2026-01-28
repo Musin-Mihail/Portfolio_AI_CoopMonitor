@@ -1,224 +1,157 @@
-import { Component, inject, OnInit, OnDestroy, signal, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-// PrimeNG Imports
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { TagModule } from 'primeng/tag';
-import { DividerModule } from 'primeng/divider';
-import { SelectButtonModule } from 'primeng/selectbutton';
-import { MessageService } from 'primeng/api';
-
 import { Chart, registerables } from 'chart.js';
+// Change: Use SelectModule instead of DropdownModule
+import { SelectModule } from 'primeng/select';
 
-import { DashboardService } from '../../core/services/dashboard.service';
-import { HousesService } from '../../core/services/houses.service';
-import { DashboardSummary, ClimateHistoryPoint } from '../../core/models/dashboard.models';
-import { House } from '../../core/models/master-data.models';
-
-// Register Chart.js components
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    CardModule,
-    ButtonModule,
-    SelectModule,
-    ProgressBarModule,
-    TagModule,
-    DividerModule,
-    SelectButtonModule,
-  ],
+  // Change: DropdownModule -> SelectModule
+  imports: [CommonModule, FormsModule, SelectModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
-  private dashboardService = inject(DashboardService);
-  private housesService = inject(HousesService);
-  private messageService = inject(MessageService);
-
-  // Signals
-  houses = signal<House[]>([]);
-  selectedHouseId = signal<number | null>(null);
-  summary = signal<DashboardSummary | null>(null);
-  isLoading = signal<boolean>(false);
-
-  // Charts
+export class DashboardComponent implements OnInit {
   @ViewChild('climateChart') climateChartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: Chart | null = null;
-  historyData = signal<ClimateHistoryPoint[]>([]);
+  selectedPeriod = 7;
 
-  // Chart Period Options for SelectButton
-  periodOptions = [
-    { label: '12h', value: 12 },
-    { label: '24h', value: 24 },
-    { label: '48h', value: 48 },
+  mockHouses = [
+    {
+      name: 'House 1',
+      temp: '23.5',
+      co2: '850',
+      nh3: '15',
+      timeInRange: 90,
+      batchStart: '12.01.2026',
+      count: '203',
+      batchEnd: '14.02.2026',
+    },
+    {
+      name: 'House 2',
+      temp: '23.5',
+      co2: '850',
+      nh3: '15',
+      timeInRange: 90,
+      batchStart: '12.01.2026',
+      count: '203',
+      batchEnd: '14.02.2026',
+    },
+    {
+      name: 'House 3',
+      temp: '23.5',
+      co2: '850',
+      nh3: '15',
+      timeInRange: 90,
+      batchStart: '12.01.2026',
+      count: '203',
+      batchEnd: '14.02.2026',
+    },
   ];
-  chartPeriod = signal<number>(24);
-
-  constructor() {}
 
   ngOnInit(): void {
-    this.loadHouses();
+    setTimeout(() => this.initChart(), 0);
   }
 
-  ngOnDestroy(): void {
-    if (this.chart) {
-      this.chart.destroy();
-    }
-  }
-
-  loadHouses(): void {
-    this.isLoading.set(true);
-    this.housesService.getHouses().subscribe({
-      next: (data) => {
-        this.houses.set(data);
-        if (data.length > 0) {
-          this.selectedHouseId.set(data[0].id);
-          this.refreshAll();
-        } else {
-          this.isLoading.set(false);
-        }
-      },
-      error: () => {
-        this.showError('Failed to load houses');
-        this.isLoading.set(false);
-      },
-    });
-  }
-
-  onHouseChange(): void {
-    // PrimeNG Select emits the value directly or via event, but ngModel binding updates the signal/variable
-    // If using (onChange), event.value contains the new value.
-    // However, with signals and ngModel, we can just trigger refresh.
-    this.refreshAll();
-  }
-
-  onPeriodChange(): void {
-    const id = this.selectedHouseId();
-    if (id) {
-      this.loadHistory(id);
-    }
-  }
-
-  refreshAll(): void {
-    const id = this.selectedHouseId();
-    if (id) {
-      this.loadSummary(id);
-      this.loadHistory(id);
-    }
-  }
-
-  private loadSummary(houseId: number): void {
-    this.isLoading.set(true);
-    this.dashboardService.getSummary(houseId).subscribe({
-      next: (data) => {
-        this.summary.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.showError('Failed to load dashboard data');
-        this.isLoading.set(false);
-      },
-    });
-  }
-
-  private loadHistory(houseId: number): void {
-    this.dashboardService.getHistory(houseId, this.chartPeriod()).subscribe({
-      next: (data) => {
-        this.historyData.set(data);
-        // Timeout to allow canvas to be present in DOM if it was hidden
-        setTimeout(() => this.updateChart(), 0);
-      },
-      error: () => console.error('Failed to load history'),
-    });
-  }
-
-  private updateChart(): void {
+  initChart() {
     if (!this.climateChartCanvas) return;
+    const ctx = this.climateChartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
 
-    const data = this.historyData();
-    const labels = data.map((d) => {
-      const date = new Date(d.timestamp);
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Сделаем градиент совсем легким, как в макете
+    const gradientGreen = ctx.createLinearGradient(0, 0, 0, 200);
+    gradientGreen.addColorStop(0, 'rgba(76, 175, 80, 0.1)'); // Меньше прозрачности
+    gradientGreen.addColorStop(1, 'rgba(76, 175, 80, 0)');
+
+    this.chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+        datasets: [
+          {
+            label: 'chic.house 1',
+            data: [1.5, 2.0, 1.8, 2.2, 2.8, 2.5],
+            borderColor: '#4CAF50',
+            backgroundColor: gradientGreen, // Используем легкий градиент
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 0, // Убираем точки
+            pointHoverRadius: 4,
+          },
+          {
+            label: 'chic.house 2',
+            data: [1.2, 1.4, 1.6, 1.8, 2.0, 1.8],
+            borderColor: '#A855F7',
+            backgroundColor: 'transparent',
+            fill: false,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+          },
+          {
+            label: 'chic.house 3',
+            data: [0.8, 1.0, 1.2, 1.5, 1.7, 1.6],
+            borderColor: '#3B82F6',
+            backgroundColor: 'transparent',
+            fill: false,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#1A1C21',
+            bodyColor: '#64748B',
+            borderColor: '#E2E8F0',
+            borderWidth: 1,
+            padding: 10,
+            displayColors: true,
+            boxWidth: 8,
+            boxHeight: 8,
+            usePointStyle: true,
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: true, color: '#f8fafc', drawTicks: false }, // Едва заметная сетка
+            ticks: { color: '#94a3b8', font: { size: 10 }, maxRotation: 0, autoSkip: true },
+            border: { display: false },
+          },
+          y: {
+            display: true,
+            min: 0,
+            max: 6,
+            grid: {
+              display: true,
+              color: '#f1f5f9', // Пунктир можно убрать, сделав сплошную очень светлую линию
+              tickBorderDash: [0, 0],
+            } as any,
+            ticks: { color: '#94a3b8', font: { size: 10 }, stepSize: 1, padding: 10 },
+            border: { display: false },
+          },
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false,
+        },
+      },
     });
-
-    const temps = data.map((d) => d.temperature);
-    const hums = data.map((d) => d.humidity);
-
-    if (this.chart) {
-      this.chart.data.labels = labels;
-      this.chart.data.datasets[0].data = temps;
-      this.chart.data.datasets[1].data = hums;
-      this.chart.update();
-    } else {
-      const ctx = this.climateChartCanvas.nativeElement.getContext('2d');
-      if (ctx) {
-        this.chart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Temperature (°C)',
-                data: temps,
-                borderColor: '#1976d2', // Primary Blue
-                backgroundColor: 'rgba(25, 118, 210, 0.1)',
-                fill: true,
-                tension: 0.4,
-                yAxisID: 'y',
-              },
-              {
-                label: 'Humidity (%)',
-                data: hums,
-                borderColor: '#4caf50', // Green
-                backgroundColor: 'rgba(76, 175, 80, 0)',
-                fill: false,
-                tension: 0.4,
-                yAxisID: 'y1',
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-              mode: 'index',
-              intersect: false,
-            },
-            scales: {
-              y: {
-                type: 'linear',
-                display: true,
-                position: 'left',
-                title: { display: true, text: 'Temperature' },
-                grid: { color: '#f0f0f0' },
-              },
-              y1: {
-                type: 'linear',
-                display: true,
-                position: 'right',
-                title: { display: true, text: 'Humidity' },
-                grid: { drawOnChartArea: false },
-              },
-              x: {
-                grid: { display: false },
-              },
-            },
-          },
-        });
-      }
-    }
-  }
-
-  private showError(msg: string): void {
-    this.messageService.add({ severity: 'error', summary: 'Error', detail: msg, life: 3000 });
   }
 }
