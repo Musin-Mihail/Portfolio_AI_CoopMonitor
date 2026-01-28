@@ -1,73 +1,70 @@
-<div class="flex h-screen bg-[#F8F9FB] font-['Inter'] text-[#1A1C21] overflow-hidden">
-  <aside class="w-[260px] flex-shrink-0 flex flex-col bg-[#F8F9FB] h-full pt-6 pb-6 pl-4 pr-2">
-    <div class="flex items-center gap-3 px-4 mb-8">
-      <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
+<div class="flex h-screen bg-[#F5F6F8] font-['Inter'] text-[#1A1C21] overflow-hidden">
+  <aside class="w-[260px] flex-shrink-0 flex flex-col h-full py-6 px-4 bg-[#F5F6F8]">
+    <div class="flex items-center gap-3 px-4 mb-10 mt-2">
+      <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white">
         <img
           src="https://api.dicebear.com/9.x/avataaars/svg?seed=james"
           alt="User"
           class="w-full h-full object-cover" />
       </div>
       <div class="flex flex-col">
-        <span class="text-sm font-semibold text-[#1A1C21]">Name</span>
-        <span class="text-xs text-slate-400">@james</span>
+        <span class="text-sm font-bold text-[#1A1C21]">Name</span>
+        <span class="text-xs text-slate-400 font-medium">@james</span>
       </div>
-      <i class="pi pi-angle-down text-xs text-slate-400 ml-auto cursor-pointer"></i>
+      <i class="pi pi-angle-down text-[10px] text-slate-400 ml-auto cursor-pointer hover:text-slate-600"></i>
     </div>
 
-    <nav class="flex-1 flex flex-col gap-1 overflow-y-auto text-sm font-medium pr-2">
+    <nav class="flex-1 flex flex-col gap-2 overflow-y-auto text-sm font-medium">
       <ng-template
         #menuItem
-        let-link
+        let-link="link"
         let-icon="icon"
-        let-label="label">
+        let-label="label"
+        let-exact="exact">
         <a
           [routerLink]="link"
-          routerLinkActive="text-[#1A1C21]"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-colors text-slate-500 hover:text-slate-900 group">
-          <i [class]="'pi ' + icon + ' text-lg group-[.router-link-active]:text-black'"></i>
+          routerLinkActive="bg-white text-[#1A1C21] font-semibold shadow-sm"
+          [routerLinkActiveOptions]="{ exact: exact }"
+          class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all text-slate-500 hover:text-slate-900 hover:bg-white/60 group">
+          <i [class]="'pi ' + icon + ' text-lg'"></i>
           <span>{{ label }}</span>
         </a>
       </ng-template>
 
       <ng-container
-        *ngTemplateOutlet="menuItem; context: { link: '/', icon: 'pi-th-large', label: 'Дашборд' }"></ng-container>
-      <ng-container
-        *ngTemplateOutlet="menuItem; context: { link: '/video-wall', icon: 'pi-video', label: 'Видео' }"></ng-container>
-      <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/logs/mortality', icon: 'pi-file', label: 'Журналы' }
+          context: { link: '/', icon: 'pi-th-large', label: 'Дашборд', exact: true }
         "></ng-container>
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/reports', icon: 'pi-chart-line', label: 'Отчеты' }
+          context: { link: '/video-wall', icon: 'pi-video', label: 'Видео', exact: true }
         "></ng-container>
-      <ng-container
-        *ngTemplateOutlet="menuItem; context: { link: '/feeds', icon: 'pi-book', label: 'Справочники' }"></ng-container>
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/users', icon: 'pi-user', label: 'Администрирование' }
+          context: { link: '/logs', icon: 'pi-file', label: 'Журналы', exact: false }
+        "></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          menuItem;
+          context: { link: '/reports', icon: 'pi-chart-line', label: 'Отчеты', exact: true }
+        "></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          menuItem;
+          context: { link: '/master-data', icon: 'pi-book', label: 'Справочники', exact: false }
+        "></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          menuItem;
+          context: { link: '/admin', icon: 'pi-user', label: 'Администрирование', exact: false }
         "></ng-container>
     </nav>
 
-    <div class="mt-auto flex flex-col gap-1 text-sm font-medium text-slate-500 pr-2">
-      <a
-        href="#"
-        class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:text-slate-900">
-        <i class="pi pi-wrench text-lg"></i>
-        <span>Tools</span>
-      </a>
-      <a
-        href="#"
-        class="flex items-center gap-4 px-4 py-3 rounded-2xl hover:text-slate-900">
-        <i class="pi pi-cog text-lg"></i>
-        <span>Settings</span>
-      </a>
-
-      <div class="mt-6 px-4 flex items-center gap-3">
+    <div class="mt-auto flex flex-col gap-1 text-sm font-medium text-slate-500">
+      <div class="mt-8 px-4 flex items-center gap-3">
         <div class="w-6 h-6 text-[#4CAF50]">
           <svg
             viewBox="0 0 24 24"
@@ -76,35 +73,24 @@
             <path d="M12 2L2 19h20L12 2zm0 3.8l6.8 11.2H5.2L12 5.8z" />
           </svg>
         </div>
-        <span class="font-bold text-lg tracking-wide text-[#4CAF50]">AGROBIONIC</span>
+        <span class="font-bold text-lg tracking-wide text-[#4CAF50] font-['RoadRadio',sans-serif]">AGROBIONIC</span>
       </div>
     </div>
   </aside>
 
   <main
-    class="flex-1 flex flex-col min-w-0 h-full relative bg-white lg:rounded-l-[40px] shadow-[-10px_0_30px_rgba(0,0,0,0.02)] overflow-hidden">
-    <header class="h-20 flex items-center justify-between px-8 flex-shrink-0">
-      <div class="flex items-center text-sm text-slate-300">
-        <span>Dashboards</span>
-        <span class="mx-2">/</span>
+    class="flex-1 flex flex-col min-w-0 h-full relative bg-white lg:rounded-l-[40px] shadow-[-10px_0_40px_rgba(0,0,0,0.03)] overflow-hidden">
+    <header class="h-20 flex items-center justify-between px-8 py-6 flex-shrink-0">
+      <div class="flex items-center text-sm">
+        <span class="text-slate-300">Dashboards</span>
+        <span class="mx-2 text-slate-300">/</span>
         <span class="text-slate-800 font-medium">Overview</span>
       </div>
-
-      <div class="flex items-center gap-4">
-        <div class="relative hidden md:block">
-          <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input
-            type="text"
-            placeholder="Search"
-            class="pl-10 pr-12 py-2.5 bg-[#F8F9FB] rounded-full border-none text-sm focus:outline-none w-64 placeholder:text-slate-400 text-slate-600" />
-          <span
-            class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 bg-white px-1.5 py-0.5 rounded border border-slate-100">
-            /
-          </span>
-        </div>
-
-        <button class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-600">
-          <i class="pi pi-sun"></i>
+      <div class="flex items-center gap-6">
+        <button
+          (click)="logout()"
+          class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-50 text-slate-400 hover:text-red-500 transition-colors">
+          <i class="pi pi-sign-out"></i>
         </button>
       </div>
     </header>

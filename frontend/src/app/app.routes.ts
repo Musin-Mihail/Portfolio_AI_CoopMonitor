@@ -31,62 +31,43 @@ export const routes: Routes = [
         path: '',
         component: DashboardComponent,
       },
-      // Video Wall
       {
         path: 'video-wall',
         component: VideoArchiveComponent,
       },
-      // Logs
-      {
-        path: 'logs/mortality',
-        component: MortalityListComponent,
-      },
-      {
-        path: 'logs/feed-water',
-        component: FeedWaterListComponent,
-      },
-      {
-        path: 'logs/disease',
-        component: DiseaseListComponent,
-      },
-      {
-        path: 'logs/weighing',
-        component: WeighingListComponent,
-      },
-      {
-        path: 'logs/marking',
-        component: MarkingListComponent,
-      },
-      // Analytics
       {
         path: 'reports',
         component: ReportsListComponent,
       },
-      // Admin / Master Data
+      // Группа Журналы
       {
-        path: 'users',
-        component: UserListComponent,
+        path: 'logs',
+        redirectTo: 'logs/mortality',
+        pathMatch: 'full',
       },
+      { path: 'logs/mortality', component: MortalityListComponent },
+      { path: 'logs/feed-water', component: FeedWaterListComponent },
+      { path: 'logs/disease', component: DiseaseListComponent },
+      { path: 'logs/weighing', component: WeighingListComponent },
+      { path: 'logs/marking', component: MarkingListComponent },
+      // Группа Справочники (Master Data)
       {
-        path: 'audit',
-        component: AuditListComponent,
+        path: 'master-data',
+        redirectTo: 'master-data/houses',
+        pathMatch: 'full',
       },
+      { path: 'master-data/houses', component: HouseListComponent },
+      { path: 'master-data/personnel', component: PersonnelListComponent },
+      { path: 'master-data/feeds', component: FeedListComponent },
+      // Группа Администрирование
       {
-        path: 'settings/status',
-        component: SystemStatusComponent,
+        path: 'admin',
+        redirectTo: 'admin/audit',
+        pathMatch: 'full',
       },
-      {
-        path: 'houses',
-        component: HouseListComponent,
-      },
-      {
-        path: 'personnel',
-        component: PersonnelListComponent,
-      },
-      {
-        path: 'feeds',
-        component: FeedListComponent,
-      },
+      { path: 'admin/users', component: UserListComponent },
+      { path: 'admin/audit', component: AuditListComponent },
+      { path: 'admin/settings', component: SystemStatusComponent },
     ],
   },
   { path: '**', redirectTo: '' },

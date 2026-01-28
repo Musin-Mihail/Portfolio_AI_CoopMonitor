@@ -1,30 +1,43 @@
 <div class="card p-6">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-semibold m-0">Users</h1>
+    <h1 class="text-2xl font-semibold m-0 text-slate-800">Администрирование</h1>
     <p-button
-      label="Create User"
+      label="Новая запись"
       icon="pi pi-plus"
+      severity="contrast"
       (onClick)="openDialog()" />
+  </div>
+
+  <div class="mb-6">
+    <p-tabs value="users">
+      <p-tablist>
+        <p-tab
+          value="alerts"
+          [disabled]="true">
+          Алерты
+        </p-tab>
+        <p-tab
+          value="logs"
+          (click)="onTabChange('/admin/audit')">
+          Логи
+        </p-tab>
+        <p-tab
+          value="users"
+          (click)="onTabChange('/admin/users')">
+          Персонал 08
+        </p-tab>
+      </p-tablist>
+    </p-tabs>
   </div>
 
   <p-table
     [value]="dataSource()"
-    [tableStyle]="{ 'min-width': '50rem' }"
     stripedRows>
     <ng-template pTemplate="header">
       <tr>
-        <th pSortableColumn="userName">
-          Username
-          <p-sortIcon field="userName" />
-        </th>
-        <th pSortableColumn="email">
-          Email
-          <p-sortIcon field="email" />
-        </th>
-        <th pSortableColumn="role">
-          Role
-          <p-sortIcon field="role" />
-        </th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
         <th>Linked Personnel</th>
         <th>Actions</th>
       </tr>
@@ -36,40 +49,16 @@
         <td class="font-medium">{{ user.userName }}</td>
         <td>{{ user.email }}</td>
         <td>
-          <span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-sm font-semibold border border-slate-200">
-            {{ user.role }}
-          </span>
+          <span class="bg-slate-100 px-2 py-1 rounded text-sm font-semibold">{{ user.role }}</span>
         </td>
-        <td>
-          <div
-            *ngIf="user.personnelName"
-            class="flex items-center gap-1 text-slate-600">
-            <i class="pi pi-link text-sm"></i>
-            <span>{{ user.personnelName }}</span>
-          </div>
-          <span
-            *ngIf="!user.personnelName"
-            class="text-slate-400 italic text-sm">
-            Not linked
-          </span>
-        </td>
+        <td>{{ user.personnelName || "Not linked" }}</td>
         <td>
           <p-button
             icon="pi pi-trash"
-            [rounded]="true"
             [text]="true"
             severity="danger"
             (onClick)="deleteUser(user.id)"
             [disabled]="user.userName === 'admin'" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td
-          colspan="5"
-          class="text-center p-4">
-          No users found.
         </td>
       </tr>
     </ng-template>

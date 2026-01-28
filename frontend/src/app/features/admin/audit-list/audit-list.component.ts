@@ -1,21 +1,23 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { TabsModule } from 'primeng/tabs';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { AuditService } from '../../../core/services/audit.service';
 import { AuditLogDto } from '../../../core/models/admin.models';
-import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-audit-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, TooltipModule],
+  imports: [CommonModule, TableModule, ButtonModule, TabsModule, TooltipModule],
   templateUrl: './audit-list.component.html',
-  styleUrls: ['./audit-list.component.scss'],
 })
 export class AuditListComponent implements OnInit {
   private service = inject(AuditService);
+  private router = inject(Router);
   private messageService = inject(MessageService);
 
   dataSource = signal<AuditLogDto[]>([]);
@@ -24,7 +26,9 @@ export class AuditListComponent implements OnInit {
   ngOnInit(): void {
     this.loadLogs();
   }
-
+  onTabChange(path: string) {
+    this.router.navigate([path]);
+  }
   loadLogs(): void {
     this.isLoading.set(true);
     this.service.getLogs().subscribe({
@@ -33,13 +37,9 @@ export class AuditListComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: () => {
-        this.showError('Failed to load audit logs (Admin only)');
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load logs' });
         this.isLoading.set(false);
       },
     });
-  }
-
-  private showError(msg: string): void {
-    this.messageService.add({ severity: 'error', summary: 'Error', detail: msg, life: 3000 });
   }
 }

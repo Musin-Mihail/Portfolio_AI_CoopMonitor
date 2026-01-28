@@ -1,41 +1,43 @@
 <div class="card p-6">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-semibold m-0">Mortality Logs</h1>
+    <div class="flex items-center gap-4">
+      <h1 class="text-2xl font-semibold m-0">Журналы</h1>
+      <p-select
+        [options]="logOptions"
+        [(ngModel)]="selectedLog"
+        (onChange)="onLogChange($event)"
+        variant="filled"
+        styleClass="w-64" />
+    </div>
     <p-button
-      label="Add Record"
+      label="Новая запись"
       icon="pi pi-plus"
+      severity="contrast"
       (onClick)="openDialog()" />
   </div>
 
   <p-table
     [value]="dataSource()"
-    [tableStyle]="{ 'min-width': '50rem' }"
     [paginator]="true"
     [rows]="10"
     stripedRows>
     <ng-template pTemplate="header">
       <tr>
-        <th
-          pSortableColumn="date"
-          style="width: 20%">
+        <th pSortableColumn="date">
           Date
           <p-sortIcon field="date" />
         </th>
-        <th
-          pSortableColumn="houseName"
-          style="width: 20%">
+        <th pSortableColumn="houseName">
           House
           <p-sortIcon field="houseName" />
         </th>
-        <th
-          pSortableColumn="quantity"
-          style="width: 15%">
+        <th pSortableColumn="quantity">
           Qty
           <p-sortIcon field="quantity" />
         </th>
-        <th style="width: 25%">Reason</th>
-        <th style="width: 10%">Photo</th>
-        <th style="width: 10%">Actions</th>
+        <th>Reason</th>
+        <th>Photo</th>
+        <th>Actions</th>
       </tr>
     </ng-template>
     <ng-template
@@ -50,28 +52,15 @@
           <p-button
             *ngIf="element.attachmentUrl"
             icon="pi pi-image"
-            [rounded]="true"
             [text]="true"
-            severity="secondary"
-            (onClick)="viewPhoto(element.attachmentUrl)"
-            pTooltip="View Photo" />
+            (onClick)="viewPhoto(element.attachmentUrl)" />
         </td>
         <td>
           <p-button
             icon="pi pi-trash"
-            [rounded]="true"
             [text]="true"
             severity="danger"
             (onClick)="deleteRecord(element.id)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td
-          colspan="6"
-          class="text-center p-4">
-          No mortality records found.
         </td>
       </tr>
     </ng-template>

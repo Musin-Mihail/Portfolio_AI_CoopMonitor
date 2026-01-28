@@ -1,9 +1,10 @@
-/* Сначала импорты */
-@import "tailwindcss";
-@import "primeicons/primeicons.css";
+/* Сначала внешние ресурсы и шрифты */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-/* Затем слои и стили */
+/* Затем фреймворк и иконки */
+@import "tailwindcss";
+@import "primeicons/primeicons.css";
+
 @font-face {
   font-family: "RoadRadio";
   src: local("Arial Black");
@@ -12,7 +13,7 @@
 @layer base {
   html {
     font-family: "Inter", sans-serif;
-    background-color: #f8f9fb; /* Обновил под цвет макета */
+    background-color: #f8f9fb;
     color: #1a1c21;
   }
 }
@@ -20,7 +21,7 @@
 :root {
   --p-surface-50: #f8f9fb;
   --p-surface-100: #ffffff;
-  --p-primary-color: #4caf50; /* Green from Figma */
+  --p-primary-color: #4caf50;
   --p-primary-500: #4caf50;
   --p-content-border-radius: 16px;
 }

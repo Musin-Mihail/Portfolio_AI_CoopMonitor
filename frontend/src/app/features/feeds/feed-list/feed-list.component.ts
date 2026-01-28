@@ -1,7 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Feed } from '../../../core/models/master-data.models';
@@ -11,20 +14,29 @@ import { FeedDialogComponent } from '../feed-dialog/feed-dialog.component';
 @Component({
   selector: 'app-feed-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule],
+  imports: [CommonModule, TableModule, ButtonModule, SelectModule, FormsModule],
   templateUrl: './feed-list.component.html',
-  styleUrl: './feed-list.component.scss',
 })
 export class FeedListComponent implements OnInit {
   private service = inject(FeedsService);
+  private router = inject(Router);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
   dataSource = signal<Feed[]>([]);
+  masterDataOptions = [
+    { label: 'Птичники', value: '/master-data/houses' },
+    { label: 'Персонал', value: '/master-data/personnel' },
+    { label: 'Корма', value: '/master-data/feeds' },
+  ];
+  selectedOption = '/master-data/feeds';
 
   ngOnInit(): void {
     this.loadData();
+  }
+  onOptionChange(e: any) {
+    this.router.navigate([e.value]);
   }
 
   loadData(): void {
@@ -40,19 +52,12 @@ export class FeedListComponent implements OnInit {
       width: '400px',
       data: feed || null,
     });
-
     ref?.onClose.subscribe((result) => {
       if (result) {
         if (feed) {
-          this.service.updateFeed(feed.id, result).subscribe(() => {
-            this.loadData();
-            this.showSuccess('Updated successfully');
-          });
+          this.service.updateFeed(feed.id, result).subscribe(() => this.loadData());
         } else {
-          this.service.createFeed(result).subscribe(() => {
-            this.loadData();
-            this.showSuccess('Created successfully');
-          });
+          this.service.createFeed(result).subscribe(() => this.loadData());
         }
       }
     });
@@ -60,24 +65,8 @@ export class FeedListComponent implements OnInit {
 
   deleteFeed(id: number): void {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this feed?',
-      header: 'Confirm Delete',
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger p-button-text',
-      rejectButtonStyleClass: 'p-button-text',
-      accept: () => {
-        this.service.deleteFeed(id).subscribe({
-          next: () => {
-            this.loadData();
-            this.showSuccess('Deleted successfully');
-          },
-          error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete' }),
-        });
-      },
+      message: 'Are you sure?',
+      accept: () => this.service.deleteFeed(id).subscribe(() => this.loadData()),
     });
-  }
-
-  private showSuccess(msg: string) {
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: msg });
   }
 }

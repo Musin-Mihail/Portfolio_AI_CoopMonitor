@@ -1,8 +1,17 @@
 <div class="card p-6">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-semibold m-0">Marking Records</h1>
+    <div class="flex items-center gap-4">
+      <h1 class="text-2xl font-semibold m-0">Журналы</h1>
+      <p-select
+        [options]="logOptions"
+        [(ngModel)]="selectedLog"
+        (onChange)="onLogChange($event)"
+        placeholder="Выбрать журнал"
+        variant="filled"
+        styleClass="w-64" />
+    </div>
     <p-button
-      label="Add Record"
+      label="Новая запись"
       icon="pi pi-plus"
       (onClick)="openDialog()" />
   </div>
