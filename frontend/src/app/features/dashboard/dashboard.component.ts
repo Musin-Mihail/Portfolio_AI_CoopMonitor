@@ -21,10 +21,10 @@ export class DashboardComponent implements OnInit {
   chart: Chart | null = null;
   selectedPeriod = 7;
 
-  // Mock data with translation keys where appropriate
+  // Mock data with translation keys instead of hardcoded names
   mockHouses = [
     {
-      name: 'House 1',
+      nameKey: 'DASHBOARD.HOUSE_1',
       temp: '23.5',
       co2: '850',
       nh3: '15',
@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
       batchEnd: '14.02.2026',
     },
     {
-      name: 'House 2',
+      nameKey: 'DASHBOARD.HOUSE_2',
       temp: '23.5',
       co2: '850',
       nh3: '15',
@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit {
       batchEnd: '14.02.2026',
     },
     {
-      name: 'House 3',
+      nameKey: 'DASHBOARD.HOUSE_3',
       temp: '23.5',
       co2: '850',
       nh3: '15',
@@ -85,6 +85,11 @@ export class DashboardComponent implements OnInit {
       this.chart.destroy();
     }
 
+    // Fetch localized labels
+    const labelHouse1 = this.translate.instant('DASHBOARD.HOUSE_1');
+    const labelHouse2 = this.translate.instant('DASHBOARD.HOUSE_2');
+    const labelHouse3 = this.translate.instant('DASHBOARD.HOUSE_3');
+
     const gradientGreen = ctx.createLinearGradient(0, 0, 0, 200);
     gradientGreen.addColorStop(0, 'rgba(76, 175, 80, 0.05)');
     gradientGreen.addColorStop(1, 'rgba(76, 175, 80, 0)');
@@ -95,7 +100,7 @@ export class DashboardComponent implements OnInit {
         labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
         datasets: [
           {
-            label: 'House 1',
+            label: labelHouse1,
             data: [1.5, 2.0, 1.8, 2.2, 2.8, 2.5],
             borderColor: '#4CAF50',
             backgroundColor: gradientGreen,
@@ -108,7 +113,7 @@ export class DashboardComponent implements OnInit {
             pointBorderWidth: 2,
           },
           {
-            label: 'House 2',
+            label: labelHouse2,
             data: [1.2, 1.4, 1.6, 1.8, 2.0, 1.8],
             borderColor: '#A855F7',
             backgroundColor: 'transparent',
@@ -119,7 +124,7 @@ export class DashboardComponent implements OnInit {
             pointHoverRadius: 4,
           },
           {
-            label: 'House 3',
+            label: labelHouse3,
             data: [0.8, 1.0, 1.2, 1.5, 1.7, 1.6],
             borderColor: '#3B82F6',
             backgroundColor: 'transparent',

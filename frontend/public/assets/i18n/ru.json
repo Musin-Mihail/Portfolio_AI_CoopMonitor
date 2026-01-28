@@ -56,6 +56,8 @@
     "DELETED_SUCCESS": "Запись успешно удалена",
     "CLOSE": "Закрыть",
     "LOAD_ERROR": "Не удалось загрузить данные",
+    "MB": "МБ",
+    "VIDEO_NOT_SUPPORTED": "Ваш браузер не поддерживает видео.",
     "MESSAGES": {
       "FAILED_CREATE": "Не удалось создать запись",
       "FAILED_UPDATE": "Не удалось обновить запись",
@@ -79,6 +81,9 @@
     "NOTIFICATIONS": "Уведомления",
     "DOCUMENTS": "Документы",
     "SUPPORT": "Поддержка",
+    "HOUSE_1": "Птичник 1",
+    "HOUSE_2": "Птичник 2",
+    "HOUSE_3": "Птичник 3",
     "EVENTS": {
       "DISINFECTION": "Дезинфекция",
       "PEST_DETECTED": "Обнаружен вредитель",

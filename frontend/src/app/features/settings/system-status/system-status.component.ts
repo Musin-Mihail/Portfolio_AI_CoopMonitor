@@ -53,9 +53,10 @@ export class SystemStatusComponent implements OnInit {
   }
 
   formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 MB';
+    const unit = this.translate.instant('COMMON.MB');
+    if (bytes === 0) return `0 ${unit}`;
     const mb = bytes / (1024 * 1024);
-    return mb.toFixed(2) + ' MB';
+    return `${mb.toFixed(2)} ${unit}`;
   }
 
   private showError(msg: string): void {
