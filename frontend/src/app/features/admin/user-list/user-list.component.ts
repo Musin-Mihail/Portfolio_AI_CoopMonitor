@@ -4,7 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageService } from 'primeng/api';
 import { UserDto } from '../../../core/models/admin.models';
 import { UsersService } from '../../../core/services/users.service';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
@@ -12,14 +12,14 @@ import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSnackBarModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent implements OnInit {
   private service = inject(UsersService);
   private dialog = inject(MatDialog);
-  private snackBar = inject(MatSnackBar);
+  private messageService = inject(MessageService);
 
   displayedColumns: string[] = ['userName', 'email', 'role', 'personnel', 'actions'];
   dataSource = signal<UserDto[]>([]);
@@ -70,10 +70,10 @@ export class UserListComponent implements OnInit {
   }
 
   private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000 });
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
   }
 
   private showError(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
   }
 }

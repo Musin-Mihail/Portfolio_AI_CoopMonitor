@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageService } from 'primeng/api';
 import { ReportsService } from '../../../core/services/reports.service';
 import { ReportMetadata } from '../../../core/models/reports.models';
 
 @Component({
   selector: 'app-reports-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
   templateUrl: './reports-list.component.html',
   styleUrls: ['./reports-list.component.scss'],
 })
 export class ReportsListComponent implements OnInit {
   private service = inject(ReportsService);
-  private snackBar = inject(MatSnackBar);
+  private messageService = inject(MessageService);
 
   displayedColumns: string[] = ['reportDate', 'reportType', 'houseName', 'generatedAt', 'status', 'actions'];
   dataSource = signal<ReportMetadata[]>([]);
@@ -42,8 +42,6 @@ export class ReportsListComponent implements OnInit {
         link.href = url;
         // Open in new tab for viewing
         link.target = '_blank';
-        // Or if you want to force download:
-        // link.download = `${report.reportType}_${report.houseName}_${report.reportDate}.html`;
         link.click();
 
         // Cleanup after delay
@@ -57,9 +55,6 @@ export class ReportsListComponent implements OnInit {
     if (this.isGenerating()) return;
 
     this.isGenerating.set(true);
-    // Request generation for "yesterday" (standard for daily report) or "today".
-    // Let's assume we want to re-run for yesterday or today.
-    // Ideally, UI should allow picking date. For MVP, let's trigger for Today.
     const today = new Date().toISOString();
 
     this.service
@@ -83,13 +78,10 @@ export class ReportsListComponent implements OnInit {
   }
 
   private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000 });
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
   }
 
   private showError(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      panelClass: ['error-snackbar'],
-    });
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
   }
 }

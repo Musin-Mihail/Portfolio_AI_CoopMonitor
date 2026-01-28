@@ -5,28 +5,20 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageService } from 'primeng/api';
 import { SettingsService } from '../../../core/services/settings.service';
 import { SystemStatus } from '../../../core/models/settings.models';
 
 @Component({
   selector: 'app-system-status',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatProgressBarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatSnackBarModule,
-  ],
+  imports: [CommonModule, MatCardModule, MatProgressBarModule, MatIconModule, MatButtonModule, MatDividerModule],
   templateUrl: './system-status.component.html',
   styleUrls: ['./system-status.component.scss'],
 })
 export class SystemStatusComponent implements OnInit {
   private service = inject(SettingsService);
-  private snackBar = inject(MatSnackBar);
+  private messageService = inject(MessageService);
 
   status = signal<SystemStatus | null>(null);
   isLoading = signal<boolean>(false);
@@ -56,6 +48,6 @@ export class SystemStatusComponent implements OnInit {
   }
 
   private showError(msg: string): void {
-    this.snackBar.open(msg, 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: msg, life: 3000 });
   }
 }

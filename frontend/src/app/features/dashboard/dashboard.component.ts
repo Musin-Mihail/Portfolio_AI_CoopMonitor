@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, ViewChild, ElementRef, afterNextRender } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -8,11 +8,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { Chart, registerables } from 'chart.js';
+import { MessageService } from 'primeng/api';
 
 import { DashboardService } from '../../core/services/dashboard.service';
 import { HousesService } from '../../core/services/houses.service';
@@ -35,7 +35,6 @@ Chart.register(...registerables);
     MatFormFieldModule,
     MatProgressBarModule,
     MatChipsModule,
-    MatSnackBarModule,
     MatDividerModule,
     MatButtonToggleModule,
   ],
@@ -45,7 +44,7 @@ Chart.register(...registerables);
 export class DashboardComponent implements OnInit, OnDestroy {
   private dashboardService = inject(DashboardService);
   private housesService = inject(HousesService);
-  private snackBar = inject(MatSnackBar);
+  private messageService = inject(MessageService);
 
   // Signals
   houses = signal<House[]>([]);
@@ -215,6 +214,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private showError(msg: string): void {
-    this.snackBar.open(msg, 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: msg, life: 3000 });
   }
 }
