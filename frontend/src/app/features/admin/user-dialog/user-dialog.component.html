@@ -90,7 +90,20 @@
         id="role"
         formControlName="role"
         [options]="roles"
-        styleClass="w-full" />
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full">
+        <ng-template
+          let-item
+          pTemplate="item">
+          {{ item.label | translate }}
+        </ng-template>
+        <ng-template
+          let-item
+          pTemplate="selectedItem">
+          {{ item.label | translate }}
+        </ng-template>
+      </p-select>
     </div>
   </div>
 

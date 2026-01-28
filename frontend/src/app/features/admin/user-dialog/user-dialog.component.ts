@@ -30,16 +30,19 @@ export class UserDialogComponent implements OnInit {
   public config = inject(DynamicDialogConfig);
 
   form: FormGroup;
-  roles = ['Admin', 'User', 'Viewer'];
+  // Use translation keys for labels, but keep backend values (Admin, User, Viewer)
+  roles = [
+    { label: 'ADMIN_USERS.ROLES.ADMIN', value: 'Admin' },
+    { label: 'ADMIN_USERS.ROLES.USER', value: 'User' },
+    { label: 'ADMIN_USERS.ROLES.VIEWER', value: 'Viewer' },
+  ];
   data: UserDto | null = null;
   title: string = '';
 
   constructor() {
     this.data = this.config.data;
-    // Use translation keys
     this.title = this.data ? 'ADMIN_USERS.DIALOG_TITLE_EDIT' : 'ADMIN_USERS.DIALOG_TITLE_ADD';
 
-    // If editing (data exists), password is not required.
     const passwordValidators = this.data ? [Validators.minLength(4)] : [Validators.required, Validators.minLength(4)];
 
     this.form = this.fb.group({
@@ -56,7 +59,6 @@ export class UserDialogComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.valid) {
-      // Remove empty password if editing
       const formValue = this.form.value;
       if (this.data && !formValue.password) {
         delete formValue.password;

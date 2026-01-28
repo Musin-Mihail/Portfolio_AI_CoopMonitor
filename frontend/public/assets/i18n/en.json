@@ -97,7 +97,12 @@
     "DIALOG_TITLE_EDIT": "Edit User",
     "PASS_HINT": "Leave empty to keep current",
     "EMAIL_INVALID": "Invalid email address",
-    "PASS_MIN": "Minimum 4 characters"
+    "PASS_MIN": "Minimum 4 characters",
+    "ROLES": {
+      "ADMIN": "Administrator",
+      "USER": "User",
+      "VIEWER": "Viewer"
+    }
   },
   "LOGS_LAYOUT": {
     "TITLE": "Logs",
@@ -124,7 +129,13 @@
     "DIALOG_TITLE_EDIT": "Edit Feed",
     "TYPE_REQ": "Type is required",
     "NAME_REQ": "Name is required",
-    "NO_DATA": "No feeds found"
+    "NO_DATA": "No feeds found",
+    "TYPES": {
+      "STARTER": "Starter",
+      "GROWER": "Grower",
+      "FINISHER": "Finisher",
+      "SUPPLEMENT": "Supplement"
+    }
   },
   "MD_PERSONNEL": {
     "TITLE": "Personnel List",

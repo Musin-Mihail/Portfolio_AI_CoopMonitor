@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel, Feed } from '../../../core/models/master-data.models';
 import { FeedWaterRecord } from '../../../core/models/logs.models';
 import { HousesService } from '../../../core/services/houses.service';
@@ -15,7 +16,15 @@ import { FeedsService } from '../../../core/services/feeds.service';
 @Component({
   selector: 'app-feed-water-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, DatePickerModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    SelectModule,
+    DatePickerModule,
+    TranslateModule,
+  ],
   templateUrl: './feed-water-dialog.component.html',
   styleUrl: './feed-water-dialog.component.scss',
 })
@@ -36,7 +45,8 @@ export class FeedWaterDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit Feed & Water' : 'Add Feed & Water';
+    // Changed to use Translation Keys from LOGS_FEED_WATER
+    this.title = this.data ? 'LOGS_FEED_WATER.DIALOG_TITLE_EDIT' : 'LOGS_FEED_WATER.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],

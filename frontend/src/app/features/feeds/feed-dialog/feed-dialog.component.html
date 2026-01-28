@@ -42,8 +42,21 @@
         id="type"
         formControlName="type"
         [options]="types"
+        optionLabel="label"
+        optionValue="value"
         [placeholder]="'COMMON.SELECT_OPTION' | translate"
-        styleClass="w-full" />
+        styleClass="w-full">
+        <ng-template
+          let-item
+          pTemplate="item">
+          {{ item.label | translate }}
+        </ng-template>
+        <ng-template
+          let-item
+          pTemplate="selectedItem">
+          {{ item.label | translate }}
+        </ng-template>
+      </p-select>
       <small
         class="text-red-500"
         *ngIf="form.get('type')?.hasError('required') && form.get('type')?.touched">

@@ -1,10 +1,10 @@
 <div class="flex justify-between items-center mb-6">
-  <h2 class="text-lg font-medium text-slate-600">Корм и вода</h2>
+  <h2 class="text-lg font-medium text-slate-600">{{ "LOGS_FEED_WATER.TITLE" | translate }}</h2>
   <button
     (click)="openDialog()"
     class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors">
     <i class="pi pi-plus text-xs"></i>
-    <span>Новая запись</span>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
   </button>
 </div>
 
@@ -17,26 +17,26 @@
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="date">
-        Date
+        {{ "COMMON.DATE" | translate }}
         <p-sortIcon field="date" />
       </th>
       <th pSortableColumn="houseName">
-        House
+        {{ "COMMON.HOUSE" | translate }}
         <p-sortIcon field="houseName" />
       </th>
       <th pSortableColumn="feedName">
-        Feed
+        {{ "LOGS_FEED_WATER.FEED_TYPE" | translate }}
         <p-sortIcon field="feedName" />
       </th>
       <th pSortableColumn="feedQuantityKg">
-        Feed (kg)
+        {{ "LOGS_FEED_WATER.FEED_KG" | translate }}
         <p-sortIcon field="feedQuantityKg" />
       </th>
       <th pSortableColumn="waterQuantityLiters">
-        Water (L)
+        {{ "LOGS_FEED_WATER.WATER_L" | translate }}
         <p-sortIcon field="waterQuantityLiters" />
       </th>
-      <th style="width: 8rem">Actions</th>
+      <th style="width: 8rem">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
   <ng-template
