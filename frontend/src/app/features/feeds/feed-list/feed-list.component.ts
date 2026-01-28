@@ -36,7 +36,7 @@ export class FeedListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: this.translate.instant('COMMON.ERROR'),
-          detail: 'Error loading feeds',
+          detail: this.translate.instant('COMMON.LOAD_ERROR'),
         }),
     });
   }

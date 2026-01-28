@@ -38,7 +38,7 @@ export class MarkingListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: this.translate.instant('COMMON.ERROR'),
-          detail: 'Error loading records',
+          detail: this.translate.instant('COMMON.LOAD_ERROR'),
         }),
     });
   }
@@ -95,7 +95,7 @@ export class MarkingListComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: this.translate.instant('COMMON.ERROR'),
-              detail: 'Delete failed',
+              detail: this.translate.instant('COMMON.MESSAGES.FAILED_DELETE'),
             });
           },
         }),

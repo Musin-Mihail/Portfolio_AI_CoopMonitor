@@ -39,7 +39,7 @@ export class WeighingListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: this.translate.instant('COMMON.ERROR'),
-          detail: 'Error loading records',
+          detail: this.translate.instant('COMMON.LOAD_ERROR'),
         }),
     });
   }

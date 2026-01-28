@@ -54,7 +54,14 @@
     "UPDATED_SUCCESS": "Record updated successfully",
     "DELETED_SUCCESS": "Record deleted successfully",
     "CLOSE": "Close",
-    "LOAD_ERROR": "Failed to load data"
+    "LOAD_ERROR": "Failed to load data",
+    "MESSAGES": {
+      "FAILED_CREATE": "Failed to create record",
+      "FAILED_UPDATE": "Failed to update record",
+      "FAILED_DELETE": "Failed to delete record",
+      "FILE_SAVED": "Saved",
+      "FILE_FORMAT_VIDEO": "MP4, MOV (max 50MB)"
+    }
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
@@ -69,7 +76,20 @@
     "TOMORROW": "Tomorrow",
     "NOTIFICATIONS": "Notifications",
     "DOCUMENTS": "Documents",
-    "SUPPORT": "Support"
+    "SUPPORT": "Support",
+    "EVENTS": {
+      "DISINFECTION": "Disinfection",
+      "PEST_DETECTED": "Pest detected",
+      "STAFF_ACTIVITY": "Staff activity",
+      "BUG_FIXED": "You fixed a bug",
+      "INSTRUCTION": "Instruction",
+      "VIDEO_TUTOR": "Video tutor",
+      "ADD_TICKET": "Add ticket",
+      "TICKET_LIST": "Ticket list",
+      "JUST_NOW": "Just now",
+      "MINUTES_AGO": "minutes ago",
+      "HOURS_AGO": "hours ago"
+    }
   },
   "ADMIN_LAYOUT": {
     "TITLE": "Administration",
@@ -118,7 +138,8 @@
     "CAPACITY": "Capacity",
     "DIALOG_TITLE_ADD": "New House",
     "DIALOG_TITLE_EDIT": "Edit House",
-    "NAME_REQ": "Name is required"
+    "NAME_REQ": "Name is required",
+    "NO_DATA": "No houses found"
   },
   "MD_FEEDS": {
     "TITLE": "Feeds List",
@@ -196,7 +217,7 @@
   },
   "LOGS_MARKING": {
     "TITLE": "Marking Log",
-    "BIRD_AGE": "Bird Age (Days)",
+    "BIRD_AGE": "Bird Age",
     "MARKING_TYPE": "Marking Type",
     "DETAILS": "Details",
     "IDENTIFIER": "Bird Identifier (Optional)",
@@ -209,7 +230,9 @@
     "RING_NUMBER": "Ring Number",
     "PHOTO_REC": "Photo Evidence (Recommended)",
     "DIALOG_TITLE_ADD": "New Marking",
-    "DIALOG_TITLE_EDIT": "Edit Marking"
+    "DIALOG_TITLE_EDIT": "Edit Marking",
+    "COLOR": "Color",
+    "NUM": "Num"
   },
   "REPORTS_PAGE": {
     "TITLE": "Reports Archive",
@@ -233,7 +256,9 @@
     "ACTIVE_CAMS": "Active Cameras",
     "ALERTS": "Alerts",
     "VIEW_BTN": "View >",
-    "ALERT_LABEL": "Alert"
+    "ALERT_LABEL": "Alert",
+    "FPS": "FPS",
+    "NORMAL": "Normal"
   },
   "SYSTEM_STATUS": {
     "REFRESH": "Refresh Status",

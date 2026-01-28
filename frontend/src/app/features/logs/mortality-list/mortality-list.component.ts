@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { TranslateModule, TranslateService } from '@ngx-translate/core'; // Import
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MortalityService } from '../../../core/services/mortality.service';
 import { MortalityRecord } from '../../../core/models/logs.models';
 import { MortalityDialogComponent } from '../mortality-dialog/mortality-dialog.component';
@@ -14,7 +14,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
 @Component({
   selector: 'app-mortality-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, TooltipModule, TranslateModule], // Add Module
+  imports: [CommonModule, TableModule, ButtonModule, TooltipModule, TranslateModule],
   templateUrl: './mortality-list.component.html',
 })
 export class MortalityListComponent implements OnInit {
@@ -23,7 +23,7 @@ export class MortalityListComponent implements OnInit {
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
-  private translate = inject(TranslateService); // Inject
+  private translate = inject(TranslateService);
 
   dataSource = signal<MortalityRecord[]>([]);
 
@@ -34,7 +34,12 @@ export class MortalityListComponent implements OnInit {
   loadData() {
     this.service.getRecords().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error loading records' }),
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('COMMON.ERROR'),
+          detail: this.translate.instant('COMMON.LOAD_ERROR'),
+        }),
     });
   }
 
@@ -50,12 +55,20 @@ export class MortalityListComponent implements OnInit {
       if (res) {
         if (record) {
           this.service.updateRecord(record.id, res).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+            });
             this.loadData();
           });
         } else {
           this.service.createRecord(res).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+            });
             this.loadData();
           });
         }

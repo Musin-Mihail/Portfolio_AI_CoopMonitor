@@ -54,7 +54,14 @@
     "UPDATED_SUCCESS": "Запись успешно обновлена",
     "DELETED_SUCCESS": "Запись успешно удалена",
     "CLOSE": "Закрыть",
-    "LOAD_ERROR": "Не удалось загрузить данные"
+    "LOAD_ERROR": "Не удалось загрузить данные",
+    "MESSAGES": {
+      "FAILED_CREATE": "Не удалось создать запись",
+      "FAILED_UPDATE": "Не удалось обновить запись",
+      "FAILED_DELETE": "Не удалось удалить запись",
+      "FILE_SAVED": "Сохранено",
+      "FILE_FORMAT_VIDEO": "MP4, MOV (макс 50MB)"
+    }
   },
   "DASHBOARD": {
     "TITLE": "Дашборд",
@@ -69,7 +76,20 @@
     "TOMORROW": "Завтра",
     "NOTIFICATIONS": "Уведомления",
     "DOCUMENTS": "Документы",
-    "SUPPORT": "Поддержка"
+    "SUPPORT": "Поддержка",
+    "EVENTS": {
+      "DISINFECTION": "Дезинфекция",
+      "PEST_DETECTED": "Обнаружен вредитель",
+      "STAFF_ACTIVITY": "Активность персонала",
+      "BUG_FIXED": "Вы исправили баг",
+      "INSTRUCTION": "Инструкция",
+      "VIDEO_TUTOR": "Видео урок",
+      "ADD_TICKET": "Создать тикет",
+      "TICKET_LIST": "Список тикетов",
+      "JUST_NOW": "Только что",
+      "MINUTES_AGO": "мин. назад",
+      "HOURS_AGO": "ч. назад"
+    }
   },
   "ADMIN_LAYOUT": {
     "TITLE": "Администрирование",
@@ -118,7 +138,8 @@
     "CAPACITY": "Вместимость",
     "DIALOG_TITLE_ADD": "Новый птичник",
     "DIALOG_TITLE_EDIT": "Редактировать птичник",
-    "NAME_REQ": "Название обязательно"
+    "NAME_REQ": "Название обязательно",
+    "NO_DATA": "Птичники не найдены"
   },
   "MD_FEEDS": {
     "TITLE": "Список кормов",
@@ -196,10 +217,10 @@
   },
   "LOGS_MARKING": {
     "TITLE": "Журнал маркировки",
-    "BIRD_AGE": "Возраст птицы (дней)",
+    "BIRD_AGE": "Возраст (дней)",
     "MARKING_TYPE": "Тип маркировки",
     "DETAILS": "Детали",
-    "IDENTIFIER": "Идентификатор птицы (опц.)",
+    "IDENTIFIER": "Идентификатор (опц.)",
     "PROTOCOL_INFO": "Протокол для возраста {{age}} дней: {{protocol}}",
     "PROTOCOL_OLDER": "Лента + Номер",
     "PROTOCOL_YOUNGER": "Краска + Кольцо",
@@ -209,7 +230,9 @@
     "RING_NUMBER": "Номер кольца",
     "PHOTO_REC": "Фото подтверждение (рекомендуется)",
     "DIALOG_TITLE_ADD": "Новая маркировка",
-    "DIALOG_TITLE_EDIT": "Редактировать маркировку"
+    "DIALOG_TITLE_EDIT": "Редактировать маркировку",
+    "COLOR": "Цвет",
+    "NUM": "№"
   },
   "REPORTS_PAGE": {
     "TITLE": "Архив отчетов",
@@ -233,7 +256,9 @@
     "ACTIVE_CAMS": "Активных камер",
     "ALERTS": "Алерты",
     "VIEW_BTN": "Просмотреть >",
-    "ALERT_LABEL": "Тревога"
+    "ALERT_LABEL": "Тревога",
+    "FPS": "FPS",
+    "NORMAL": "Норма"
   },
   "SYSTEM_STATUS": {
     "REFRESH": "Обновить статус",

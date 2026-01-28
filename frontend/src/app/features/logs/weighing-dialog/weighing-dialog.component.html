@@ -92,13 +92,17 @@
             }}
           </span>
           <span class="text-xs text-slate-500">
-            {{ selectedFile ? (selectedFile.size / 1024 / 1024 | number: "1.1-2") + " MB" : "MP4, MOV (max 50MB)" }}
+            {{
+              selectedFile
+                ? (selectedFile.size / 1024 / 1024 | number: "1.1-2") + " MB"
+                : ("COMMON.MESSAGES.FILE_FORMAT_VIDEO" | translate)
+            }}
           </span>
         </div>
         <div
           *ngIf="data?.videoUrl && !selectedFile"
           class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">
-          Saved
+          {{ "COMMON.MESSAGES.FILE_SAVED" | translate }}
         </div>
         <input
           #fileInput

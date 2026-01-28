@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { TooltipModule } from 'primeng/tooltip'; // <-- Import added
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -14,14 +14,7 @@ import { PersonnelDialogComponent } from '../personnel-dialog/personnel-dialog.c
 @Component({
   selector: 'app-personnel-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    TableModule,
-    ButtonModule,
-    TagModule,
-    TranslateModule,
-    TooltipModule, // <-- Module added
-  ],
+  imports: [CommonModule, TableModule, ButtonModule, TagModule, TranslateModule, TooltipModule],
   templateUrl: './personnel-list.component.html',
 })
 export class PersonnelListComponent implements OnInit {
@@ -71,7 +64,7 @@ export class PersonnelListComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: this.translate.instant('COMMON.ERROR'),
-                detail: 'Update failed',
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_UPDATE'),
               }),
           });
         } else {
@@ -88,7 +81,7 @@ export class PersonnelListComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: this.translate.instant('COMMON.ERROR'),
-                detail: 'Creation failed',
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_CREATE'),
               }),
           });
         }
@@ -116,7 +109,7 @@ export class PersonnelListComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: this.translate.instant('COMMON.ERROR'),
-                detail: 'Delete failed',
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_DELETE'),
               }),
           }),
       });

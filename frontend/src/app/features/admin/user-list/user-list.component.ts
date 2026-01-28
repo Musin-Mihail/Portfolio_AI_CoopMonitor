@@ -64,7 +64,7 @@ export class UserListComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: this.translate.instant('COMMON.ERROR'),
-                detail: 'Failed to update user',
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_UPDATE'),
               }),
           });
         } else {
@@ -81,7 +81,7 @@ export class UserListComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: this.translate.instant('COMMON.ERROR'),
-                detail: 'Failed to create user',
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_CREATE'),
               }),
           });
         }
