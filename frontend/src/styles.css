@@ -1,0 +1,40 @@
+/* Tailwind CSS v4 */
+@import "tailwindcss";
+
+/* PrimeIcons */
+@import "primeicons/primeicons.css";
+
+/* Global Styles */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  /* PrimeNG Theme Variables Defaults */
+  background-color: var(--p-surface-50);
+  color: var(--p-text-color);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layer Configuration for PrimeNG + Tailwind compatibility */
+@layer tailwind-base, primeng, tailwind-utilities;
+
+/* Optional: Custom scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--p-surface-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--p-surface-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--p-surface-400);
+}
