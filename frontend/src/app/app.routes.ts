@@ -28,57 +28,66 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    // На логине хлебные крошки обычно не нужны, но можно добавить data: { breadcrumb: 'Вход' }
   },
   {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
+    // Корневой лейбл, который будет скрыт или показан как "Главная"
+    data: { breadcrumb: 'Главная' },
     children: [
       {
         path: '',
         component: DashboardComponent,
+        data: { breadcrumb: 'Дашборд' },
       },
       {
         path: 'video-wall',
         component: VideoArchiveComponent,
+        data: { breadcrumb: 'Видеостена' },
       },
       {
         path: 'reports',
         component: ReportsListComponent,
+        data: { breadcrumb: 'Отчеты' },
       },
       // Группа Журналы (Logs)
       {
         path: 'logs',
         component: LogsLayoutComponent,
+        data: { breadcrumb: 'Журналы' },
         children: [
           { path: '', redirectTo: 'mortality', pathMatch: 'full' },
-          { path: 'mortality', component: MortalityListComponent },
-          { path: 'feed-water', component: FeedWaterListComponent },
-          { path: 'disease', component: DiseaseListComponent },
-          { path: 'weighing', component: WeighingListComponent },
-          { path: 'marking', component: MarkingListComponent },
+          { path: 'mortality', component: MortalityListComponent, data: { breadcrumb: 'Падеж' } },
+          { path: 'feed-water', component: FeedWaterListComponent, data: { breadcrumb: 'Корм и вода' } },
+          { path: 'disease', component: DiseaseListComponent, data: { breadcrumb: 'Болезни' } },
+          { path: 'weighing', component: WeighingListComponent, data: { breadcrumb: 'Взвешивание' } },
+          { path: 'marking', component: MarkingListComponent, data: { breadcrumb: 'Маркировка' } },
         ],
       },
       // Группа Справочники (Master Data)
       {
         path: 'master-data',
         component: MasterDataLayoutComponent,
+        data: { breadcrumb: 'Справочники' },
         children: [
           { path: '', redirectTo: 'houses', pathMatch: 'full' },
-          { path: 'houses', component: HouseListComponent },
-          { path: 'personnel', component: PersonnelListComponent },
-          { path: 'feeds', component: FeedListComponent },
+          { path: 'houses', component: HouseListComponent, data: { breadcrumb: 'Птичники' } },
+          { path: 'personnel', component: PersonnelListComponent, data: { breadcrumb: 'Персонал' } },
+          { path: 'feeds', component: FeedListComponent, data: { breadcrumb: 'Корма' } },
         ],
       },
       // Группа Администрирование (Admin)
       {
         path: 'admin',
         component: AdminLayoutComponent,
+        data: { breadcrumb: 'Администрирование' },
         children: [
           { path: '', redirectTo: 'audit', pathMatch: 'full' },
-          { path: 'users', component: UserListComponent },
-          { path: 'audit', component: AuditListComponent },
-          { path: 'settings', component: SystemStatusComponent },
+          { path: 'users', component: UserListComponent, data: { breadcrumb: 'Пользователи' } },
+          { path: 'audit', component: AuditListComponent, data: { breadcrumb: 'Аудит' } },
+          { path: 'settings', component: SystemStatusComponent, data: { breadcrumb: 'Статус системы' } },
         ],
       },
     ],

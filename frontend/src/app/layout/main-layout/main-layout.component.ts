@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../core/services/auth.service';
+import { BreadcrumbService } from '../../core/services/breadcrumb.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -13,6 +14,8 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class MainLayoutComponent {
   private authService = inject(AuthService);
+  // Внедряем сервис и делаем публичным для доступа из шаблона
+  public breadcrumbService = inject(BreadcrumbService);
 
   logout() {
     this.authService.logout();
