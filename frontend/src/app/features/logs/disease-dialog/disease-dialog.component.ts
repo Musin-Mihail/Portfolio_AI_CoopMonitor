@@ -1,14 +1,11 @@
-import { Component, Inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { HousesService } from '../../../core/services/houses.service';
 import { PersonnelService } from '../../../core/services/personnel.service';
@@ -17,148 +14,162 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
 @Component({
   selector: 'app-disease-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, DatePickerModule],
   template: `
-    <h2 mat-dialog-title>Add Disease/Treatment Record</h2>
     <form
       [formGroup]="form"
-      (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <mat-form-field appearance="outline">
-            <mat-label>House</mat-label>
-            <mat-select formControlName="houseId">
-              <mat-option
-                *ngFor="let h of houses()"
-                [value]="h.id">
-                {{ h.name }}
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="form.get('houseId')?.hasError('required')">Required</mat-error>
-          </mat-form-field>
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-5 pt-2">
+      <div class="flex flex-col gap-2">
+        <label
+          for="houseId"
+          class="font-medium">
+          House
+        </label>
+        <p-select
+          id="houseId"
+          formControlName="houseId"
+          [options]="houses()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Select a House"
+          styleClass="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
+          House is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Responsible</mat-label>
-            <mat-select formControlName="personnelId">
-              <mat-option
-                *ngFor="let p of personnel()"
-                [value]="p.id">
-                {{ p.fullName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="personnelId"
+          class="font-medium">
+          Responsible Person
+        </label>
+        <p-select
+          id="personnelId"
+          formControlName="personnelId"
+          [options]="personnel()"
+          optionLabel="fullName"
+          optionValue="id"
+          placeholder="Select Responsible"
+          styleClass="w-full" />
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Date</mat-label>
-            <input
-              matInput
-              [matDatepicker]="picker"
-              formControlName="date" />
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="date"
+          class="font-medium">
+          Date
+        </label>
+        <p-datepicker
+          id="date"
+          formControlName="date"
+          dateFormat="yy-mm-dd"
+          appendTo="body"
+          styleClass="w-full"
+          [showIcon]="true" />
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Diagnosis</mat-label>
-            <input
-              matInput
-              formControlName="diagnosis"
-              placeholder="e.g. Coccidiosis" />
-            <mat-error *ngIf="form.get('diagnosis')?.hasError('required')">Required</mat-error>
-          </mat-form-field>
+      <div class="flex flex-col gap-2">
+        <label
+          for="diagnosis"
+          class="font-medium">
+          Diagnosis
+        </label>
+        <input
+          pInputText
+          id="diagnosis"
+          formControlName="diagnosis"
+          placeholder="e.g. Coccidiosis"
+          class="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('diagnosis')?.hasError('required') && form.get('diagnosis')?.touched">
+          Diagnosis is required
+        </small>
+      </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Medicine</mat-label>
-            <input
-              matInput
-              formControlName="medicine" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Dosage</mat-label>
-            <input
-              matInput
-              formControlName="dosage" />
-          </mat-form-field>
-
-          <div class="file-upload">
-            <button
-              type="button"
-              mat-stroked-button
-              (click)="fileInput.click()">
-              <mat-icon>attach_file</mat-icon>
-              {{ selectedFile ? selectedFile.name : 'Attach Photo' }}
-            </button>
-            <input
-              #fileInput
-              type="file"
-              (change)="onFileSelected($event)"
-              style="display: none"
-              accept="image/*" />
-          </div>
+      <div class="flex gap-4">
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="medicine"
+            class="font-medium">
+            Medicine
+          </label>
+          <input
+            pInputText
+            id="medicine"
+            formControlName="medicine"
+            class="w-full" />
         </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()">
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          color="primary"
+
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="dosage"
+            class="font-medium">
+            Dosage
+          </label>
+          <input
+            pInputText
+            id="dosage"
+            formControlName="dosage"
+            class="w-full" />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Attachment (Photo)</label>
+        <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-paperclip"
+            label="Select Photo"
+            class="p-button-outlined p-button-secondary p-button-sm"
+            (click)="fileInput.click()"></button>
+          <span class="text-sm text-slate-600 truncate max-w-[200px]">
+            {{ selectedFile?.name || 'No file selected' }}
+          </span>
+          <input
+            #fileInput
+            type="file"
+            (change)="onFileSelected($event)"
+            style="display: none"
+            accept="image/*" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Save"
           type="submit"
-          [disabled]="form.invalid || isUploading">
-          {{ isUploading ? 'Uploading...' : 'Save' }}
-        </button>
-      </mat-dialog-actions>
+          [loading]="isUploading()"
+          [disabled]="form.invalid" />
+      </div>
     </form>
   `,
-  styles: [
-    `
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        min-width: 350px;
-      }
-      mat-form-field {
-        width: 100%;
-      }
-      .file-upload {
-        margin-top: 8px;
-      }
-    `,
-  ],
 })
 export class DiseaseDialogComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private housesService = inject(HousesService);
+  private personnelService = inject(PersonnelService);
+  private fileUploadService = inject(FileUploadService);
+  public ref = inject(DynamicDialogRef);
+
   form: FormGroup;
   houses = signal<House[]>([]);
   personnel = signal<Personnel[]>([]);
   selectedFile: File | null = null;
-  isUploading = false;
+  isUploading = signal<boolean>(false);
 
-  constructor(
-    private fb: FormBuilder,
-    private housesService: HousesService,
-    private personnelService: PersonnelService,
-    private fileUploadService: FileUploadService,
-    public dialogRef: MatDialogRef<DiseaseDialogComponent>,
-  ) {
+  constructor() {
     this.form = this.fb.group({
       houseId: [null, Validators.required],
       personnelId: [null],
@@ -182,28 +193,34 @@ export class DiseaseDialogComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-    this.isUploading = true;
+    this.isUploading.set(true);
     const formValue = this.form.value;
 
     if (this.selectedFile) {
       this.fileUploadService.uploadFile(this.selectedFile, 'user-uploads').subscribe({
         next: (response) => {
-          const dto = { ...formValue, attachmentUrl: `${response.bucket}/${response.fileName}` };
-          this.dialogRef.close(dto);
+          const dto = {
+            ...formValue,
+            attachmentUrl: `${response.bucket}/${response.fileName}`,
+          };
+          this.ref.close(dto);
         },
         error: () => {
-          this.isUploading = false;
-          alert('Failed to upload image');
+          this.isUploading.set(false);
+          console.error('Upload failed');
         },
       });
     } else {
-      this.dialogRef.close(formValue);
+      this.ref.close(formValue);
     }
   }
 
   onCancel() {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }

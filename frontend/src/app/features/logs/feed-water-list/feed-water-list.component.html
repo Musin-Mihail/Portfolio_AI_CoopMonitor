@@ -1,107 +1,80 @@
-<div class="container">
-  <div class="header">
-    <h1>Feed & Water Logs</h1>
-    <button
-      mat-flat-button
-      color="primary"
-      (click)="openDialog()">
-      <mat-icon>add</mat-icon>
-      Add Record
-    </button>
+<div class="card p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold m-0">Feed & Water Logs</h1>
+    <p-button
+      label="Add Record"
+      icon="pi pi-plus"
+      (onClick)="openDialog()" />
   </div>
 
-  <table
-    mat-table
-    [dataSource]="dataSource()"
-    class="mat-elevation-z8">
-    <ng-container matColumnDef="date">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Date
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.date | date: "shortDate" }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="houseName">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        House
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.houseName }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="feedName">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Feed
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.feedName || "-" }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="feedQty">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Feed (kg)
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.feedQuantityKg }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="waterQty">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Water (L)
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.waterQuantityLiters }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Actions
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="deleteRecord(element.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-
-    <tr
-      mat-header-row
-      *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+  <p-table
+    [value]="dataSource()"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [paginator]="true"
+    [rows]="10"
+    stripedRows>
+    <ng-template pTemplate="header">
+      <tr>
+        <th
+          pSortableColumn="date"
+          style="width: 20%">
+          Date
+          <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="houseName"
+          style="width: 20%">
+          House
+          <p-sortIcon field="houseName" />
+        </th>
+        <th
+          pSortableColumn="feedName"
+          style="width: 20%">
+          Feed
+          <p-sortIcon field="feedName" />
+        </th>
+        <th
+          pSortableColumn="feedQuantityKg"
+          style="width: 15%">
+          Feed (kg)
+          <p-sortIcon field="feedQuantityKg" />
+        </th>
+        <th
+          pSortableColumn="waterQuantityLiters"
+          style="width: 15%">
+          Water (L)
+          <p-sortIcon field="waterQuantityLiters" />
+        </th>
+        <th style="width: 10%">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-element>
+      <tr>
+        <td>{{ element.date | date: "shortDate" }}</td>
+        <td>{{ element.houseName }}</td>
+        <td>{{ element.feedName || "-" }}</td>
+        <td class="font-medium text-amber-700">{{ element.feedQuantityKg }}</td>
+        <td class="font-medium text-blue-600">{{ element.waterQuantityLiters }}</td>
+        <td>
+          <p-button
+            icon="pi pi-trash"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            (onClick)="deleteRecord(element.id)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td
+          colspan="6"
+          class="text-center p-4">
+          No feed & water records found.
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
