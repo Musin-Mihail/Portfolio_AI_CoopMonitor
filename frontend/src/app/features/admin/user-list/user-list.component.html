@@ -1,40 +1,71 @@
-<div class="flex justify-end mb-4">
-  <p-button
-    label="Новая запись"
-    icon="pi pi-plus"
-    severity="contrast"
-    (onClick)="openDialog()" />
+<div class="flex justify-end mb-6">
+  <button
+    (click)="openDialog()"
+    class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+    <i class="pi pi-plus text-xs"></i>
+    <span>Новая запись</span>
+  </button>
 </div>
 
 <p-table
   [value]="dataSource()"
-  stripedRows>
+  styleClass="clean-table"
+  [rowHover]="true"
+  [paginator]="true"
+  [rows]="10">
   <ng-template pTemplate="header">
     <tr>
-      <th>Username</th>
-      <th>Email</th>
-      <th>Role</th>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox />
+      </th>
+      <th pSortableColumn="userName">User</th>
+      <th pSortableColumn="role">Role</th>
       <th>Linked Personnel</th>
-      <th>Actions</th>
+      <th style="width: 6rem"></th>
     </tr>
   </ng-template>
   <ng-template
     pTemplate="body"
     let-user>
-    <tr>
-      <td class="font-medium">{{ user.userName }}</td>
-      <td>{{ user.email }}</td>
+    <tr class="hover:bg-slate-50/50 transition-colors">
       <td>
-        <span class="bg-slate-100 px-2 py-1 rounded text-sm font-semibold">{{ user.role }}</span>
+        <p-tableCheckbox [value]="user" />
       </td>
-      <td>{{ user.personnelName || "Not linked" }}</td>
       <td>
-        <p-button
-          icon="pi pi-trash"
-          [text]="true"
-          severity="danger"
-          (onClick)="deleteUser(user.id)"
-          [disabled]="user.userName === 'admin'" />
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+            <i class="pi pi-user text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-semibold text-sm text-[#1A1C21]">{{ user.userName }}</span>
+            <span class="text-[11px] text-slate-400">{{ user.email }}</span>
+          </div>
+        </div>
+      </td>
+      <td>
+        <span
+          class="px-2.5 py-1 rounded-md text-xs font-medium border"
+          [class.bg-purple-50]="user.role === 'Admin'"
+          [class.text-purple-700]="user.role === 'Admin'"
+          [class.border-purple-100]="user.role === 'Admin'"
+          [class.bg-slate-50]="user.role !== 'Admin'"
+          [class.text-slate-600]="user.role !== 'Admin'"
+          [class.border-slate-100]="user.role !== 'Admin'">
+          {{ user.role }}
+        </span>
+      </td>
+      <td class="text-sm text-slate-600">
+        {{ user.personnelName || "Not linked" }}
+      </td>
+      <td>
+        <div class="flex items-center justify-end gap-2 text-slate-400">
+          <button
+            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 hover:text-red-500 transition-colors"
+            (click)="deleteUser(user.id)"
+            [disabled]="user.userName === 'admin'">
+            <i class="pi pi-trash text-sm"></i>
+          </button>
+        </div>
       </td>
     </tr>
   </ng-template>

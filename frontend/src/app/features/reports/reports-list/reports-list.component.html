@@ -1,104 +1,96 @@
-<div class="card p-6">
-  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-    <h1 class="text-2xl font-semibold m-0 text-slate-800 dark:text-slate-100">Reports Archive</h1>
-    <div class="flex gap-2">
-      <p-button
-        icon="pi pi-refresh"
-        (onClick)="loadReports()"
-        [loading]="isLoading()"
-        [rounded]="true"
-        [text]="true"
-        severity="secondary"
-        pTooltip="Refresh List" />
-      <p-button
-        label="Run Daily Report"
-        icon="pi pi-play"
-        (onClick)="generateReport()"
-        [loading]="isGenerating()"
-        severity="primary" />
-    </div>
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-[28px] font-bold m-0 text-[#1A1C21] font-serif">Reports Archive</h1>
+  <div class="flex gap-3">
+    <button
+      (click)="loadReports()"
+      class="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors">
+      <i
+        class="pi pi-refresh"
+        [class.pi-spin]="isLoading()"></i>
+    </button>
+    <button
+      (click)="generateReport()"
+      [disabled]="isGenerating()"
+      class="bg-[#1A1C21] text-white px-5 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+      <i
+        class="pi"
+        [class.pi-play]="!isGenerating()"
+        [class.pi-spin]="isGenerating()"
+        [class.pi-spinner]="isGenerating()"></i>
+      <span>Run Daily Report</span>
+    </button>
   </div>
-
-  <p-table
-    [value]="dataSource()"
-    [tableStyle]="{ 'min-width': '50rem' }"
-    [paginator]="true"
-    [rows]="10"
-    [loading]="isLoading()"
-    stripedRows>
-    <ng-template pTemplate="header">
-      <tr>
-        <th
-          pSortableColumn="reportDate"
-          style="width: 20%">
-          Report Date
-          <p-sortIcon field="reportDate" />
-        </th>
-        <th
-          pSortableColumn="reportType"
-          style="width: 15%">
-          Type
-          <p-sortIcon field="reportType" />
-        </th>
-        <th
-          pSortableColumn="houseName"
-          style="width: 20%">
-          House
-          <p-sortIcon field="houseName" />
-        </th>
-        <th
-          pSortableColumn="generatedAt"
-          style="width: 20%">
-          Generated At
-          <p-sortIcon field="generatedAt" />
-        </th>
-        <th
-          pSortableColumn="status"
-          style="width: 10%">
-          Status
-          <p-sortIcon field="status" />
-        </th>
-        <th style="width: 15%">Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template
-      pTemplate="body"
-      let-report>
-      <tr>
-        <td>{{ report.reportDate | date: "mediumDate" }}</td>
-        <td>
-          <span
-            class="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded text-xs font-medium uppercase tracking-wider">
-            {{ report.reportType }}
-          </span>
-        </td>
-        <td>{{ report.houseName }}</td>
-        <td class="text-sm text-slate-500">{{ report.generatedAt | date: "medium" }}</td>
-        <td>
-          <p-tag
-            [value]="report.status"
-            [severity]="getSeverity(report.status)"
-            [rounded]="true" />
-        </td>
-        <td>
-          <p-button
-            label="View"
-            icon="pi pi-eye"
-            size="small"
-            [text]="true"
-            [disabled]="report.status !== 'Success'"
-            (onClick)="viewReport(report)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td
-          colspan="6"
-          class="text-center p-8 text-slate-500">
-          No reports found.
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
 </div>
+
+<p-table
+  [value]="dataSource()"
+  styleClass="clean-table"
+  [rowHover]="true"
+  [paginator]="true"
+  [rows]="10"
+  [loading]="isLoading()">
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox />
+      </th>
+      <th pSortableColumn="reportDate">
+        Report Date
+        <p-sortIcon field="reportDate" />
+      </th>
+      <th pSortableColumn="reportType">
+        Type
+        <p-sortIcon field="reportType" />
+      </th>
+      <th pSortableColumn="houseName">
+        House
+        <p-sortIcon field="houseName" />
+      </th>
+      <th pSortableColumn="status">Status</th>
+      <th style="width: 6rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-report>
+    <tr class="hover:bg-slate-50/50 transition-colors">
+      <td>
+        <p-tableCheckbox [value]="report" />
+      </td>
+      <td class="font-medium text-[#1A1C21]">
+        {{ report.reportDate | date: "mediumDate" }}
+        <div class="text-[11px] text-slate-400 font-normal">Gen: {{ report.generatedAt | date: "shortTime" }}</div>
+      </td>
+      <td>
+        <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-[11px] font-bold uppercase tracking-wider">
+          {{ report.reportType }}
+        </span>
+      </td>
+      <td class="text-sm text-slate-600">{{ report.houseName }}</td>
+      <td>
+        <span
+          class="flex items-center gap-1.5 text-xs font-medium"
+          [class.text-green-600]="report.status === 'Success'"
+          [class.text-red-500]="report.status === 'Failed'"
+          [class.text-amber-500]="report.status === 'Pending'">
+          <i
+            class="pi"
+            [class.pi-check-circle]="report.status === 'Success'"
+            [class.pi-times-circle]="report.status === 'Failed'"
+            [class.pi-clock]="report.status === 'Pending'"></i>
+          {{ report.status }}
+        </span>
+      </td>
+      <td>
+        <div class="flex items-center justify-end gap-2 text-slate-400">
+          <button
+            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 hover:text-slate-800 transition-colors"
+            [disabled]="report.status !== 'Success'"
+            (click)="viewReport(report)">
+            <i class="pi pi-eye text-sm"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -1,19 +1,14 @@
-<div class="flex justify-between items-center mb-4">
-  <h2 class="text-lg font-medium text-slate-600">Журнал падежа</h2>
-  <p-button
-    label="Новая запись"
-    icon="pi pi-plus"
-    severity="contrast"
-    (onClick)="openDialog()" />
-</div>
-
 <p-table
   [value]="dataSource()"
+  styleClass="clean-table"
+  [rowHover]="true"
   [paginator]="true"
-  [rows]="10"
-  stripedRows>
+  [rows]="10">
   <ng-template pTemplate="header">
     <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox />
+      </th>
       <th pSortableColumn="date">
         Date
         <p-sortIcon field="date" />
@@ -28,30 +23,45 @@
       </th>
       <th>Reason</th>
       <th>Photo</th>
-      <th>Actions</th>
+      <th style="width: 6rem"></th>
     </tr>
   </ng-template>
   <ng-template
     pTemplate="body"
     let-element>
-    <tr>
-      <td>{{ element.date | date: "shortDate" }}</td>
-      <td>{{ element.houseName }}</td>
-      <td class="font-bold text-red-600">{{ element.quantity }}</td>
-      <td>{{ element.reason || "-" }}</td>
+    <tr class="hover:bg-slate-50/50 transition-colors">
+      <td>
+        <p-tableCheckbox [value]="element" />
+      </td>
+      <td class="font-medium text-[#1A1C21]">
+        {{ element.date | date: "shortDate" }}
+      </td>
+      <td class="text-sm text-slate-600">
+        {{ element.houseName }}
+      </td>
+      <td>
+        <span class="font-bold text-red-600 bg-red-50 px-2 py-1 rounded text-xs">-{{ element.quantity }}</span>
+      </td>
+      <td class="text-sm text-slate-500">
+        {{ element.reason || "—" }}
+      </td>
       <td>
         <p-button
           *ngIf="element.attachmentUrl"
           icon="pi pi-image"
           [text]="true"
+          severity="secondary"
+          styleClass="w-8 h-8 !p-0"
           (onClick)="viewPhoto(element.attachmentUrl)" />
       </td>
       <td>
-        <p-button
-          icon="pi pi-trash"
-          [text]="true"
-          severity="danger"
-          (onClick)="deleteRecord(element.id)" />
+        <div class="flex items-center justify-end gap-2 text-slate-400">
+          <button
+            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 hover:text-red-500 transition-colors"
+            (click)="deleteRecord(element.id)">
+            <i class="pi pi-trash text-sm"></i>
+          </button>
+        </div>
       </td>
     </tr>
   </ng-template>

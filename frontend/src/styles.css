@@ -1,7 +1,5 @@
-/* Сначала внешние ресурсы и шрифты */
+/* frontend/src/styles.css */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-
-/* Затем фреймворк и иконки */
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
 
@@ -26,14 +24,38 @@
   --p-content-border-radius: 16px;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
+/* Custom Table Styles for "Clean" look */
+.clean-table .p-datatable-header {
   background: transparent;
+  border: none;
+  padding: 0 0 1.5rem 0;
 }
-::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 99px;
+
+.clean-table .p-datatable-thead > tr > th {
+  background: transparent;
+  border-bottom: 1px solid #f1f5f9;
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 1rem 0.5rem;
+}
+
+.clean-table .p-datatable-tbody > tr > td {
+  border-bottom: 1px solid #f1f5f9;
+  padding: 1rem 0.5rem;
+  color: #1e293b;
+}
+
+.clean-table .p-datatable-tbody > tr:last-child > td {
+  border-bottom: none;
+}
+
+/* Checkbox alignment */
+.p-checkbox {
+  width: 20px;
+  height: 20px;
+}
+.p-checkbox .p-checkbox-box {
+  border-color: #cbd5e1;
+  border-radius: 6px;
 }

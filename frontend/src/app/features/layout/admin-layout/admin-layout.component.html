@@ -1,29 +1,40 @@
-<div class="card p-6 min-h-full">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-semibold m-0 text-slate-800">Администрирование</h1>
+<div class="h-full flex flex-col p-6">
+  <h1 class="text-[32px] font-bold m-0 text-[#1A1C21] mb-8 font-serif">Администрирование</h1>
+
+  <div class="mb-8">
+    <div class="bg-[#F1F5F9] p-1 rounded-xl inline-flex">
+      <button
+        (click)="onTabChange('audit')"
+        class="px-8 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+        [class.bg-white]="activeTab() === 'audit'"
+        [class.shadow-sm]="activeTab() === 'audit'"
+        [class.text-[#1A1C21]]="activeTab() === 'audit'"
+        [class.text-slate-500]="activeTab() !== 'audit'">
+        Алерты
+      </button>
+      <button
+        (click)="onTabChange('users')"
+        class="px-8 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+        [class.bg-white]="activeTab() === 'users'"
+        [class.shadow-sm]="activeTab() === 'users'"
+        [class.text-[#1A1C21]]="activeTab() === 'users'"
+        [class.text-slate-500]="activeTab() !== 'users'">
+        Логи
+      </button>
+      <button
+        (click)="onTabChange('settings')"
+        class="px-8 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+        [class.bg-white]="activeTab() === 'settings'"
+        [class.shadow-sm]="activeTab() === 'settings'"
+        [class.text-[#1A1C21]]="activeTab() === 'settings'"
+        [class.text-slate-500]="activeTab() !== 'settings'">
+        Персонал
+        <span class="ml-1 text-xs opacity-60">08</span>
+      </button>
+    </div>
   </div>
 
-  <div class="mb-6">
-    <p-tabs [value]="activeTab()">
-      <p-tablist>
-        <p-tab
-          value="audit"
-          (click)="onTabChange('audit')">
-          Аудит и Логи
-        </p-tab>
-        <p-tab
-          value="users"
-          (click)="onTabChange('users')">
-          Пользователи
-        </p-tab>
-        <p-tab
-          value="settings"
-          (click)="onTabChange('settings')">
-          Статус системы
-        </p-tab>
-      </p-tablist>
-    </p-tabs>
+  <div class="flex-1 bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 overflow-hidden">
+    <router-outlet />
   </div>
-
-  <router-outlet />
 </div>
