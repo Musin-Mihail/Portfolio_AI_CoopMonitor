@@ -2,13 +2,16 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileUploadResponse } from '../models/logs.models';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileUploadService {
   private http = inject(HttpClient);
+  private authService = inject(AuthService); // Inject AuthService
   private readonly API_URL = '/api/Files/upload';
+  private readonly DOWNLOAD_API_URL = '/api/Files/download';
 
   uploadFile(file: File, bucket: string = 'user-uploads'): Observable<FileUploadResponse> {
     const formData = new FormData();
@@ -19,11 +22,19 @@ export class FileUploadService {
   }
 
   /**
-   * Helper to format the full URL for viewing/downloading if needed.
-   * Currently backend returns path relative to bucket, frontend might need to prefix API proxy.
+   * Generates a URL for viewing/downloading that includes the Auth Token.
+   * Required for <a> tags, window.open(), and <video> src attributes.
    */
   getDownloadUrl(bucket: string, filePath: string): string {
-    // Encodes the file path to handle slashes correctly in the URL segment
-    return `/api/Files/download/${bucket}/${filePath}`;
+    const token = this.authService.getToken();
+    // Encode path components to handle spaces/special chars safely
+    const encodedBucket = encodeURIComponent(bucket);
+    // filePath might contain slashes (folders), we want to preserve them but encode segments
+    const encodedPath = filePath
+      .split('/')
+      .map((segment) => encodeURIComponent(segment))
+      .join('/');
+
+    return `${this.DOWNLOAD_API_URL}/${encodedBucket}/${encodedPath}?access_token=${token}`;
   }
 }

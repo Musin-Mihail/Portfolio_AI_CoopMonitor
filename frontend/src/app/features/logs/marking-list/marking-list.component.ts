@@ -8,6 +8,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MarkingService } from '../../../core/services/marking.service';
 import { MarkingRecord } from '../../../core/models/logs.models';
 import { MarkingDialogComponent } from '../marking-dialog/marking-dialog.component';
+import { FileUploadService } from '../../../core/services/file-upload.service';
 
 @Component({
   selector: 'app-marking-list',
@@ -52,6 +53,7 @@ import { MarkingDialogComponent } from '../marking-dialog/marking-dialog.compone
 })
 export class MarkingListComponent implements OnInit {
   private service = inject(MarkingService);
+  private fileService = inject(FileUploadService); // Inject FileUploadService
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
@@ -100,9 +102,12 @@ export class MarkingListComponent implements OnInit {
   }
 
   getDownloadUrl(relativeUrl: string): string {
+    // URL format from backend is "bucket/path/to/file.jpg"
     const parts = relativeUrl.split('/');
     const bucket = parts[0];
     const path = parts.slice(1).join('/');
-    return `/api/Files/download/${bucket}/${path}`;
+
+    // Use the service to generate URL with Token
+    return this.fileService.getDownloadUrl(bucket, path);
   }
 }

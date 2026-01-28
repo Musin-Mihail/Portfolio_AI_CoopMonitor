@@ -7,6 +7,7 @@ TARGETS = {
     "ai-service": "context_ai.md",
     "docker": "context_infrastructure.md",
 }
+
 IGNORE_DIRS = {
     ".git",
     ".vs",
@@ -26,7 +27,6 @@ IGNORE_DIRS = {
     "__pycache__",
     ".pytest_cache",
     "site-packages",
-    "logs",
     "coverage",
     "test-results",
     "migrations",
@@ -37,8 +37,8 @@ IGNORE_DIRS = {
     ".terraform",
     "coverage",
     "lib",
-    "Logs",
 }
+
 IGNORE_FILE_PATTERNS = {
     "package-lock.json",
     "yarn.lock",
@@ -85,8 +85,26 @@ IGNORE_FILE_PATTERNS = {
 }
 
 
+def should_ignore_dir(root_path, dir_name):
+    """
+    Проверяет, нужно ли игнорировать папку с учетом ее расположения.
+    """
+    if dir_name in IGNORE_DIRS:
+        return True
+
+    if dir_name.lower() == "logs":
+        norm_root = root_path.replace("\\", "/").lower()
+
+        if "frontend/src" in norm_root:
+            return False
+
+        return True
+
+    return False
+
+
 def should_ignore(name):
-    """Проверяет имя файла/папки по списку паттернов."""
+    """Проверяет имя файла по списку паттернов."""
     for pattern in IGNORE_FILE_PATTERNS:
         if fnmatch.fnmatch(name, pattern):
             return True
@@ -107,7 +125,8 @@ def get_file_tree(start_path):
     """Генерирует дерево файлов в виде строки."""
     tree_str = []
     for root, dirs, files in os.walk(start_path):
-        dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
+        dirs[:] = [d for d in dirs if not should_ignore_dir(root, d)]
+
         level = root.replace(start_path, "").count(os.sep)
         indent = "  " * level
         tree_str.append(f"{indent}{os.path.basename(root)}/")
@@ -152,7 +171,8 @@ def process_folder(folder_name, output_file):
         outfile.write("## File Contents\n\n")
         file_count = 0
         for root, dirs, files in os.walk(folder_name):
-            dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
+            dirs[:] = [d for d in dirs if not should_ignore_dir(root, d)]
+
             for file in files:
                 if should_ignore(file):
                     continue

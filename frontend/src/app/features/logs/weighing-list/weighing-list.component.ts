@@ -8,6 +8,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { WeighingService } from '../../../core/services/weighing.service';
 import { WeighingRecord } from '../../../core/models/logs.models';
 import { WeighingDialogComponent } from '../weighing-dialog/weighing-dialog.component';
+import { FileUploadService } from '../../../core/services/file-upload.service';
 
 @Component({
   selector: 'app-weighing-list',
@@ -41,6 +42,7 @@ import { WeighingDialogComponent } from '../weighing-dialog/weighing-dialog.comp
 })
 export class WeighingListComponent implements OnInit {
   private service = inject(WeighingService);
+  private fileService = inject(FileUploadService); // Inject FileUploadService
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
@@ -89,11 +91,12 @@ export class WeighingListComponent implements OnInit {
   }
 
   getDownloadUrl(relativeUrl: string): string {
-    // Backend stores "bucket/filename". We need to call API proxy.
-    // Assuming relativeUrl is "user-uploads/xxx.mp4"
+    // Backend stores "bucket/filename".
     const parts = relativeUrl.split('/');
     const bucket = parts[0];
     const path = parts.slice(1).join('/');
-    return `/api/Files/download/${bucket}/${path}`;
+
+    // Use the service to generate URL with Token
+    return this.fileService.getDownloadUrl(bucket, path);
   }
 }
