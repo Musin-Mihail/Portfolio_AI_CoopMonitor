@@ -19,6 +19,20 @@ export class MarkingService {
   }
 
   createRecord(dto: CreateMarkingDto): Observable<MarkingRecord> {
+    const formData = this.createFormData(dto);
+    return this.http.post<MarkingRecord>(this.API_URL, formData);
+  }
+
+  updateRecord(id: number, dto: CreateMarkingDto): Observable<void> {
+    const formData = this.createFormData(dto);
+    return this.http.put<void>(`${this.API_URL}/${id}`, formData);
+  }
+
+  deleteRecord(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${id}`);
+  }
+
+  private createFormData(dto: CreateMarkingDto): FormData {
     const formData = new FormData();
     formData.append('houseId', dto.houseId.toString());
     if (dto.personnelId) formData.append('personnelId', dto.personnelId.toString());
@@ -29,15 +43,9 @@ export class MarkingService {
     if (dto.color) formData.append('color', dto.color);
     if (dto.ringNumber) formData.append('ringNumber', dto.ringNumber);
 
-    // Backend expects 'photoFile'
     if (dto.photoFile) {
       formData.append('photoFile', dto.photoFile);
     }
-
-    return this.http.post<MarkingRecord>(this.API_URL, formData);
-  }
-
-  deleteRecord(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+    return formData;
   }
 }

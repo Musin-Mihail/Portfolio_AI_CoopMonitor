@@ -2,7 +2,7 @@
   <h2 class="text-lg font-medium text-slate-600">Журнал маркировки</h2>
   <button
     (click)="openDialog()"
-    class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+    class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors">
     <i class="pi pi-plus text-xs"></i>
     <span>Новая запись</span>
   </button>
@@ -16,32 +16,24 @@
   stripedRows>
   <ng-template pTemplate="header">
     <tr>
-      <th
-        pSortableColumn="date"
-        style="width: 15%">
+      <th pSortableColumn="date">
         Date
         <p-sortIcon field="date" />
       </th>
-      <th
-        pSortableColumn="houseName"
-        style="width: 15%">
+      <th pSortableColumn="houseName">
         House
         <p-sortIcon field="houseName" />
       </th>
-      <th
-        pSortableColumn="birdAgeDays"
-        style="width: 10%">
+      <th pSortableColumn="birdAgeDays">
         Age
         <p-sortIcon field="birdAgeDays" />
       </th>
-      <th
-        pSortableColumn="markingType"
-        style="width: 15%">
+      <th pSortableColumn="markingType">
         Type
         <p-sortIcon field="markingType" />
       </th>
-      <th style="width: 30%">Details</th>
-      <th style="width: 15%">Actions</th>
+      <th>Details</th>
+      <th style="width: 8rem">Actions</th>
     </tr>
   </ng-template>
   <ng-template
@@ -79,8 +71,13 @@
             [rounded]="true"
             [text]="true"
             severity="secondary"
-            (onClick)="viewPhoto(element.attachmentUrl)"
-            pTooltip="View Photo" />
+            (onClick)="viewPhoto(element.attachmentUrl)" />
+          <p-button
+            icon="pi pi-pencil"
+            [rounded]="true"
+            [text]="true"
+            severity="secondary"
+            (onClick)="openDialog(element)" />
           <p-button
             icon="pi pi-trash"
             [rounded]="true"
@@ -88,15 +85,6 @@
             severity="danger"
             (onClick)="deleteRecord(element.id)" />
         </div>
-      </td>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td
-        colspan="6"
-        class="text-center p-4">
-        No marking records found.
       </td>
     </tr>
   </ng-template>

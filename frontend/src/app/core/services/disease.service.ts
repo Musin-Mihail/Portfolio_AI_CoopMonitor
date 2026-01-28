@@ -22,6 +22,10 @@ export class DiseaseService {
     return this.http.post<DiseaseRecord>(this.API_URL, dto);
   }
 
+  updateRecord(id: number, dto: CreateDiseaseDto): Observable<void> {
+    return this.http.put<void>(`${this.API_URL}/${id}`, dto);
+  }
+
   deleteRecord(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }

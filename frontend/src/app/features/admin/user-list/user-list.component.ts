@@ -33,10 +33,35 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  openDialog(): void {
-    const ref = this.dialogService.open(UserDialogComponent, { header: 'Create User', width: '400px' });
+  openDialog(user?: UserDto): void {
+    const ref = this.dialogService.open(UserDialogComponent, {
+      header: user ? 'Edit User' : 'Create User',
+      width: '400px',
+      data: user || null,
+    });
+
     ref?.onClose.subscribe((result) => {
-      if (result) this.service.createUser(result).subscribe(() => this.loadData());
+      if (result) {
+        if (user) {
+          this.service.updateUser(user.id, result).subscribe({
+            next: () => {
+              this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User updated' });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update user' }),
+          });
+        } else {
+          this.service.createUser(result).subscribe({
+            next: () => {
+              this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User created' });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create user' }),
+          });
+        }
+      }
     });
   }
 

@@ -37,14 +37,28 @@ export class WeighingListComponent implements OnInit {
     });
   }
 
-  openDialog() {
+  openDialog(record?: WeighingRecord) {
     const ref = this.dialogService.open(WeighingDialogComponent, {
-      header: 'Add Weighing Record',
+      header: record ? 'Edit Weighing Record' : 'Add Weighing Record',
       width: '450px',
       modal: true,
+      data: record || null,
     });
+
     ref?.onClose.subscribe((result) => {
-      if (result) this.service.createRecord(result).subscribe(() => this.loadData());
+      if (result) {
+        if (record) {
+          this.service.updateRecord(record.id, result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.loadData();
+          });
+        } else {
+          this.service.createRecord(result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.loadData();
+          });
+        }
+      }
     });
   }
 

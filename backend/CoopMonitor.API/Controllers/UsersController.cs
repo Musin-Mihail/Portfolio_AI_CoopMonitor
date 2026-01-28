@@ -49,7 +49,6 @@ public class UsersController : ControllerBase
         {
             var roles = await _userManager.GetRolesAsync(user);
             var mainRole = roles.FirstOrDefault() ?? "None";
-
             var personnel = personnels.FirstOrDefault(p => p.UserId == user.Id);
 
             userDtos.Add(new UserDto(
@@ -69,49 +68,68 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto dto)
     {
         if (await _userManager.FindByNameAsync(dto.UserName) != null)
-        {
             return BadRequest("Username is already taken.");
-        }
 
         if (await _userManager.FindByEmailAsync(dto.Email) != null)
-        {
             return BadRequest("Email is already taken.");
-        }
 
-        var user = new User
-        {
-            UserName = dto.UserName,
-            Email = dto.Email
-        };
-
+        var user = new User { UserName = dto.UserName, Email = dto.Email };
         var result = await _userManager.CreateAsync(user, dto.Password);
 
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors);
-        }
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
         if (!await _roleManager.RoleExistsAsync(dto.Role))
-        {
             await _roleManager.CreateAsync(new IdentityRole(dto.Role));
-        }
+
         await _userManager.AddToRoleAsync(user, dto.Role);
 
         // Audit
         var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var adminName = User.Identity?.Name;
-        await _auditService.LogAsync(adminId, adminName, "CreateUser", user.UserName, $"Role: {dto.Role}");
+        await _auditService.LogAsync(adminId, User.Identity?.Name, "CreateUser", user.UserName, $"Role: {dto.Role}");
 
-        _logger.LogInformation("User created: {User}", dto.UserName);
+        return Ok(new UserDto(user.Id, user.UserName, user.Email, dto.Role, null, null));
+    }
 
-        return Ok(new UserDto(
-            user.Id,
-            user.UserName,
-            user.Email,
-            dto.Role,
-            null,
-            null
-        ));
+    // НОВЫЙ МЕТОД: Редактирование пользователя
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(string id, UpdateUserDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return NotFound();
+
+        // Проверка уникальности email, если он изменился
+        if (user.Email != dto.Email && await _userManager.FindByEmailAsync(dto.Email) != null)
+        {
+            return BadRequest("Email is already taken.");
+        }
+
+        user.UserName = dto.UserName;
+        user.Email = dto.Email;
+
+        // Смена пароля, если передан
+        if (!string.IsNullOrEmpty(dto.Password))
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+        }
+
+        await _userManager.UpdateAsync(user);
+
+        // Обновление роли
+        var roles = await _userManager.GetRolesAsync(user);
+        if (!roles.Contains(dto.Role))
+        {
+            await _userManager.RemoveFromRolesAsync(user, roles);
+            if (!await _roleManager.RoleExistsAsync(dto.Role))
+                await _roleManager.CreateAsync(new IdentityRole(dto.Role));
+            await _userManager.AddToRoleAsync(user, dto.Role);
+        }
+
+        var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _auditService.LogAsync(adminId, User.Identity?.Name, "UpdateUser", user.UserName);
+
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
@@ -121,30 +139,18 @@ public class UsersController : ControllerBase
         if (user == null) return NotFound();
 
         if (User.Identity?.Name == user.UserName)
-        {
             return BadRequest("Cannot delete your own account.");
-        }
 
+        // Отвязываем персонал
         var personnel = await _context.Personnels.FirstOrDefaultAsync(p => p.UserId == id);
-        if (personnel != null)
-        {
-            personnel.UserId = null;
-        }
+        if (personnel != null) personnel.UserId = null;
 
-        var result = await _userManager.DeleteAsync(user);
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors);
-        }
-
+        await _userManager.DeleteAsync(user);
         await _context.SaveChangesAsync();
 
-        // Audit
         var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var adminName = User.Identity?.Name;
-        await _auditService.LogAsync(adminId, adminName, "DeleteUser", user.UserName);
+        await _auditService.LogAsync(adminId, User.Identity?.Name, "DeleteUser", user.UserName);
 
-        _logger.LogInformation("User deleted: {User}", user.UserName);
         return NoContent();
     }
 }

@@ -35,20 +35,39 @@ export class MortalityListComponent implements OnInit {
       error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error loading records' }),
     });
   }
-  openDialog(): void {
+
+  openDialog(record?: MortalityRecord): void {
     const ref = this.dialogService.open(MortalityDialogComponent, {
-      header: 'Add Mortality Record',
+      header: record ? 'Edit Mortality Record' : 'Add Mortality Record',
       width: '450px',
       modal: true,
+      data: record || null,
     });
-    ref?.onClose.subscribe((res) => res && this.service.createRecord(res).subscribe(() => this.loadData()));
+
+    ref?.onClose.subscribe((res) => {
+      if (res) {
+        if (record) {
+          this.service.updateRecord(record.id, res).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.loadData();
+          });
+        } else {
+          this.service.createRecord(res).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.loadData();
+          });
+        }
+      }
+    });
   }
+
   deleteRecord(id: number): void {
     this.confirmationService.confirm({
       message: 'Delete record?',
       accept: () => this.service.deleteRecord(id).subscribe(() => this.loadData()),
     });
   }
+
   viewPhoto(url: string | undefined): void {
     if (!url) return;
     const [bucket, ...rest] = url.split('/');

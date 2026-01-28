@@ -36,14 +36,28 @@ export class MarkingListComponent implements OnInit {
     });
   }
 
-  openDialog() {
+  openDialog(record?: MarkingRecord) {
     const ref = this.dialogService.open(MarkingDialogComponent, {
-      header: 'New Marking Record',
+      header: record ? 'Edit Marking Record' : 'New Marking Record',
       width: '500px',
       modal: true,
+      data: record || null,
     });
+
     ref?.onClose.subscribe((result) => {
-      if (result) this.service.createRecord(result).subscribe(() => this.loadData());
+      if (result) {
+        if (record) {
+          this.service.updateRecord(record.id, result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.loadData();
+          });
+        } else {
+          this.service.createRecord(result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.loadData();
+          });
+        }
+      }
     });
   }
 

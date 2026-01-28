@@ -33,14 +33,28 @@ export class FeedWaterListComponent implements OnInit {
     });
   }
 
-  openDialog() {
+  openDialog(record?: FeedWaterRecord) {
     const ref = this.dialogService.open(FeedWaterDialogComponent, {
-      header: 'Add Feed & Water Record',
+      header: record ? 'Edit Feed & Water Record' : 'Add Feed & Water Record',
       width: '500px',
       modal: true,
+      data: record || null,
     });
+
     ref?.onClose.subscribe((result) => {
-      if (result) this.service.createRecord(result).subscribe(() => this.loadData());
+      if (result) {
+        if (record) {
+          this.service.updateRecord(record.id, result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.loadData();
+          });
+        } else {
+          this.service.createRecord(result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.loadData();
+          });
+        }
+      }
     });
   }
 

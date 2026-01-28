@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserDto, CreateUserDto } from '../models/admin.models';
+import { UserDto, CreateUserDto, UpdateUserDto } from '../models/admin.models';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,10 @@ export class UsersService {
 
   createUser(dto: CreateUserDto): Observable<UserDto> {
     return this.http.post<UserDto>(this.API_URL, dto);
+  }
+
+  updateUser(id: string, dto: UpdateUserDto): Observable<void> {
+    return this.http.put<void>(`${this.API_URL}/${id}`, dto);
   }
 
   deleteUser(id: string): Observable<void> {

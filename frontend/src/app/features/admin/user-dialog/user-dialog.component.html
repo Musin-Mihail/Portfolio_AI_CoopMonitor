@@ -44,6 +44,11 @@
       for="password"
       class="font-medium">
       Password
+      <span
+        *ngIf="data"
+        class="text-xs font-normal text-slate-500 ml-2">
+        (Leave empty to keep current)
+      </span>
     </label>
     <p-password
       id="password"
@@ -84,7 +89,7 @@
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Create"
+      label="Save"
       type="submit"
       [disabled]="form.invalid" />
   </div>

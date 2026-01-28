@@ -33,78 +33,32 @@ public class WeighingController : ControllerBase
             .AsNoTracking()
             .AsQueryable();
 
-        if (houseId.HasValue)
-            query = query.Where(x => x.HouseId == houseId.Value);
-
-        if (date.HasValue)
-            query = query.Where(x => x.Date.Date == date.Value.Date);
+        if (houseId.HasValue) query = query.Where(x => x.HouseId == houseId.Value);
+        if (date.HasValue) query = query.Where(x => x.Date.Date == date.Value.Date);
 
         var records = await query.OrderByDescending(x => x.Date).ToListAsync();
 
         return Ok(records.Select(r => new WeighingRecordDto(
-            r.Id,
-            r.HouseId,
-            r.House?.Name,
-            r.PersonnelId,
-            r.Personnel?.FullName,
-            r.Date,
-            r.WeightGrams,
-            r.IsMusicPlayed,
-            r.VideoUrl,
-            r.CreatedAt
+            r.Id, r.HouseId, r.House?.Name, r.PersonnelId, r.Personnel?.FullName,
+            r.Date, r.WeightGrams, r.IsMusicPlayed, r.VideoUrl, r.CreatedAt
         )));
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<WeighingRecordDto>> GetRecord(int id)
-    {
-        var r = await _context.WeighingRecords
-            .Include(x => x.House)
-            .Include(x => x.Personnel)
-            .FirstOrDefaultAsync(x => x.Id == id);
-
-        if (r == null) return NotFound();
-
-        return new WeighingRecordDto(
-            r.Id,
-            r.HouseId,
-            r.House?.Name,
-            r.PersonnelId,
-            r.Personnel?.FullName,
-            r.Date,
-            r.WeightGrams,
-            r.IsMusicPlayed,
-            r.VideoUrl,
-            r.CreatedAt
-        );
-    }
-
     [HttpPost]
-    [DisableRequestSizeLimit] // Видео может быть большим
+    [DisableRequestSizeLimit]
     public async Task<ActionResult<WeighingRecordDto>> CreateRecord([FromForm] CreateWeighingDto dto, [FromForm] IFormFile? videoFile)
     {
-        // 1. Валидация видео (Обязательно согласно протоколу)
         if (videoFile == null || videoFile.Length == 0)
-        {
-            return BadRequest("Video evidence is mandatory for weighing records.");
-        }
+            return BadRequest("Video evidence is mandatory.");
 
-        // 2. Загрузка видео в MinIO
         string bucket = "user-uploads";
         string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/weighing_{Guid.NewGuid()}{Path.GetExtension(videoFile.FileName)}";
 
-        try
+        using (var stream = videoFile.OpenReadStream())
         {
-            using var stream = videoFile.OpenReadStream();
             await _fileStorage.UploadFileAsync(bucket, fileName, stream, videoFile.ContentType);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to upload weighing video.");
-            return StatusCode(500, "Failed to upload video evidence.");
-        }
 
-        // 3. Создание записи
         var record = new WeighingRecord
         {
             HouseId = dto.HouseId,
@@ -112,27 +66,50 @@ public class WeighingController : ControllerBase
             Date = dto.Date,
             WeightGrams = dto.WeightGrams,
             IsMusicPlayed = dto.IsMusicPlayed,
-            VideoUrl = $"{bucket}/{fileName}" // Сохраняем путь к файлу
+            VideoUrl = $"{bucket}/{fileName}"
         };
 
         _context.WeighingRecords.Add(record);
         await _context.SaveChangesAsync();
 
+        // Load references for response
         await _context.Entry(record).Reference(r => r.House).LoadAsync();
         await _context.Entry(record).Reference(r => r.Personnel).LoadAsync();
 
-        return CreatedAtAction(nameof(GetRecord), new { id = record.Id }, new WeighingRecordDto(
-            record.Id,
-            record.HouseId,
-            record.House?.Name,
-            record.PersonnelId,
-            record.Personnel?.FullName,
-            record.Date,
-            record.WeightGrams,
-            record.IsMusicPlayed,
-            record.VideoUrl,
-            record.CreatedAt
+        return Ok(new WeighingRecordDto(
+            record.Id, record.HouseId, record.House?.Name, record.PersonnelId, record.Personnel?.FullName,
+            record.Date, record.WeightGrams, record.IsMusicPlayed, record.VideoUrl, record.CreatedAt
         ));
+    }
+
+    // НОВЫЙ МЕТОД: Обновление
+    [HttpPut("{id}")]
+    [DisableRequestSizeLimit]
+    public async Task<IActionResult> UpdateRecord(int id, [FromForm] CreateWeighingDto dto, [FromForm] IFormFile? videoFile)
+    {
+        var record = await _context.WeighingRecords.FindAsync(id);
+        if (record == null) return NotFound();
+
+        // Если передан новый файл, загружаем и обновляем ссылку
+        if (videoFile != null && videoFile.Length > 0)
+        {
+            string bucket = "user-uploads";
+            string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/weighing_{Guid.NewGuid()}{Path.GetExtension(videoFile.FileName)}";
+            using (var stream = videoFile.OpenReadStream())
+            {
+                await _fileStorage.UploadFileAsync(bucket, fileName, stream, videoFile.ContentType);
+            }
+            record.VideoUrl = $"{bucket}/{fileName}";
+        }
+
+        record.HouseId = dto.HouseId;
+        record.PersonnelId = dto.PersonnelId;
+        record.Date = dto.Date;
+        record.WeightGrams = dto.WeightGrams;
+        record.IsMusicPlayed = dto.IsMusicPlayed;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
@@ -140,7 +117,6 @@ public class WeighingController : ControllerBase
     {
         var record = await _context.WeighingRecords.FindAsync(id);
         if (record == null) return NotFound();
-
         _context.WeighingRecords.Remove(record);
         await _context.SaveChangesAsync();
         return NoContent();

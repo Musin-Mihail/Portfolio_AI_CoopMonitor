@@ -36,14 +36,28 @@ export class DiseaseListComponent implements OnInit {
     });
   }
 
-  openDialog() {
+  openDialog(record?: DiseaseRecord) {
     const ref = this.dialogService.open(DiseaseDialogComponent, {
-      header: 'Add Disease Record',
+      header: record ? 'Edit Disease Record' : 'Add Disease Record',
       width: '450px',
       modal: true,
+      data: record || null,
     });
+
     ref?.onClose.subscribe((result) => {
-      if (result) this.service.createRecord(result).subscribe(() => this.loadData());
+      if (result) {
+        if (record) {
+          this.service.updateRecord(record.id, result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.loadData();
+          });
+        } else {
+          this.service.createRecord(result).subscribe(() => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.loadData();
+          });
+        }
+      }
     });
   }
 

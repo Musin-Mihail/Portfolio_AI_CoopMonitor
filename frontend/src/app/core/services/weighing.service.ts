@@ -25,11 +25,27 @@ export class WeighingService {
     formData.append('date', dto.date);
     formData.append('weightGrams', dto.weightGrams.toString());
     formData.append('isMusicPlayed', String(dto.isMusicPlayed));
-
-    // Backend expects 'videoFile' as the form key for IFormFile
     formData.append('videoFile', dto.videoFile);
 
     return this.http.post<WeighingRecord>(this.API_URL, formData);
+  }
+
+  // NOTE: For updates, if video is not changed, logic differs slightly.
+  // Ideally backend should accept nullable videoFile on Update.
+  // This assumes we might not send a new video file.
+  updateRecord(id: number, dto: Partial<CreateWeighingDto> & { videoFile?: File }): Observable<void> {
+    const formData = new FormData();
+    if (dto.houseId) formData.append('houseId', dto.houseId.toString());
+    if (dto.personnelId) formData.append('personnelId', dto.personnelId.toString());
+    if (dto.date) formData.append('date', dto.date);
+    if (dto.weightGrams) formData.append('weightGrams', dto.weightGrams.toString());
+    if (dto.isMusicPlayed !== undefined) formData.append('isMusicPlayed', String(dto.isMusicPlayed));
+
+    if (dto.videoFile) {
+      formData.append('videoFile', dto.videoFile);
+    }
+
+    return this.http.put<void>(`${this.API_URL}/${id}`, formData);
   }
 
   deleteRecord(id: number): Observable<void> {

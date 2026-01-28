@@ -14,6 +14,13 @@ export interface CreateUserDto {
   role: string;
 }
 
+export interface UpdateUserDto {
+  userName: string;
+  email: string;
+  password?: string; // Optional on update
+  role: string;
+}
+
 export interface AuditLogDto {
   id: number;
   userId?: string;

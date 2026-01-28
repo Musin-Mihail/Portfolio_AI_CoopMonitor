@@ -2,7 +2,7 @@
   <h2 class="text-lg font-medium text-slate-600">Журнал взвешивания</h2>
   <button
     (click)="openDialog()"
-    class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+    class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors">
     <i class="pi pi-plus text-xs"></i>
     <span>Новая запись</span>
   </button>
@@ -16,28 +16,22 @@
   stripedRows>
   <ng-template pTemplate="header">
     <tr>
-      <th
-        pSortableColumn="date"
-        style="width: 20%">
+      <th pSortableColumn="date">
         Date
         <p-sortIcon field="date" />
       </th>
-      <th
-        pSortableColumn="houseName"
-        style="width: 20%">
+      <th pSortableColumn="houseName">
         House
         <p-sortIcon field="houseName" />
       </th>
-      <th
-        pSortableColumn="weightGrams"
-        style="width: 15%">
+      <th pSortableColumn="weightGrams">
         Weight (g)
         <p-sortIcon field="weightGrams" />
       </th>
-      <th style="width: 15%">Music</th>
-      <th style="width: 20%">Responsible</th>
-      <th style="width: 10%">Video</th>
-      <th style="width: 10%">Actions</th>
+      <th>Music</th>
+      <th>Responsible</th>
+      <th>Video</th>
+      <th style="width: 8rem">Actions</th>
     </tr>
   </ng-template>
   <ng-template
@@ -50,8 +44,7 @@
       <td>
         <i
           *ngIf="element.isMusicPlayed"
-          class="pi pi-music text-green-600 text-lg"
-          title="Music Played"></i>
+          class="pi pi-music text-green-600 text-lg"></i>
         <span
           *ngIf="!element.isMusicPlayed"
           class="text-slate-400">
@@ -66,25 +59,23 @@
           [rounded]="true"
           [text]="true"
           severity="secondary"
-          (onClick)="viewVideo(element.videoUrl)"
-          pTooltip="View Video" />
+          (onClick)="viewVideo(element.videoUrl)" />
       </td>
       <td>
-        <p-button
-          icon="pi pi-trash"
-          [rounded]="true"
-          [text]="true"
-          severity="danger"
-          (onClick)="deleteRecord(element.id)" />
-      </td>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td
-        colspan="7"
-        class="text-center p-4">
-        No weighing records found.
+        <div class="flex gap-2">
+          <p-button
+            icon="pi pi-pencil"
+            [rounded]="true"
+            [text]="true"
+            severity="secondary"
+            (onClick)="openDialog(element)" />
+          <p-button
+            icon="pi pi-trash"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            (onClick)="deleteRecord(element.id)" />
+        </div>
       </td>
     </tr>
   </ng-template>
