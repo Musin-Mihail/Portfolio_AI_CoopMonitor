@@ -54,22 +54,38 @@ export class MortalityListComponent implements OnInit {
     ref?.onClose.subscribe((res) => {
       if (res) {
         if (record) {
-          this.service.updateRecord(record.id, res).subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translate.instant('COMMON.SUCCESS'),
-              detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
-            });
-            this.loadData();
+          this.service.updateRecord(record.id, res).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+              });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_UPDATE'),
+              }),
           });
         } else {
-          this.service.createRecord(res).subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translate.instant('COMMON.SUCCESS'),
-              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
-            });
-            this.loadData();
+          this.service.createRecord(res).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+              });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_CREATE'),
+              }),
           });
         }
       }
@@ -80,7 +96,23 @@ export class MortalityListComponent implements OnInit {
     this.translate.get('COMMON.CONFIRM_DELETE').subscribe((msg) => {
       this.confirmationService.confirm({
         message: msg,
-        accept: () => this.service.deleteRecord(id).subscribe(() => this.loadData()),
+        accept: () =>
+          this.service.deleteRecord(id).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.DELETED_SUCCESS'),
+              });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_DELETE'),
+              }),
+          }),
       });
     });
   }

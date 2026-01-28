@@ -1,24 +1,27 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { SelectModule } from 'primeng/select';
-import { TranslateModule } from '@ngx-translate/core'; // Import
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectModule, TranslateModule], // Add Module
+  imports: [CommonModule, FormsModule, SelectModule, TranslateModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   @ViewChild('climateChart') climateChartCanvas!: ElementRef<HTMLCanvasElement>;
+  private translate = inject(TranslateService);
+
   chart: Chart | null = null;
   selectedPeriod = 7;
 
+  // Mock data with translation keys where appropriate
   mockHouses = [
     {
       name: 'House 1',
@@ -52,14 +55,35 @@ export class DashboardComponent implements OnInit {
     },
   ];
 
+  calendarDays: string[] = [];
+
+  constructor() {
+    // React to language changes to update chart and calendar
+    this.translate.onLangChange.subscribe(() => {
+      this.initChart();
+      this.initCalendar();
+    });
+  }
+
   ngOnInit(): void {
+    this.initCalendar();
     setTimeout(() => this.initChart(), 0);
+  }
+
+  initCalendar() {
+    this.translate.get('DASHBOARD.CALENDAR.DAYS').subscribe((days: string[]) => {
+      this.calendarDays = days;
+    });
   }
 
   initChart() {
     if (!this.climateChartCanvas) return;
     const ctx = this.climateChartCanvas.nativeElement.getContext('2d');
     if (!ctx) return;
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
 
     const gradientGreen = ctx.createLinearGradient(0, 0, 0, 200);
     gradientGreen.addColorStop(0, 'rgba(76, 175, 80, 0.05)');
@@ -71,7 +95,7 @@ export class DashboardComponent implements OnInit {
         labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
         datasets: [
           {
-            label: 'chic.house 1',
+            label: 'House 1',
             data: [1.5, 2.0, 1.8, 2.2, 2.8, 2.5],
             borderColor: '#4CAF50',
             backgroundColor: gradientGreen,
@@ -84,7 +108,7 @@ export class DashboardComponent implements OnInit {
             pointBorderWidth: 2,
           },
           {
-            label: 'chic.house 2',
+            label: 'House 2',
             data: [1.2, 1.4, 1.6, 1.8, 2.0, 1.8],
             borderColor: '#A855F7',
             backgroundColor: 'transparent',
@@ -95,7 +119,7 @@ export class DashboardComponent implements OnInit {
             pointHoverRadius: 4,
           },
           {
-            label: 'chic.house 3',
+            label: 'House 3',
             data: [0.8, 1.0, 1.2, 1.5, 1.7, 1.6],
             borderColor: '#3B82F6',
             backgroundColor: 'transparent',

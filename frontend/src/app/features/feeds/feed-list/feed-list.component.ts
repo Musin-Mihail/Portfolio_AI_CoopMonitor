@@ -50,22 +50,38 @@ export class FeedListComponent implements OnInit {
     ref?.onClose.subscribe((result) => {
       if (result) {
         if (feed) {
-          this.service.updateFeed(feed.id, result).subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translate.instant('COMMON.SUCCESS'),
-              detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
-            });
-            this.loadData();
+          this.service.updateFeed(feed.id, result).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+              });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_UPDATE'),
+              }),
           });
         } else {
-          this.service.createFeed(result).subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translate.instant('COMMON.SUCCESS'),
-              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
-            });
-            this.loadData();
+          this.service.createFeed(result).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+              });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_CREATE'),
+              }),
           });
         }
       }
@@ -79,13 +95,21 @@ export class FeedListComponent implements OnInit {
         header: this.translate.instant('COMMON.DELETE'),
         icon: 'pi pi-exclamation-triangle',
         accept: () =>
-          this.service.deleteFeed(id).subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translate.instant('COMMON.SUCCESS'),
-              detail: this.translate.instant('COMMON.DELETED_SUCCESS'),
-            });
-            this.loadData();
+          this.service.deleteFeed(id).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.DELETED_SUCCESS'),
+              });
+              this.loadData();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_DELETE'),
+              }),
           }),
       });
     });

@@ -26,7 +26,8 @@
     "PASSWORD": "Password",
     "SIGN_IN": "Sign In",
     "USERNAME_REQ": "Username is required",
-    "PASSWORD_REQ": "Password is required"
+    "PASSWORD_REQ": "Password is required",
+    "INVALID_CREDENTIALS": "Invalid username or password"
   },
   "COMMON": {
     "NEW_RECORD": "New Record",
@@ -70,6 +71,7 @@
     "BATCH_START": "Batch Start",
     "BATCH_END": "Batch End",
     "HEADS": "heads",
+    "QTY": "Quantity",
     "MICROCLIMATE_24H": "Microclimate (24h)",
     "LAST_7_DAYS": "last 7 days",
     "TODAY": "Today",
@@ -88,8 +90,34 @@
       "TICKET_LIST": "Ticket list",
       "JUST_NOW": "Just now",
       "MINUTES_AGO": "minutes ago",
-      "HOURS_AGO": "hours ago"
+      "HOURS_AGO": "hours ago",
+      "ANOMALY": "Anomaly detected",
+      "OBJECT_DETECTED": "Object detected",
+      "MOTION": "Motion detected",
+      "MORTALITY_DETECTED": "Mortality detected",
+      "LOW_ACTIVITY": "Low activity"
+    },
+    "CALENDAR": {
+      "JANUARY": "January",
+      "DAYS": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     }
+  },
+  "VIDEO_WALL": {
+    "TITLE": "Video Wall",
+    "TAB_LIVE": "Live Stream",
+    "TAB_ARCHIVE": "Archive",
+    "QUALITY": "Quality",
+    "AI_EVENTS": "AI Events",
+    "STATS_TODAY": "Today's Statistics",
+    "TOTAL_EVENTS": "Total Events",
+    "ACTIVE_CAMS": "Active Cameras",
+    "ALERTS": "Alerts",
+    "VIEW_BTN": "View >",
+    "ALERT_LABEL": "Alert",
+    "FPS": "FPS",
+    "NORMAL": "Normal",
+    "ONLINE": "Online",
+    "OFFLINE": "Offline"
   },
   "ADMIN_LAYOUT": {
     "TITLE": "Administration",
@@ -244,21 +272,6 @@
     "GENERATED_AT": "Gen:",
     "MSG_TRIGGERED": "Report generation triggered. Check back in a few seconds.",
     "MSG_FAILED": "Failed to trigger generation"
-  },
-  "VIDEO_WALL": {
-    "TITLE": "Video Wall",
-    "TAB_LIVE": "Live Stream",
-    "TAB_ARCHIVE": "Archive",
-    "QUALITY": "Quality",
-    "AI_EVENTS": "AI Events",
-    "STATS_TODAY": "Today's Statistics",
-    "TOTAL_EVENTS": "Total Events",
-    "ACTIVE_CAMS": "Active Cameras",
-    "ALERTS": "Alerts",
-    "VIEW_BTN": "View >",
-    "ALERT_LABEL": "Alert",
-    "FPS": "FPS",
-    "NORMAL": "Normal"
   },
   "SYSTEM_STATUS": {
     "REFRESH": "Refresh Status",

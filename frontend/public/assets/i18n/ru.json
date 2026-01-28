@@ -26,7 +26,8 @@
     "PASSWORD": "Пароль",
     "SIGN_IN": "Войти",
     "USERNAME_REQ": "Введите имя пользователя",
-    "PASSWORD_REQ": "Введите пароль"
+    "PASSWORD_REQ": "Введите пароль",
+    "INVALID_CREDENTIALS": "Неверное имя пользователя или пароль"
   },
   "COMMON": {
     "NEW_RECORD": "Новая запись",
@@ -70,6 +71,7 @@
     "BATCH_START": "Загрузка партии",
     "BATCH_END": "Отгрузка партии",
     "HEADS": "голов",
+    "QTY": "Количество",
     "MICROCLIMATE_24H": "Микроклимат (24ч)",
     "LAST_7_DAYS": "последние 7 дней",
     "TODAY": "Сегодня",
@@ -88,8 +90,34 @@
       "TICKET_LIST": "Список тикетов",
       "JUST_NOW": "Только что",
       "MINUTES_AGO": "мин. назад",
-      "HOURS_AGO": "ч. назад"
+      "HOURS_AGO": "ч. назад",
+      "ANOMALY": "Аномальная активность",
+      "OBJECT_DETECTED": "Обнаружен объект",
+      "MOTION": "Движение",
+      "MORTALITY_DETECTED": "Падеж обнаружен",
+      "LOW_ACTIVITY": "Низкая активность"
+    },
+    "CALENDAR": {
+      "JANUARY": "Январь",
+      "DAYS": ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
     }
+  },
+  "VIDEO_WALL": {
+    "TITLE": "Видеостена",
+    "TAB_LIVE": "Трансляция",
+    "TAB_ARCHIVE": "Архив",
+    "QUALITY": "Качество",
+    "AI_EVENTS": "События AI",
+    "STATS_TODAY": "Статистика за сегодня",
+    "TOTAL_EVENTS": "Всего событий",
+    "ACTIVE_CAMS": "Активных камер",
+    "ALERTS": "Алерты",
+    "VIEW_BTN": "Просмотреть >",
+    "ALERT_LABEL": "Тревога",
+    "FPS": "FPS",
+    "NORMAL": "Норма",
+    "ONLINE": "Онлайн",
+    "OFFLINE": "Офлайн"
   },
   "ADMIN_LAYOUT": {
     "TITLE": "Администрирование",
@@ -244,21 +272,6 @@
     "GENERATED_AT": "Созд:",
     "MSG_TRIGGERED": "Генерация отчета запущена. Проверьте через несколько секунд.",
     "MSG_FAILED": "Не удалось запустить генерацию"
-  },
-  "VIDEO_WALL": {
-    "TITLE": "Видеостена",
-    "TAB_LIVE": "Трансляция",
-    "TAB_ARCHIVE": "Архив",
-    "QUALITY": "Качество",
-    "AI_EVENTS": "События AI",
-    "STATS_TODAY": "Статистика за сегодня",
-    "TOTAL_EVENTS": "Всего событий",
-    "ACTIVE_CAMS": "Активных камер",
-    "ALERTS": "Алерты",
-    "VIEW_BTN": "Просмотреть >",
-    "ALERT_LABEL": "Тревога",
-    "FPS": "FPS",
-    "NORMAL": "Норма"
   },
   "SYSTEM_STATUS": {
     "REFRESH": "Обновить статус",

@@ -37,7 +37,7 @@ export class PersonnelListComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: this.translate.instant('COMMON.ERROR'),
-          detail: this.translate.instant('MD_PERSONNEL.NO_DATA'),
+          detail: this.translate.instant('COMMON.LOAD_ERROR'),
         }),
     });
   }

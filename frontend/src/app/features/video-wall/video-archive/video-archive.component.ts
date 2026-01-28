@@ -14,7 +14,7 @@ import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-
 interface VideoStreamMock {
   id: number;
   title: string;
-  status: 'Online' | 'Offline';
+  statusKey: string;
   fps: number;
   quality: string;
   time: string;
@@ -25,14 +25,14 @@ interface VideoStreamMock {
   // Archive specific properties
   date?: string;
   eventTag?: {
-    label: string;
+    labelKey: string;
     type: 'danger' | 'warning' | 'info' | 'primary';
   };
 }
 
 interface AiEventMock {
   time: string;
-  title: string;
+  titleKey: string;
   location: string;
   type: 'danger' | 'warning' | 'info' | 'primary';
 }
@@ -55,8 +55,8 @@ export class VideoArchiveComponent implements OnInit {
   liveStreams = signal<VideoStreamMock[]>([
     {
       id: 1,
-      title: 'Птичник 1 - Зона А',
-      status: 'Online',
+      title: 'House 1 - Zone A',
+      statusKey: 'VIDEO_WALL.ONLINE',
       fps: 25,
       quality: '1080p',
       time: '18:29',
@@ -65,8 +65,8 @@ export class VideoArchiveComponent implements OnInit {
     },
     {
       id: 2,
-      title: 'Птичник 1 - Зона А',
-      status: 'Online',
+      title: 'House 1 - Zone A',
+      statusKey: 'VIDEO_WALL.ONLINE',
       fps: 25,
       quality: '1080p',
       time: '18:29',
@@ -75,8 +75,8 @@ export class VideoArchiveComponent implements OnInit {
     },
     {
       id: 3,
-      title: 'Птичник 1 - Зона А',
-      status: 'Online',
+      title: 'House 1 - Zone A',
+      statusKey: 'VIDEO_WALL.ONLINE',
       fps: 25,
       quality: '1080p',
       time: '18:29',
@@ -89,48 +89,48 @@ export class VideoArchiveComponent implements OnInit {
   archiveStreams = signal<VideoStreamMock[]>([
     {
       id: 101,
-      title: 'Птичник 1 - Зона А',
+      title: 'House 1 - Zone A',
       date: '14.01.2026',
-      status: 'Online',
+      statusKey: 'VIDEO_WALL.ONLINE',
       fps: 25,
       quality: '',
       time: '18:29',
       cameraState: 'Normal',
       alertCount: 0,
-      eventTag: { label: 'Падеж обнаружен', type: 'danger' },
+      eventTag: { labelKey: 'DASHBOARD.EVENTS.MORTALITY_DETECTED', type: 'danger' },
     },
     {
       id: 102,
-      title: 'Птичник 1 - Зона А',
+      title: 'House 1 - Zone A',
       date: '14.01.2026',
-      status: 'Online',
+      statusKey: 'VIDEO_WALL.ONLINE',
       fps: 25,
       quality: '',
       time: '18:29',
       cameraState: 'Normal',
       alertCount: 0,
-      eventTag: { label: 'Вход персонала', type: 'info' },
+      eventTag: { labelKey: 'DASHBOARD.EVENTS.STAFF_ACTIVITY', type: 'info' },
     },
     {
       id: 103,
-      title: 'Птичник 1 - Зона А',
+      title: 'House 1 - Zone A',
       date: '14.01.2026',
-      status: 'Online',
+      statusKey: 'VIDEO_WALL.ONLINE',
       fps: 25,
       quality: '',
       time: '18:29',
       cameraState: 'Normal',
       alertCount: 0,
-      eventTag: { label: 'Низкая активность', type: 'info' },
+      eventTag: { labelKey: 'DASHBOARD.EVENTS.LOW_ACTIVITY', type: 'info' },
     },
   ]);
 
   // Sidebar Events Mock
   aiEvents = signal<AiEventMock[]>([
-    { time: '10:25', title: 'Аномальная активность', location: 'Птичник 1 - Камера 1', type: 'danger' },
-    { time: '08:30', title: 'Обнаружен объект', location: 'Птичник 3 - Камера 1', type: 'primary' },
-    { time: '10:25', title: 'Аномальная активность', location: 'Птичник 1 - Камера 1', type: 'danger' },
-    { time: '08:30', title: 'Движение', location: 'Птичник 3 - Камера 1', type: 'info' },
+    { time: '10:25', titleKey: 'DASHBOARD.EVENTS.ANOMALY', location: 'House 1 - Cam 1', type: 'danger' },
+    { time: '08:30', titleKey: 'DASHBOARD.EVENTS.OBJECT_DETECTED', location: 'House 3 - Cam 1', type: 'primary' },
+    { time: '10:25', titleKey: 'DASHBOARD.EVENTS.ANOMALY', location: 'House 1 - Cam 1', type: 'danger' },
+    { time: '08:30', titleKey: 'DASHBOARD.EVENTS.MOTION', location: 'House 3 - Cam 1', type: 'info' },
   ]);
 
   ngOnInit(): void {
@@ -142,7 +142,6 @@ export class VideoArchiveComponent implements OnInit {
   }
 
   playStream(stream: VideoStreamMock) {
-    // Mock play functionality
     const streamUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
     this.dialogService.open(VideoPlayerDialogComponent, {

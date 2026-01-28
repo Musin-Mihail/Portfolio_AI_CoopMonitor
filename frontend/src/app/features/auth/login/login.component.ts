@@ -6,7 +6,7 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { TranslateModule } from '@ngx-translate/core'; // Import
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -20,7 +20,7 @@ import { AuthService } from '../../../core/services/auth.service';
     PasswordModule,
     ButtonModule,
     TranslateModule,
-  ], // Add TranslateModule
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -28,6 +28,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
 
   loginForm = this.fb.group({
     username: ['', Validators.required],
@@ -51,8 +52,7 @@ export class LoginComponent {
         },
         error: (err) => {
           this.isLoading.set(false);
-          // Можно использовать translateService.get('AUTH.INVALID_CREDENTIALS') для локализации ошибки
-          this.errorMessage.set('Invalid username or password');
+          this.errorMessage.set(this.translate.instant('AUTH.INVALID_CREDENTIALS'));
           console.error('Login error', err);
         },
       });

@@ -51,22 +51,38 @@ export class HouseListComponent implements OnInit {
     ref?.onClose.subscribe((result) => {
       if (result) {
         if (house) {
-          this.service.updateHouse(house.id, result).subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translate.instant('COMMON.SUCCESS'),
-              detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
-            });
-            this.load();
+          this.service.updateHouse(house.id, result).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+              });
+              this.load();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_UPDATE'),
+              }),
           });
         } else {
-          this.service.createHouse(result).subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translate.instant('COMMON.SUCCESS'),
-              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
-            });
-            this.load();
+          this.service.createHouse(result).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+              });
+              this.load();
+            },
+            error: () =>
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_CREATE'),
+              }),
           });
         }
       }

@@ -35,7 +35,7 @@
                 <div class="font-bold text-slate-800 text-lg">{{ item.title }}</div>
                 <div class="text-xs text-slate-400 font-mono mt-1">
                   <ng-container *ngIf="activeTab() === 'live'">
-                    {{ "VIDEO_WALL.FPS" | translate }}: {{ item.fps }}
+                    FPS: {{ item.fps }}
                     <span class="mx-2"></span>
                     {{ "VIDEO_WALL.QUALITY" | translate }}: {{ item.quality }}
                   </ng-container>
@@ -48,7 +48,7 @@
                       [class.text-slate-500]="item.eventTag?.type === 'info'"
                       [class.bg-blue-50]="item.eventTag?.type === 'primary'"
                       [class.text-blue-500]="item.eventTag?.type === 'primary'">
-                      {{ item.eventTag?.label }}
+                      {{ item.eventTag?.labelKey | translate }}
                     </span>
                   </ng-container>
                 </div>
@@ -57,7 +57,7 @@
               <div
                 *ngIf="activeTab() === 'live'"
                 class="px-2 py-1 bg-green-50 text-green-600 rounded text-xs font-bold">
-                {{ item.status }}
+                {{ item.statusKey | translate }}
               </div>
               <div
                 *ngIf="activeTab() === 'archive'"
@@ -130,7 +130,7 @@
           <div class="text-xs font-medium text-slate-400 pt-1">{{ event.time }}</div>
 
           <div class="flex-1">
-            <div class="font-bold text-sm text-slate-800">{{ event.title }}</div>
+            <div class="font-bold text-sm text-slate-800">{{ event.titleKey | translate }}</div>
             <div class="text-[11px] text-slate-500 mt-0.5">{{ event.location }}</div>
             <div class="mt-2">
               <span class="text-blue-500 text-[11px] font-semibold hover:underline cursor-pointer">

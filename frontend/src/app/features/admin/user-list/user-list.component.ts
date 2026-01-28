@@ -90,11 +90,30 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(id: string): void {
-    this.confirmationService.confirm({
-      message: this.translate.instant('COMMON.CONFIRM_DELETE'),
-      header: this.translate.instant('COMMON.DELETE'),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => this.service.deleteUser(id).subscribe(() => this.loadData()),
+    this.translate.get('COMMON.CONFIRM_DELETE').subscribe((msg) => {
+      this.confirmationService.confirm({
+        message: msg,
+        header: this.translate.instant('COMMON.DELETE'),
+        icon: 'pi pi-exclamation-triangle',
+        accept: () =>
+          this.service.deleteUser(id).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.DELETED_SUCCESS'),
+              });
+              this.loadData();
+            },
+            error: () => {
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: this.translate.instant('COMMON.MESSAGES.FAILED_DELETE'),
+              });
+            },
+          }),
+      });
     });
   }
 }
