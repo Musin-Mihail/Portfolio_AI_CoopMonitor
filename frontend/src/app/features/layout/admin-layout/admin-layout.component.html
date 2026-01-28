@@ -10,7 +10,7 @@
         [class.shadow-sm]="activeTab() === 'audit'"
         [class.text-[#1A1C21]]="activeTab() === 'audit'"
         [class.text-slate-500]="activeTab() !== 'audit'">
-        Алерты
+        Логи
       </button>
       <button
         (click)="onTabChange('users')"
@@ -19,7 +19,7 @@
         [class.shadow-sm]="activeTab() === 'users'"
         [class.text-[#1A1C21]]="activeTab() === 'users'"
         [class.text-slate-500]="activeTab() !== 'users'">
-        Логи
+        Пользователи
       </button>
       <button
         (click)="onTabChange('settings')"
@@ -28,8 +28,7 @@
         [class.shadow-sm]="activeTab() === 'settings'"
         [class.text-[#1A1C21]]="activeTab() === 'settings'"
         [class.text-slate-500]="activeTab() !== 'settings'">
-        Персонал
-        <span class="ml-1 text-xs opacity-60">08</span>
+        Система
       </button>
     </div>
   </div>

@@ -1,9 +1,11 @@
-<div class="flex justify-between items-center mb-4">
+<div class="flex justify-between items-center mb-6">
   <h2 class="text-lg font-medium text-slate-600">Список кормов</h2>
-  <p-button
-    label="Add Feed"
-    icon="pi pi-plus"
-    (onClick)="openDialog()" />
+  <button
+    (click)="openDialog()"
+    class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+    <i class="pi pi-plus text-xs"></i>
+    <span>Новая запись</span>
+  </button>
 </div>
 
 <p-table
