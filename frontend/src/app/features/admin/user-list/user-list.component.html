@@ -3,7 +3,7 @@
     (click)="openDialog()"
     class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
     <i class="pi pi-plus text-xs"></i>
-    <span>Новая запись</span>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
   </button>
 </div>
 
@@ -16,9 +16,9 @@
   <ng-template pTemplate="header">
     <tr>
       <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
-      <th pSortableColumn="userName">User</th>
-      <th pSortableColumn="role">Role</th>
-      <th>Linked Personnel</th>
+      <th pSortableColumn="userName">{{ "ADMIN_USERS.USERNAME" | translate }}</th>
+      <th pSortableColumn="role">{{ "ADMIN_USERS.ROLE" | translate }}</th>
+      <th>{{ "ADMIN_USERS.LINKED_PERSONNEL" | translate }}</th>
       <th style="width: 8rem"></th>
     </tr>
   </ng-template>
@@ -48,20 +48,22 @@
           {{ user.role }}
         </span>
       </td>
-      <td class="text-sm text-slate-600">{{ user.personnelName || "Not linked" }}</td>
+      <td class="text-sm text-slate-600">
+        {{ user.personnelName || ("ADMIN_USERS.NOT_LINKED" | translate) }}
+      </td>
       <td>
         <div class="flex items-center justify-end gap-2 text-slate-400">
           <button
             class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 hover:text-slate-800 transition-colors"
             (click)="openDialog(user)"
-            pTooltip="Edit">
+            [pTooltip]="'COMMON.EDIT' | translate">
             <i class="pi pi-pencil text-sm"></i>
           </button>
           <button
             class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 hover:text-red-500 transition-colors"
             (click)="deleteUser(user.id)"
             [disabled]="user.userName === 'admin'"
-            pTooltip="Delete">
+            [pTooltip]="'COMMON.DELETE' | translate">
             <i class="pi pi-trash text-sm"></i>
           </button>
         </div>

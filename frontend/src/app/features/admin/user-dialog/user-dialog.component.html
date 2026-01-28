@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -17,7 +17,7 @@
       <label
         for="userName"
         class="font-medium text-slate-700">
-        Username
+        {{ "ADMIN_USERS.USERNAME" | translate }}
       </label>
       <input
         pInputText
@@ -27,7 +27,7 @@
       <small
         class="text-red-500"
         *ngIf="form.get('userName')?.hasError('required') && form.get('userName')?.touched">
-        Username is required
+        {{ "AUTH.USERNAME_REQ" | translate }}
       </small>
     </div>
 
@@ -35,7 +35,7 @@
       <label
         for="email"
         class="font-medium text-slate-700">
-        Email
+        {{ "ADMIN_USERS.EMAIL" | translate }}
       </label>
       <input
         pInputText
@@ -46,7 +46,7 @@
       <small
         class="text-red-500"
         *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
-        Invalid email
+        {{ "ADMIN_USERS.EMAIL_INVALID" | translate }}
       </small>
     </div>
 
@@ -54,11 +54,11 @@
       <label
         for="password"
         class="font-medium text-slate-700">
-        Password
+        {{ "AUTH.PASSWORD" | translate }}
         <span
           *ngIf="data"
           class="text-xs font-normal text-slate-500 ml-2">
-          (Leave empty to keep current)
+          ({{ "ADMIN_USERS.PASS_HINT" | translate }})
         </span>
       </label>
       <p-password
@@ -71,12 +71,12 @@
       <small
         class="text-red-500"
         *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched">
-        Password is required
+        {{ "AUTH.PASSWORD_REQ" | translate }}
       </small>
       <small
         class="text-red-500"
         *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched">
-        Minimum 4 characters
+        {{ "ADMIN_USERS.PASS_MIN" | translate }}
       </small>
     </div>
 
@@ -84,7 +84,7 @@
       <label
         for="role"
         class="font-medium text-slate-700">
-        Role
+        {{ "ADMIN_USERS.ROLE" | translate }}
       </label>
       <p-select
         id="role"
@@ -96,12 +96,12 @@
 
   <div class="flex justify-end gap-2 pt-8">
     <p-button
-      label="Cancel"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [disabled]="form.invalid"
       [rounded]="true"

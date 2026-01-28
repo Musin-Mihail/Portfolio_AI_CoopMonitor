@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col h-full p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -18,7 +18,7 @@
         <label
           for="houseId"
           class="text-sm font-semibold text-slate-700">
-          Птичник
+          {{ "LOGS_MORTALITY.HOUSE" | translate }}
           <span class="text-red-500">*</span>
         </label>
         <p-select
@@ -27,7 +27,7 @@
           [options]="houses()"
           optionLabel="name"
           optionValue="id"
-          placeholder="Выберите птичник"
+          [placeholder]="'COMMON.SELECT_OPTION' | translate"
           appendTo="body"
           [style]="{ width: '100%' }" />
       </div>
@@ -36,7 +36,7 @@
         <label
           for="personnelId"
           class="text-sm font-semibold text-slate-700">
-          Ответственный
+          {{ "COMMON.RESPONSIBLE" | translate }}
         </label>
         <p-select
           id="personnelId"
@@ -44,7 +44,7 @@
           [options]="personnel()"
           optionLabel="fullName"
           optionValue="id"
-          placeholder="Выберите сотрудника"
+          [placeholder]="'COMMON.SELECT_OPTION' | translate"
           appendTo="body"
           [style]="{ width: '100%' }" />
       </div>
@@ -55,7 +55,7 @@
         <label
           for="date"
           class="text-sm font-semibold text-slate-700">
-          Дата
+          {{ "LOGS_MORTALITY.DATE" | translate }}
           <span class="text-red-500">*</span>
         </label>
         <p-datepicker
@@ -71,7 +71,7 @@
         <label
           for="quantity"
           class="text-sm font-semibold text-slate-700">
-          Количество
+          {{ "LOGS_MORTALITY.QTY" | translate }}
           <span class="text-red-500">*</span>
         </label>
         <input
@@ -87,18 +87,17 @@
       <label
         for="reason"
         class="text-sm font-semibold text-slate-700">
-        Причина
+        {{ "LOGS_MORTALITY.REASON" | translate }}
       </label>
       <input
         pInputText
         id="reason"
         formControlName="reason"
-        placeholder="Например: Сердечная недостаточность"
         class="w-full" />
     </div>
 
     <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-semibold text-slate-700">Фото подтверждение</label>
+      <label class="text-sm font-semibold text-slate-700">{{ "LOGS_MORTALITY.PHOTO_EVIDENCE" | translate }}</label>
       <div
         class="file-upload-box cursor-pointer"
         (click)="fileInput.click()">
@@ -112,11 +111,11 @@
               selectedFile
                 ? selectedFile.name
                 : data?.attachmentUrl
-                  ? "Файл уже загружен (нажмите для замены)"
-                  : "Выберите фото"
+                  ? ("LOGS_MORTALITY.FILE_EXISTS" | translate)
+                  : ("COMMON.UPLOAD_PHOTO" | translate)
             }}
           </span>
-          <span class="text-xs text-slate-400">Нажмите чтобы загрузить</span>
+          <span class="text-xs text-slate-400">{{ "COMMON.FILE_SELECTED" | translate }}</span>
         </div>
         <input
           #fileInput
@@ -130,12 +129,12 @@
 
   <div class="flex justify-end gap-3 pt-8 mt-auto">
     <p-button
-      label="Отмена"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Сохранить"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [loading]="isUploading()"
       [disabled]="form.invalid"

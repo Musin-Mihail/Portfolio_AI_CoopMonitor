@@ -53,7 +53,8 @@
     "SAVED_SUCCESS": "Запись успешно сохранена",
     "UPDATED_SUCCESS": "Запись успешно обновлена",
     "DELETED_SUCCESS": "Запись успешно удалена",
-    "CLOSE": "Закрыть"
+    "CLOSE": "Закрыть",
+    "LOAD_ERROR": "Не удалось загрузить данные"
   },
   "DASHBOARD": {
     "TITLE": "Дашборд",
@@ -78,6 +79,26 @@
       "SYSTEM": "Система"
     }
   },
+  "ADMIN_AUDIT": {
+    "TIME": "Время",
+    "USER": "Пользователь",
+    "ACTION": "Действие",
+    "DETAILS": "Детали",
+    "SYSTEM_USER": "Система"
+  },
+  "ADMIN_USERS": {
+    "TITLE": "Список пользователей",
+    "USERNAME": "Имя пользователя",
+    "EMAIL": "Email",
+    "ROLE": "Роль",
+    "LINKED_PERSONNEL": "Связанный сотрудник",
+    "NOT_LINKED": "Не связано",
+    "DIALOG_TITLE_ADD": "Создать пользователя",
+    "DIALOG_TITLE_EDIT": "Редактировать пользователя",
+    "PASS_HINT": "Оставьте пустым, чтобы не менять",
+    "EMAIL_INVALID": "Некорректный email",
+    "PASS_MIN": "Минимум 4 символа"
+  },
   "LOGS_LAYOUT": {
     "TITLE": "Журналы",
     "SELECT_LOG": "Выбрать журнал"
@@ -91,7 +112,8 @@
     "AREA": "Площадь (м²)",
     "CAPACITY": "Вместимость",
     "DIALOG_TITLE_ADD": "Новый птичник",
-    "DIALOG_TITLE_EDIT": "Редактировать птичник"
+    "DIALOG_TITLE_EDIT": "Редактировать птичник",
+    "NAME_REQ": "Название обязательно"
   },
   "MD_FEEDS": {
     "TITLE": "Список кормов",
@@ -101,7 +123,8 @@
     "DIALOG_TITLE_ADD": "Новый корм",
     "DIALOG_TITLE_EDIT": "Редактировать корм",
     "TYPE_REQ": "Тип обязателен",
-    "NAME_REQ": "Название обязательно"
+    "NAME_REQ": "Название обязательно",
+    "NO_DATA": "Корма не найдены"
   },
   "MD_PERSONNEL": {
     "TITLE": "Список персонала",
@@ -111,9 +134,13 @@
     "EMAIL": "Email",
     "ACTIVE": "Активный сотрудник",
     "STATUS": "Статус",
+    "STATUS_ACTIVE": "Активен",
+    "STATUS_INACTIVE": "Неактивен",
     "CONTACTS": "Контакты",
     "DIALOG_TITLE_ADD": "Новый сотрудник",
-    "DIALOG_TITLE_EDIT": "Редактировать сотрудника"
+    "DIALOG_TITLE_EDIT": "Редактировать сотрудника",
+    "NAME_REQ": "ФИО обязательно",
+    "NO_DATA": "Сотрудники не найдены"
   },
   "LOGS_MORTALITY": {
     "TITLE": "Журнал падежа",
@@ -123,7 +150,9 @@
     "REASON": "Причина",
     "PHOTO": "Фото",
     "PHOTO_EVIDENCE": "Фото подтверждение",
-    "FILE_EXISTS": "Файл уже загружен (нажмите для замены)"
+    "FILE_EXISTS": "Файл уже загружен (нажмите для замены)",
+    "DIALOG_TITLE_ADD": "Добавить запись о падеже",
+    "DIALOG_TITLE_EDIT": "Редактировать запись о падеже"
   },
   "LOGS_DISEASE": {
     "TITLE": "Журнал болезней",
@@ -206,6 +235,12 @@
     "APP_INFO": "Информация о приложении",
     "VERSION": "Версия",
     "ENV": "Окружение",
-    "SERVER_TIME": "Время сервера (UTC)"
+    "SERVER_TIME": "Время сервера (UTC)",
+    "CHANNEL": "Канал",
+    "ENABLED": "Включено",
+    "DISABLED": "Выключено",
+    "ADMIN_CHAT_ID": "Chat ID Админа",
+    "NOT_CONFIGURED": "Не настроено",
+    "CONFIG_HINT": "Для настройки отредактируйте backend/appsettings.json или используйте переменные окружения."
   }
 }

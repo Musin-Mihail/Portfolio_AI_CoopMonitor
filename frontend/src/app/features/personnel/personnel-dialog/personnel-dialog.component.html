@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -17,7 +17,7 @@
       <label
         for="fullName"
         class="font-medium text-slate-700">
-        Full Name
+        {{ "MD_PERSONNEL.FULL_NAME" | translate }}
       </label>
       <input
         pInputText
@@ -28,7 +28,7 @@
       <small
         class="text-red-500"
         *ngIf="form.get('fullName')?.hasError('required') && form.get('fullName')?.touched">
-        Name is required
+        {{ "MD_PERSONNEL.NAME_REQ" | translate }}
       </small>
     </div>
 
@@ -36,7 +36,7 @@
       <label
         for="jobTitle"
         class="font-medium text-slate-700">
-        Job Title
+        {{ "MD_PERSONNEL.JOB_TITLE" | translate }}
       </label>
       <input
         pInputText
@@ -49,7 +49,7 @@
       <label
         for="phoneNumber"
         class="font-medium text-slate-700">
-        Phone Number
+        {{ "MD_PERSONNEL.PHONE" | translate }}
       </label>
       <input
         pInputText
@@ -62,7 +62,7 @@
       <label
         for="email"
         class="font-medium text-slate-700">
-        Email
+        {{ "MD_PERSONNEL.EMAIL" | translate }}
       </label>
       <input
         pInputText
@@ -72,7 +72,7 @@
       <small
         class="text-red-500"
         *ngIf="form.get('email')?.hasError('email')">
-        Invalid email address
+        {{ "ADMIN_USERS.EMAIL_INVALID" | translate }}
       </small>
     </div>
 
@@ -85,19 +85,19 @@
       <label
         for="isActive"
         class="font-medium text-slate-700">
-        Active Personnel
+        {{ "MD_PERSONNEL.ACTIVE" | translate }}
       </label>
     </div>
   </div>
 
   <div class="flex justify-end gap-2 pt-8">
     <p-button
-      label="Cancel"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [disabled]="form.invalid"
       [rounded]="true"

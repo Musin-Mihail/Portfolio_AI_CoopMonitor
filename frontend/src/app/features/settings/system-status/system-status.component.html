@@ -59,7 +59,7 @@
 
       <div class="flex justify-between items-center text-sm">
         <span class="text-slate-500">{{ "SYSTEM_STATUS.LAST_SYNC" | translate }}:</span>
-        <span class="font-mono">{{ (data.saaS.lastSync | date: "medium") || "Never" }}</span>
+        <span class="font-mono">{{ (data.saaS.lastSync | date: "medium") || "-" }}</span>
       </div>
     </div>
   </p-card>
@@ -73,27 +73,29 @@
         </div>
         <div>
           <div class="font-semibold text-lg">{{ "SYSTEM_STATUS.NOTIFICATIONS" | translate }}</div>
-          <div class="text-sm text-slate-500">Channel: Telegram</div>
+          <div class="text-sm text-slate-500">{{ "SYSTEM_STATUS.CHANNEL" | translate }}: Telegram</div>
         </div>
       </div>
     </ng-template>
 
     <div class="mt-4 flex flex-col gap-4">
       <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
-        <span class="text-slate-600">Status</span>
+        <span class="text-slate-600">{{ "MD_PERSONNEL.STATUS" | translate }}</span>
         <p-tag
-          [value]="data.notifications.telegramEnabled ? 'Enabled' : 'Disabled'"
+          [value]="
+            (data.notifications.telegramEnabled ? 'SYSTEM_STATUS.ENABLED' : 'SYSTEM_STATUS.DISABLED') | translate
+          "
           [severity]="data.notifications.telegramEnabled ? 'success' : 'secondary'"
           [rounded]="true" />
       </div>
       <div class="flex justify-between items-center py-2">
-        <span class="text-slate-600">Admin Chat ID</span>
+        <span class="text-slate-600">{{ "SYSTEM_STATUS.ADMIN_CHAT_ID" | translate }}</span>
         <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-sm">
-          {{ data.notifications.adminChatId || "Not Configured" }}
+          {{ data.notifications.adminChatId || ("SYSTEM_STATUS.NOT_CONFIGURED" | translate) }}
         </span>
       </div>
       <p class="text-xs text-slate-400 italic text-center mt-2">
-        To configure, edit backend/appsettings.json or use environment variables.
+        {{ "SYSTEM_STATUS.CONFIG_HINT" | translate }}
       </p>
     </div>
   </p-card>

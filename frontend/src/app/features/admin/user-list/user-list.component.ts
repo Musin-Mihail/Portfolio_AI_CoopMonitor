@@ -2,8 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserDto } from '../../../core/models/admin.models';
 import { UsersService } from '../../../core/services/users.service';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
@@ -11,7 +13,7 @@ import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule],
+  imports: [CommonModule, TableModule, ButtonModule, TranslateModule, TooltipModule],
   templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {
@@ -19,6 +21,7 @@ export class UserListComponent implements OnInit {
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
 
   dataSource = signal<UserDto[]>([]);
 
@@ -29,13 +32,18 @@ export class UserListComponent implements OnInit {
   loadData(): void {
     this.service.getUsers().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load users' }),
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('COMMON.ERROR'),
+          detail: this.translate.instant('COMMON.LOAD_ERROR'),
+        }),
     });
   }
 
   openDialog(user?: UserDto): void {
     const ref = this.dialogService.open(UserDialogComponent, {
-      showHeader: false, // Изменено
+      showHeader: false,
       width: '400px',
       data: user || null,
     });
@@ -45,20 +53,36 @@ export class UserListComponent implements OnInit {
         if (user) {
           this.service.updateUser(user.id, result).subscribe({
             next: () => {
-              this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User updated' });
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+              });
               this.loadData();
             },
             error: () =>
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update user' }),
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: 'Failed to update user',
+              }),
           });
         } else {
           this.service.createUser(result).subscribe({
             next: () => {
-              this.messageService.add({ severity: 'success', summary: 'Success', detail: 'User created' });
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translate.instant('COMMON.SUCCESS'),
+                detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+              });
               this.loadData();
             },
             error: () =>
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create user' }),
+              this.messageService.add({
+                severity: 'error',
+                summary: this.translate.instant('COMMON.ERROR'),
+                detail: 'Failed to create user',
+              }),
           });
         }
       }
@@ -67,7 +91,9 @@ export class UserListComponent implements OnInit {
 
   deleteUser(id: string): void {
     this.confirmationService.confirm({
-      message: 'Are you sure?',
+      message: this.translate.instant('COMMON.CONFIRM_DELETE'),
+      header: this.translate.instant('COMMON.DELETE'),
+      icon: 'pi pi-exclamation-triangle',
       accept: () => this.service.deleteUser(id).subscribe(() => this.loadData()),
     });
   }

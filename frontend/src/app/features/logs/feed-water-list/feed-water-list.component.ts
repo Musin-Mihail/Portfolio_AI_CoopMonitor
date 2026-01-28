@@ -4,6 +4,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FeedWaterService } from '../../../core/services/feed-water.service';
 import { FeedWaterRecord } from '../../../core/models/logs.models';
 import { FeedWaterDialogComponent } from '../feed-water-dialog/feed-water-dialog.component';
@@ -11,7 +12,7 @@ import { FeedWaterDialogComponent } from '../feed-water-dialog/feed-water-dialog
 @Component({
   selector: 'app-feed-water-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule],
+  imports: [CommonModule, TableModule, ButtonModule, TranslateModule],
   templateUrl: './feed-water-list.component.html',
 })
 export class FeedWaterListComponent implements OnInit {
@@ -19,6 +20,7 @@ export class FeedWaterListComponent implements OnInit {
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
 
   dataSource = signal<FeedWaterRecord[]>([]);
 
@@ -29,13 +31,18 @@ export class FeedWaterListComponent implements OnInit {
   loadData() {
     this.service.getRecords().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error loading records' }),
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('COMMON.ERROR'),
+          detail: this.translate.instant('COMMON.LOAD_ERROR'),
+        }),
     });
   }
 
   openDialog(record?: FeedWaterRecord) {
     const ref = this.dialogService.open(FeedWaterDialogComponent, {
-      showHeader: false, // Изменено
+      showHeader: false,
       width: '500px',
       modal: true,
       data: record || null,
@@ -45,12 +52,20 @@ export class FeedWaterListComponent implements OnInit {
       if (result) {
         if (record) {
           this.service.updateRecord(record.id, result).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+            });
             this.loadData();
           });
         } else {
           this.service.createRecord(result).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+            });
             this.loadData();
           });
         }
@@ -60,8 +75,18 @@ export class FeedWaterListComponent implements OnInit {
 
   deleteRecord(id: number) {
     this.confirmationService.confirm({
-      message: 'Are you sure?',
-      accept: () => this.service.deleteRecord(id).subscribe(() => this.loadData()),
+      message: this.translate.instant('COMMON.CONFIRM_DELETE'),
+      header: this.translate.instant('COMMON.DELETE'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () =>
+        this.service.deleteRecord(id).subscribe(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translate.instant('COMMON.SUCCESS'),
+            detail: this.translate.instant('COMMON.DELETED_SUCCESS'),
+          });
+          this.loadData();
+        }),
     });
   }
 }

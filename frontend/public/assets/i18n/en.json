@@ -53,7 +53,8 @@
     "SAVED_SUCCESS": "Record saved successfully",
     "UPDATED_SUCCESS": "Record updated successfully",
     "DELETED_SUCCESS": "Record deleted successfully",
-    "CLOSE": "Close"
+    "CLOSE": "Close",
+    "LOAD_ERROR": "Failed to load data"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
@@ -78,6 +79,26 @@
       "SYSTEM": "System"
     }
   },
+  "ADMIN_AUDIT": {
+    "TIME": "Time",
+    "USER": "User",
+    "ACTION": "Action",
+    "DETAILS": "Details",
+    "SYSTEM_USER": "System"
+  },
+  "ADMIN_USERS": {
+    "TITLE": "Users List",
+    "USERNAME": "Username",
+    "EMAIL": "Email",
+    "ROLE": "Role",
+    "LINKED_PERSONNEL": "Linked Personnel",
+    "NOT_LINKED": "Not linked",
+    "DIALOG_TITLE_ADD": "Create User",
+    "DIALOG_TITLE_EDIT": "Edit User",
+    "PASS_HINT": "Leave empty to keep current",
+    "EMAIL_INVALID": "Invalid email address",
+    "PASS_MIN": "Minimum 4 characters"
+  },
   "LOGS_LAYOUT": {
     "TITLE": "Logs",
     "SELECT_LOG": "Select Log"
@@ -91,7 +112,8 @@
     "AREA": "Area (m²)",
     "CAPACITY": "Capacity",
     "DIALOG_TITLE_ADD": "New House",
-    "DIALOG_TITLE_EDIT": "Edit House"
+    "DIALOG_TITLE_EDIT": "Edit House",
+    "NAME_REQ": "Name is required"
   },
   "MD_FEEDS": {
     "TITLE": "Feeds List",
@@ -101,7 +123,8 @@
     "DIALOG_TITLE_ADD": "New Feed",
     "DIALOG_TITLE_EDIT": "Edit Feed",
     "TYPE_REQ": "Type is required",
-    "NAME_REQ": "Name is required"
+    "NAME_REQ": "Name is required",
+    "NO_DATA": "No feeds found"
   },
   "MD_PERSONNEL": {
     "TITLE": "Personnel List",
@@ -111,9 +134,13 @@
     "EMAIL": "Email",
     "ACTIVE": "Active Personnel",
     "STATUS": "Status",
+    "STATUS_ACTIVE": "Active",
+    "STATUS_INACTIVE": "Inactive",
     "CONTACTS": "Contacts",
     "DIALOG_TITLE_ADD": "New Personnel",
-    "DIALOG_TITLE_EDIT": "Edit Personnel"
+    "DIALOG_TITLE_EDIT": "Edit Personnel",
+    "NAME_REQ": "Name is required",
+    "NO_DATA": "No personnel found"
   },
   "LOGS_MORTALITY": {
     "TITLE": "Mortality Log",
@@ -123,7 +150,9 @@
     "REASON": "Reason",
     "PHOTO": "Photo",
     "PHOTO_EVIDENCE": "Photo Evidence",
-    "FILE_EXISTS": "File already uploaded (click to replace)"
+    "FILE_EXISTS": "File already uploaded (click to replace)",
+    "DIALOG_TITLE_ADD": "Add Mortality Record",
+    "DIALOG_TITLE_EDIT": "Edit Mortality Record"
   },
   "LOGS_DISEASE": {
     "TITLE": "Disease Log",
@@ -206,6 +235,12 @@
     "APP_INFO": "Application Info",
     "VERSION": "Version",
     "ENV": "Environment",
-    "SERVER_TIME": "Server Time (UTC)"
+    "SERVER_TIME": "Server Time (UTC)",
+    "CHANNEL": "Channel",
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled",
+    "ADMIN_CHAT_ID": "Admin Chat ID",
+    "NOT_CONFIGURED": "Not Configured",
+    "CONFIG_HINT": "To configure, edit backend/appsettings.json or use environment variables."
   }
 }

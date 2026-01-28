@@ -7,12 +7,12 @@
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="timestamp">
-        Time
+        {{ "ADMIN_AUDIT.TIME" | translate }}
         <p-sortIcon field="timestamp" />
       </th>
-      <th>User</th>
-      <th>Action</th>
-      <th>Details</th>
+      <th>{{ "ADMIN_AUDIT.USER" | translate }}</th>
+      <th>{{ "ADMIN_AUDIT.ACTION" | translate }}</th>
+      <th>{{ "ADMIN_AUDIT.DETAILS" | translate }}</th>
     </tr>
   </ng-template>
   <ng-template
@@ -21,7 +21,9 @@
     <tr>
       <td>{{ log.timestamp | date: "medium" }}</td>
       <td>
-        <span class="bg-slate-100 px-2 py-1 rounded text-sm">{{ log.userName || "System" }}</span>
+        <span class="bg-slate-100 px-2 py-1 rounded text-sm">
+          {{ log.userName || ("ADMIN_AUDIT.SYSTEM_USER" | translate) }}
+        </span>
       </td>
       <td class="font-semibold">{{ log.action }}</td>
       <td class="text-sm text-slate-500">{{ log.details }}</td>

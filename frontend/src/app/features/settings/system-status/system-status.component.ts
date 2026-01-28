@@ -7,7 +7,7 @@ import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
-import { TranslateModule } from '@ngx-translate/core'; // Import
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SettingsService } from '../../../core/services/settings.service';
 import { SystemStatus } from '../../../core/models/settings.models';
 
@@ -23,12 +23,13 @@ import { SystemStatus } from '../../../core/models/settings.models';
     DividerModule,
     TooltipModule,
     TranslateModule,
-  ], // Add Module
+  ],
   templateUrl: './system-status.component.html',
 })
 export class SystemStatusComponent implements OnInit {
   private service = inject(SettingsService);
   private messageService = inject(MessageService);
+  private translate = inject(TranslateService);
 
   status = signal<SystemStatus | null>(null);
   isLoading = signal<boolean>(false);
@@ -45,7 +46,7 @@ export class SystemStatusComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: () => {
-        this.showError('Failed to load system status');
+        this.showError(this.translate.instant('COMMON.LOAD_ERROR'));
         this.isLoading.set(false);
       },
     });
@@ -58,6 +59,11 @@ export class SystemStatusComponent implements OnInit {
   }
 
   private showError(msg: string): void {
-    this.messageService.add({ severity: 'error', summary: 'Error', detail: msg, life: 3000 });
+    this.messageService.add({
+      severity: 'error',
+      summary: this.translate.instant('COMMON.ERROR'),
+      detail: msg,
+      life: 3000,
+    });
   }
 }

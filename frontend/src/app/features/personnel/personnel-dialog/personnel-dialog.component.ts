@@ -5,12 +5,13 @@ import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { TranslateModule } from '@ngx-translate/core';
 import { Personnel } from '../../../core/models/master-data.models';
 
 @Component({
   selector: 'app-personnel-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, ToggleSwitchModule],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, ToggleSwitchModule, TranslateModule],
   templateUrl: './personnel-dialog.component.html',
   styleUrl: './personnel-dialog.component.scss',
 })
@@ -25,7 +26,8 @@ export class PersonnelDialogComponent {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit Personnel' : 'New Personnel';
+    // Use keys
+    this.title = this.data ? 'MD_PERSONNEL.DIALOG_TITLE_EDIT' : 'MD_PERSONNEL.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({
       fullName: [this.data?.fullName || '', Validators.required],

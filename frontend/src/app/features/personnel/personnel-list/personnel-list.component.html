@@ -1,10 +1,10 @@
 <div class="flex justify-between items-center mb-6">
-  <h2 class="text-lg font-medium text-slate-600">Список персонала</h2>
+  <h2 class="text-lg font-medium text-slate-600">{{ "MD_PERSONNEL.TITLE" | translate }}</h2>
   <button
     (click)="openDialog()"
     class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
     <i class="pi pi-plus text-xs"></i>
-    <span>Новая запись</span>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
   </button>
 </div>
 
@@ -19,23 +19,23 @@
       <th
         pSortableColumn="fullName"
         style="width: 25%">
-        Name
+        {{ "MD_PERSONNEL.FULL_NAME" | translate }}
         <p-sortIcon field="fullName" />
       </th>
       <th
         pSortableColumn="jobTitle"
         style="width: 20%">
-        Job Title
+        {{ "MD_PERSONNEL.JOB_TITLE" | translate }}
         <p-sortIcon field="jobTitle" />
       </th>
-      <th style="width: 30%">Contacts</th>
+      <th style="width: 30%">{{ "MD_PERSONNEL.CONTACTS" | translate }}</th>
       <th
         pSortableColumn="isActive"
         style="width: 15%">
-        Status
+        {{ "MD_PERSONNEL.STATUS" | translate }}
         <p-sortIcon field="isActive" />
       </th>
-      <th style="width: 10%">Actions</th>
+      <th style="width: 10%">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
   <ng-template
@@ -60,7 +60,7 @@
       </td>
       <td>
         <p-tag
-          [value]="person.isActive ? 'Active' : 'Inactive'"
+          [value]="(person.isActive ? 'MD_PERSONNEL.STATUS_ACTIVE' : 'MD_PERSONNEL.STATUS_INACTIVE') | translate"
           [severity]="person.isActive ? 'success' : 'danger'"
           [rounded]="true" />
       </td>
@@ -71,13 +71,15 @@
             [rounded]="true"
             [text]="true"
             severity="secondary"
-            (onClick)="openDialog(person)" />
+            (onClick)="openDialog(person)"
+            [pTooltip]="'COMMON.EDIT' | translate" />
           <p-button
             icon="pi pi-trash"
             [rounded]="true"
             [text]="true"
             severity="danger"
-            (onClick)="deletePersonnel(person.id)" />
+            (onClick)="deletePersonnel(person.id)"
+            [pTooltip]="'COMMON.DELETE' | translate" />
         </div>
       </td>
     </tr>
@@ -87,7 +89,7 @@
       <td
         colspan="5"
         class="text-center p-4">
-        No personnel found.
+        {{ "MD_PERSONNEL.NO_DATA" | translate }}
       </td>
     </tr>
   </ng-template>

@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -17,19 +17,19 @@
       <label
         for="name"
         class="text-sm font-semibold text-slate-700">
-        Название
+        {{ "MD_HOUSES.NAME" | translate }}
         <span class="text-red-500">*</span>
       </label>
       <input
         pInputText
         id="name"
         formControlName="name"
-        placeholder="Птичник #1"
+        placeholder="e.g. House #1"
         [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
       <small
         class="text-red-500 text-xs"
         *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
-        Обязательное поле
+        {{ "COMMON.REQUIRED" | translate }}
       </small>
     </div>
 
@@ -38,7 +38,7 @@
         <label
           for="area"
           class="text-sm font-semibold text-slate-700">
-          Площадь (м²)
+          {{ "MD_HOUSES.AREA" | translate }}
           <span class="text-red-500">*</span>
         </label>
         <p-inputnumber
@@ -53,7 +53,7 @@
         <label
           for="capacity"
           class="text-sm font-semibold text-slate-700">
-          Вместимость (гол.)
+          {{ "MD_HOUSES.CAPACITY" | translate }}
           <span class="text-red-500">*</span>
         </label>
         <p-inputnumber
@@ -68,12 +68,12 @@
 
   <div class="flex justify-end gap-3 pt-8 border-t border-slate-50 mt-6">
     <p-button
-      label="Отмена"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Сохранить"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [disabled]="form.invalid"
       [rounded]="true"

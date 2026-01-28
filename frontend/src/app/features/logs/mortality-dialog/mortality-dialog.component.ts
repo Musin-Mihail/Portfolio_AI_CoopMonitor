@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FileUploadModule } from 'primeng/fileupload';
+import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { MortalityRecord } from '../../../core/models/logs.models';
 import { HousesService } from '../../../core/services/houses.service';
@@ -24,6 +25,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
     SelectModule,
     DatePickerModule,
     FileUploadModule,
+    TranslateModule,
   ],
   templateUrl: './mortality-dialog.component.html',
   styleUrl: './mortality-dialog.component.scss',
@@ -46,7 +48,7 @@ export class MortalityDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit Mortality Record' : 'Add Mortality Record';
+    this.title = this.data ? 'LOGS_MORTALITY.DIALOG_TITLE_EDIT' : 'LOGS_MORTALITY.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],
@@ -62,12 +64,11 @@ export class MortalityDialogComponent implements OnInit {
     this.housesService.getHouses().subscribe((data) => this.houses.set(data));
     this.personnelService.getPersonnels().subscribe((data) => this.personnel.set(data));
 
-    // Добавляем заполнение формы
     if (this.data) {
       this.form.patchValue({
         houseId: this.data.houseId,
         personnelId: this.data.personnelId,
-        date: new Date(this.data.date), // Конвертация строки в Date для DatePicker
+        date: new Date(this.data.date),
         quantity: this.data.quantity,
         reason: this.data.reason,
         attachmentUrl: this.data.attachmentUrl,
@@ -91,7 +92,6 @@ export class MortalityDialogComponent implements OnInit {
     this.isUploading.set(true);
     const formValue = this.form.value;
 
-    // Convert Date to ISO string
     formValue.date = formValue.date instanceof Date ? formValue.date.toISOString() : formValue.date;
 
     if (this.selectedFile) {
@@ -109,7 +109,6 @@ export class MortalityDialogComponent implements OnInit {
         },
       });
     } else {
-      // Keep existing URL if no new file selected
       this.ref.close(formValue);
     }
   }

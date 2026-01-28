@@ -6,12 +6,21 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserDto } from '../../../core/models/admin.models';
 
 @Component({
   selector: 'app-user-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, PasswordModule, SelectModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    PasswordModule,
+    SelectModule,
+    TranslateModule,
+  ],
   templateUrl: './user-dialog.component.html',
   styleUrl: './user-dialog.component.scss',
 })
@@ -27,7 +36,8 @@ export class UserDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit User' : 'Create User';
+    // Use translation keys
+    this.title = this.data ? 'ADMIN_USERS.DIALOG_TITLE_EDIT' : 'ADMIN_USERS.DIALOG_TITLE_ADD';
 
     // If editing (data exists), password is not required.
     const passwordValidators = this.data ? [Validators.minLength(4)] : [Validators.required, Validators.minLength(4)];
