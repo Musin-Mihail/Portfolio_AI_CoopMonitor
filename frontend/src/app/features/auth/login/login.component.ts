@@ -6,12 +6,21 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
+import { TranslateModule } from '@ngx-translate/core'; // Import
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardModule, InputTextModule, PasswordModule, ButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CardModule,
+    InputTextModule,
+    PasswordModule,
+    ButtonModule,
+    TranslateModule,
+  ], // Add TranslateModule
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -42,6 +51,7 @@ export class LoginComponent {
         },
         error: (err) => {
           this.isLoading.set(false);
+          // Можно использовать translateService.get('AUTH.INVALID_CREDENTIALS') для локализации ошибки
           this.errorMessage.set('Invalid username or password');
           console.error('Login error', err);
         },

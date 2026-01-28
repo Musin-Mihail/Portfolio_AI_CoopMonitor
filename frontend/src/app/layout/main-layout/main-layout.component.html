@@ -27,39 +27,39 @@
           [routerLinkActiveOptions]="{ exact: exact }"
           class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all text-slate-500 hover:text-slate-900 hover:bg-white/60 group">
           <i [class]="'pi ' + icon + ' text-lg'"></i>
-          <span>{{ label }}</span>
+          <span>{{ label | translate }}</span>
         </a>
       </ng-template>
 
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/', icon: 'pi-th-large', label: 'Дашборд', exact: true }
+          context: { link: '/', icon: 'pi-th-large', label: 'MENU.DASHBOARD', exact: true }
         "></ng-container>
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/video-wall', icon: 'pi-video', label: 'Видео', exact: true }
+          context: { link: '/video-wall', icon: 'pi-video', label: 'MENU.VIDEO_WALL', exact: true }
         "></ng-container>
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/logs', icon: 'pi-file', label: 'Журналы', exact: false }
+          context: { link: '/logs', icon: 'pi-file', label: 'MENU.LOGS', exact: false }
         "></ng-container>
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/reports', icon: 'pi-chart-line', label: 'Отчеты', exact: true }
+          context: { link: '/reports', icon: 'pi-chart-line', label: 'MENU.REPORTS', exact: true }
         "></ng-container>
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/master-data', icon: 'pi-book', label: 'Справочники', exact: false }
+          context: { link: '/master-data', icon: 'pi-book', label: 'MENU.MASTER_DATA', exact: false }
         "></ng-container>
       <ng-container
         *ngTemplateOutlet="
           menuItem;
-          context: { link: '/admin', icon: 'pi-user', label: 'Администрирование', exact: false }
+          context: { link: '/admin', icon: 'pi-user', label: 'MENU.ADMIN', exact: false }
         "></ng-container>
     </nav>
 
@@ -73,7 +73,9 @@
             <path d="M12 2L2 19h20L12 2zm0 3.8l6.8 11.2H5.2L12 5.8z" />
           </svg>
         </div>
-        <span class="font-bold text-lg tracking-wide text-[#4CAF50] font-['RoadRadio',sans-serif]">AGROBIONIC</span>
+        <span class="font-bold text-lg tracking-wide text-[#4CAF50] font-['RoadRadio',sans-serif]">
+          {{ "APP_NAME" | translate }}
+        </span>
       </div>
     </div>
   </aside>
@@ -87,13 +89,13 @@
             *ngIf="!last"
             [routerLink]="crumb.url"
             class="text-slate-300 hover:text-slate-500 transition-colors cursor-pointer no-underline">
-            {{ crumb.label }}
+            {{ crumb.label | translate }}
           </a>
 
           <span
             *ngIf="last"
             class="text-slate-800 font-medium">
-            {{ crumb.label }}
+            {{ crumb.label | translate }}
           </span>
 
           <span
@@ -104,6 +106,12 @@
         </ng-container>
       </div>
       <div class="flex items-center gap-6">
+        <button
+          (click)="toggleLanguage()"
+          class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors uppercase">
+          {{ languageService.currentLang() }}
+        </button>
+
         <button
           (click)="logout()"
           class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-50 text-slate-400 hover:text-red-500 transition-colors">

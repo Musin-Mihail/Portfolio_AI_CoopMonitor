@@ -28,66 +28,66 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    // На логине хлебные крошки обычно не нужны, но можно добавить data: { breadcrumb: 'Вход' }
+    // На логине хлебные крошки обычно не нужны
   },
   {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
-    // Корневой лейбл, который будет скрыт или показан как "Главная"
-    data: { breadcrumb: 'Главная' },
+    // Корневой лейбл "Главная"
+    data: { breadcrumb: 'MENU.HOME' },
     children: [
       {
         path: '',
         component: DashboardComponent,
-        data: { breadcrumb: 'Дашборд' },
+        data: { breadcrumb: 'MENU.DASHBOARD' },
       },
       {
         path: 'video-wall',
         component: VideoArchiveComponent,
-        data: { breadcrumb: 'Видеостена' },
+        data: { breadcrumb: 'MENU.VIDEO_WALL' },
       },
       {
         path: 'reports',
         component: ReportsListComponent,
-        data: { breadcrumb: 'Отчеты' },
+        data: { breadcrumb: 'MENU.REPORTS' },
       },
       // Группа Журналы (Logs)
       {
         path: 'logs',
         component: LogsLayoutComponent,
-        data: { breadcrumb: 'Журналы' },
+        data: { breadcrumb: 'MENU.LOGS' },
         children: [
           { path: '', redirectTo: 'mortality', pathMatch: 'full' },
-          { path: 'mortality', component: MortalityListComponent, data: { breadcrumb: 'Падеж' } },
-          { path: 'feed-water', component: FeedWaterListComponent, data: { breadcrumb: 'Корм и вода' } },
-          { path: 'disease', component: DiseaseListComponent, data: { breadcrumb: 'Болезни' } },
-          { path: 'weighing', component: WeighingListComponent, data: { breadcrumb: 'Взвешивание' } },
-          { path: 'marking', component: MarkingListComponent, data: { breadcrumb: 'Маркировка' } },
+          { path: 'mortality', component: MortalityListComponent, data: { breadcrumb: 'MENU.LOGS_MORTALITY' } },
+          { path: 'feed-water', component: FeedWaterListComponent, data: { breadcrumb: 'MENU.LOGS_FEED_WATER' } },
+          { path: 'disease', component: DiseaseListComponent, data: { breadcrumb: 'MENU.LOGS_DISEASE' } },
+          { path: 'weighing', component: WeighingListComponent, data: { breadcrumb: 'MENU.LOGS_WEIGHING' } },
+          { path: 'marking', component: MarkingListComponent, data: { breadcrumb: 'MENU.LOGS_MARKING' } },
         ],
       },
       // Группа Справочники (Master Data)
       {
         path: 'master-data',
         component: MasterDataLayoutComponent,
-        data: { breadcrumb: 'Справочники' },
+        data: { breadcrumb: 'MENU.MASTER_DATA' },
         children: [
           { path: '', redirectTo: 'houses', pathMatch: 'full' },
-          { path: 'houses', component: HouseListComponent, data: { breadcrumb: 'Птичники' } },
-          { path: 'personnel', component: PersonnelListComponent, data: { breadcrumb: 'Персонал' } },
-          { path: 'feeds', component: FeedListComponent, data: { breadcrumb: 'Корма' } },
+          { path: 'houses', component: HouseListComponent, data: { breadcrumb: 'MENU.MD_HOUSES' } },
+          { path: 'personnel', component: PersonnelListComponent, data: { breadcrumb: 'MENU.MD_PERSONNEL' } },
+          { path: 'feeds', component: FeedListComponent, data: { breadcrumb: 'MENU.MD_FEEDS' } },
         ],
       },
       // Группа Администрирование (Admin)
       {
         path: 'admin',
         component: AdminLayoutComponent,
-        data: { breadcrumb: 'Администрирование' },
+        data: { breadcrumb: 'MENU.ADMIN' },
         children: [
           { path: '', redirectTo: 'audit', pathMatch: 'full' },
-          { path: 'users', component: UserListComponent, data: { breadcrumb: 'Пользователи' } },
-          { path: 'audit', component: AuditListComponent, data: { breadcrumb: 'Аудит' } },
-          { path: 'settings', component: SystemStatusComponent, data: { breadcrumb: 'Статус системы' } },
+          { path: 'users', component: UserListComponent, data: { breadcrumb: 'MENU.ADMIN_USERS' } },
+          { path: 'audit', component: AuditListComponent, data: { breadcrumb: 'MENU.ADMIN_AUDIT' } },
+          { path: 'settings', component: SystemStatusComponent, data: { breadcrumb: 'MENU.ADMIN_STATUS' } },
         ],
       },
     ],

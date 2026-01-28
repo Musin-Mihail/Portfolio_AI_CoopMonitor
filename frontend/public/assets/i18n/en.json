@@ -1,0 +1,70 @@
+{
+  "APP_NAME": "AGROBIONIC",
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "CREATE": "Create New",
+    "ACTIONS": "Actions",
+    "YES": "Yes",
+    "NO": "No",
+    "SEARCH": "Search",
+    "BACK": "Back",
+    "ERROR": "Error",
+    "SUCCESS": "Success"
+  },
+  "MENU": {
+    "HOME": "Home",
+    "DASHBOARD": "Dashboard",
+    "VIDEO_WALL": "Video Wall",
+    "LOGS": "Logs",
+    "REPORTS": "Reports",
+    "MASTER_DATA": "Master Data",
+    "ADMIN": "Administration",
+    "LOGS_MORTALITY": "Mortality",
+    "LOGS_FEED_WATER": "Feed & Water",
+    "LOGS_DISEASE": "Diseases",
+    "LOGS_WEIGHING": "Weighing",
+    "LOGS_MARKING": "Marking",
+    "MD_HOUSES": "Houses",
+    "MD_PERSONNEL": "Personnel",
+    "MD_FEEDS": "Feeds",
+    "ADMIN_USERS": "Users",
+    "ADMIN_AUDIT": "Audit",
+    "ADMIN_STATUS": "System Status",
+    "LOGIN": "Login"
+  },
+  "AUTH": {
+    "TITLE": "Sign in to manage your farm",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "USERNAME_REQ": "Username is required",
+    "PASSWORD_REQ": "Password is required",
+    "INVALID_CREDENTIALS": "Invalid username or password",
+    "SIGN_IN": "Sign In",
+    "LOGOUT": "Logout"
+  },
+  "primeng": {
+    "dayNames": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "dayNamesShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "dayNamesMin": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+    "monthNames": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "monthNamesShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "today": "Today",
+    "clear": "Clear"
+  }
+}
