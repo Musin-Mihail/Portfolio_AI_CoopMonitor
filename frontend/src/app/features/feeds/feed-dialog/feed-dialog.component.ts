@@ -6,12 +6,21 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { TranslateModule } from '@ngx-translate/core';
 import { Feed } from '../../../core/models/master-data.models';
 
 @Component({
   selector: 'app-feed-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, TextareaModule, SelectModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    TextareaModule,
+    SelectModule,
+    TranslateModule,
+  ],
   templateUrl: './feed-dialog.component.html',
   styleUrl: './feed-dialog.component.scss',
 })
@@ -27,7 +36,7 @@ export class FeedDialogComponent {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit Feed' : 'New Feed';
+    this.title = this.data ? 'MD_FEEDS.DIALOG_TITLE_EDIT' : 'MD_FEEDS.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({
       name: [this.data?.name || '', Validators.required],

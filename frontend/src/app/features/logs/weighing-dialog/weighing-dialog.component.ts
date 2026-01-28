@@ -7,7 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
-import { InputNumberModule } from 'primeng/inputnumber'; // <-- Добавлен импорт
+import { InputNumberModule } from 'primeng/inputnumber';
+import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { WeighingRecord } from '../../../core/models/logs.models';
 import { HousesService } from '../../../core/services/houses.service';
@@ -24,7 +25,8 @@ import { PersonnelService } from '../../../core/services/personnel.service';
     SelectModule,
     DatePickerModule,
     CheckboxModule,
-    InputNumberModule, // <-- Добавлен модуль
+    InputNumberModule,
+    TranslateModule,
   ],
   templateUrl: './weighing-dialog.component.html',
   styleUrl: './weighing-dialog.component.scss',
@@ -45,7 +47,7 @@ export class WeighingDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit Weighing Record' : 'Add Weighing Record';
+    this.title = this.data ? 'LOGS_WEIGHING.DIALOG_TITLE_EDIT' : 'LOGS_WEIGHING.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group(
       {

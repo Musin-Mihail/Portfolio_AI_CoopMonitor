@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DiseaseService } from '../../../core/services/disease.service';
 import { FileUploadService } from '../../../core/services/file-upload.service';
 import { DiseaseRecord } from '../../../core/models/logs.models';
@@ -13,7 +14,7 @@ import { DiseaseDialogComponent } from '../disease-dialog/disease-dialog.compone
 @Component({
   selector: 'app-disease-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, TooltipModule],
+  imports: [CommonModule, TableModule, ButtonModule, TooltipModule, TranslateModule],
   templateUrl: './disease-list.component.html',
 })
 export class DiseaseListComponent implements OnInit {
@@ -22,6 +23,7 @@ export class DiseaseListComponent implements OnInit {
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
 
   dataSource = signal<DiseaseRecord[]>([]);
 
@@ -32,13 +34,18 @@ export class DiseaseListComponent implements OnInit {
   loadData() {
     this.service.getRecords().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error loading records' }),
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('COMMON.ERROR'),
+          detail: 'Error loading records',
+        }),
     });
   }
 
   openDialog(record?: DiseaseRecord) {
     const ref = this.dialogService.open(DiseaseDialogComponent, {
-      showHeader: false, // Отключаем стандартный заголовок
+      showHeader: false,
       width: '450px',
       modal: true,
       data: record || null,
@@ -48,12 +55,20 @@ export class DiseaseListComponent implements OnInit {
       if (result) {
         if (record) {
           this.service.updateRecord(record.id, result).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+            });
             this.loadData();
           });
         } else {
           this.service.createRecord(result).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+            });
             this.loadData();
           });
         }
@@ -63,7 +78,9 @@ export class DiseaseListComponent implements OnInit {
 
   deleteRecord(id: number) {
     this.confirmationService.confirm({
-      message: 'Are you sure?',
+      message: this.translate.instant('COMMON.CONFIRM_DELETE'),
+      header: this.translate.instant('COMMON.DELETE'),
+      icon: 'pi pi-exclamation-triangle',
       accept: () => this.service.deleteRecord(id).subscribe(() => this.loadData()),
     });
   }

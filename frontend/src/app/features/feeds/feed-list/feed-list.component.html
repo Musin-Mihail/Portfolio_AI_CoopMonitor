@@ -1,10 +1,10 @@
 <div class="flex justify-between items-center mb-6">
-  <h2 class="text-lg font-medium text-slate-600">Список кормов</h2>
+  <h2 class="text-lg font-medium text-slate-600">{{ "MD_FEEDS.TITLE" | translate }}</h2>
   <button
     (click)="openDialog()"
     class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
     <i class="pi pi-plus text-xs"></i>
-    <span>Новая запись</span>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
   </button>
 </div>
 
@@ -19,17 +19,17 @@
       <th
         pSortableColumn="name"
         style="width: 25%">
-        Name
+        {{ "MD_FEEDS.NAME" | translate }}
         <p-sortIcon field="name" />
       </th>
       <th
         pSortableColumn="type"
         style="width: 25%">
-        Type
+        {{ "MD_FEEDS.TYPE" | translate }}
         <p-sortIcon field="type" />
       </th>
-      <th style="width: 40%">Description</th>
-      <th style="width: 10%">Actions</th>
+      <th style="width: 40%">{{ "MD_FEEDS.DESCRIPTION" | translate }}</th>
+      <th style="width: 10%">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
   <ng-template
@@ -48,13 +48,15 @@
             [rounded]="true"
             [text]="true"
             severity="secondary"
-            (onClick)="openDialog(feed)" />
+            (onClick)="openDialog(feed)"
+            [pTooltip]="'COMMON.EDIT' | translate" />
           <p-button
             icon="pi pi-trash"
             [rounded]="true"
             [text]="true"
             severity="danger"
-            (onClick)="deleteFeed(feed.id)" />
+            (onClick)="deleteFeed(feed.id)"
+            [pTooltip]="'COMMON.DELETE' | translate" />
         </div>
       </td>
     </tr>
@@ -64,7 +66,7 @@
       <td
         colspan="4"
         class="text-center p-4">
-        No feeds found.
+        {{ "MD_FEEDS.NO_DATA" | translate }}
       </td>
     </tr>
   </ng-template>

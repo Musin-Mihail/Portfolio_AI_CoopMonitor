@@ -36,9 +36,24 @@
     "EDIT": "Редактировать",
     "DELETE": "Удалить",
     "SEARCH": "Поиск",
-    "CONFIRM_DELETE": "Вы уверены?",
+    "CONFIRM_DELETE": "Вы уверены, что хотите удалить эту запись?",
     "SUCCESS": "Успешно",
-    "ERROR": "Ошибка"
+    "ERROR": "Ошибка",
+    "REQUIRED": "Обязательно",
+    "SELECT_OPTION": "Выберите опцию",
+    "DATE": "Дата",
+    "HOUSE": "Птичник",
+    "RESPONSIBLE": "Ответственный",
+    "PHOTO": "Фото",
+    "VIDEO": "Видео",
+    "FILE_SELECTED": "Файл выбран",
+    "NO_FILE": "Файл не выбран",
+    "UPLOAD_PHOTO": "Загрузить фото",
+    "UPLOAD_VIDEO": "Загрузить видео",
+    "SAVED_SUCCESS": "Запись успешно сохранена",
+    "UPDATED_SUCCESS": "Запись успешно обновлена",
+    "DELETED_SUCCESS": "Запись успешно удалена",
+    "CLOSE": "Закрыть"
   },
   "DASHBOARD": {
     "TITLE": "Дашборд",
@@ -74,7 +89,31 @@
     "TITLE": "Список птичников",
     "NAME": "Название",
     "AREA": "Площадь (м²)",
-    "CAPACITY": "Вместимость"
+    "CAPACITY": "Вместимость",
+    "DIALOG_TITLE_ADD": "Новый птичник",
+    "DIALOG_TITLE_EDIT": "Редактировать птичник"
+  },
+  "MD_FEEDS": {
+    "TITLE": "Список кормов",
+    "NAME": "Название",
+    "TYPE": "Тип",
+    "DESCRIPTION": "Описание",
+    "DIALOG_TITLE_ADD": "Новый корм",
+    "DIALOG_TITLE_EDIT": "Редактировать корм",
+    "TYPE_REQ": "Тип обязателен",
+    "NAME_REQ": "Название обязательно"
+  },
+  "MD_PERSONNEL": {
+    "TITLE": "Список персонала",
+    "FULL_NAME": "ФИО",
+    "JOB_TITLE": "Должность",
+    "PHONE": "Телефон",
+    "EMAIL": "Email",
+    "ACTIVE": "Активный сотрудник",
+    "STATUS": "Статус",
+    "CONTACTS": "Контакты",
+    "DIALOG_TITLE_ADD": "Новый сотрудник",
+    "DIALOG_TITLE_EDIT": "Редактировать сотрудника"
   },
   "LOGS_MORTALITY": {
     "TITLE": "Журнал падежа",
@@ -82,7 +121,79 @@
     "HOUSE": "Птичник",
     "QTY": "Кол-во",
     "REASON": "Причина",
-    "PHOTO": "Фото"
+    "PHOTO": "Фото",
+    "PHOTO_EVIDENCE": "Фото подтверждение",
+    "FILE_EXISTS": "Файл уже загружен (нажмите для замены)"
+  },
+  "LOGS_DISEASE": {
+    "TITLE": "Журнал болезней",
+    "DIAGNOSIS": "Диагноз",
+    "TREATMENT": "Лечение",
+    "MEDICINE": "Лекарство",
+    "DOSAGE": "Дозировка",
+    "DIALOG_TITLE_ADD": "Добавить запись о болезни",
+    "DIALOG_TITLE_EDIT": "Редактировать запись о болезни"
+  },
+  "LOGS_FEED_WATER": {
+    "TITLE": "Журнал корма и воды",
+    "FEED_TYPE": "Тип корма",
+    "FEED_KG": "Корм (кг)",
+    "WATER_L": "Вода (л)",
+    "DIALOG_TITLE_ADD": "Добавить запись",
+    "DIALOG_TITLE_EDIT": "Редактировать запись"
+  },
+  "LOGS_WEIGHING": {
+    "TITLE": "Журнал взвешивания",
+    "WEIGHT_G": "Вес (г)",
+    "MUSIC": "Музыка",
+    "SOOTHING_MUSIC": "Успокаивающая музыка",
+    "MUSIC_HINT": "Включалась ли музыка для снижения стресса птицы?",
+    "VIDEO_EVIDENCE": "Видео фиксация",
+    "VIDEO_REQ": "Видео обязательно для новой записи",
+    "VIDEO_SAVED": "Видео сохранено",
+    "DIALOG_TITLE_ADD": "Новое взвешивание",
+    "DIALOG_TITLE_EDIT": "Редактировать взвешивание"
+  },
+  "LOGS_MARKING": {
+    "TITLE": "Журнал маркировки",
+    "BIRD_AGE": "Возраст птицы (дней)",
+    "MARKING_TYPE": "Тип маркировки",
+    "DETAILS": "Детали",
+    "IDENTIFIER": "Идентификатор птицы (опц.)",
+    "PROTOCOL_INFO": "Протокол для возраста {{age}} дней: {{protocol}}",
+    "PROTOCOL_OLDER": "Лента + Номер",
+    "PROTOCOL_YOUNGER": "Краска + Кольцо",
+    "TAPE_COLOR": "Цвет ленты",
+    "PAINT_COLOR": "Цвет краски",
+    "PAINTED_NUMBER": "Нарисованный номер",
+    "RING_NUMBER": "Номер кольца",
+    "PHOTO_REC": "Фото подтверждение (рекомендуется)",
+    "DIALOG_TITLE_ADD": "Новая маркировка",
+    "DIALOG_TITLE_EDIT": "Редактировать маркировку"
+  },
+  "REPORTS_PAGE": {
+    "TITLE": "Архив отчетов",
+    "GENERATE_BTN": "Сформировать отчет",
+    "GENERATING": "Генерация...",
+    "DATE": "Дата отчета",
+    "TYPE": "Тип",
+    "STATUS": "Статус",
+    "GENERATED_AT": "Созд:",
+    "MSG_TRIGGERED": "Генерация отчета запущена. Проверьте через несколько секунд.",
+    "MSG_FAILED": "Не удалось запустить генерацию"
+  },
+  "VIDEO_WALL": {
+    "TITLE": "Видеостена",
+    "TAB_LIVE": "Трансляция",
+    "TAB_ARCHIVE": "Архив",
+    "QUALITY": "Качество",
+    "AI_EVENTS": "События AI",
+    "STATS_TODAY": "Статистика за сегодня",
+    "TOTAL_EVENTS": "Всего событий",
+    "ACTIVE_CAMS": "Активных камер",
+    "ALERTS": "Алерты",
+    "VIEW_BTN": "Просмотреть >",
+    "ALERT_LABEL": "Тревога"
   },
   "SYSTEM_STATUS": {
     "REFRESH": "Обновить статус",

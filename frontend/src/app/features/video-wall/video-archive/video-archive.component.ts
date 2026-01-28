@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { VideoService } from '../../../core/services/video.service';
 import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
@@ -19,7 +20,7 @@ interface VideoStreamMock {
   time: string;
   cameraState: 'Normal' | 'Alert';
   alertCount: number;
-  imageUrl?: string; // For mock background
+  imageUrl?: string;
 
   // Archive specific properties
   date?: string;
@@ -33,14 +34,13 @@ interface AiEventMock {
   time: string;
   title: string;
   location: string;
-  // ДОБАВЛЕНО 'primary' сюда:
   type: 'danger' | 'warning' | 'info' | 'primary';
 }
 
 @Component({
   selector: 'app-video-archive',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, TooltipModule],
+  imports: [CommonModule, FormsModule, ButtonModule, TooltipModule, TranslateModule],
   templateUrl: './video-archive.component.html',
   styleUrls: ['./video-archive.component.scss'],
 })
@@ -51,7 +51,7 @@ export class VideoArchiveComponent implements OnInit {
   // State
   activeTab = signal<'live' | 'archive'>('live');
 
-  // Mocks based on "Трансляция.jpg"
+  // Mocks based on "Трансляция"
   liveStreams = signal<VideoStreamMock[]>([
     {
       id: 1,
@@ -83,46 +83,16 @@ export class VideoArchiveComponent implements OnInit {
       cameraState: 'Normal',
       alertCount: 2,
     },
-    {
-      id: 4,
-      title: 'Птичник 1 - Зона А',
-      status: 'Online',
-      fps: 25,
-      quality: '1080p',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 2,
-    },
-    {
-      id: 5,
-      title: 'Птичник 1 - Зона А',
-      status: 'Online',
-      fps: 25,
-      quality: '1080p',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 2,
-    },
-    {
-      id: 6,
-      title: 'Птичник 1 - Зона А',
-      status: 'Online',
-      fps: 25,
-      quality: '1080p',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 2,
-    },
   ]);
 
-  // Mocks based on "Архив.png"
+  // Mocks based on "Архив"
   archiveStreams = signal<VideoStreamMock[]>([
     {
       id: 101,
       title: 'Птичник 1 - Зона А',
       date: '14.01.2026',
-      status: 'Online', // Reused for UI consistency
-      fps: 25, // not shown in archive but keeping model consistent
+      status: 'Online',
+      fps: 25,
       quality: '',
       time: '18:29',
       cameraState: 'Normal',
@@ -139,7 +109,7 @@ export class VideoArchiveComponent implements OnInit {
       time: '18:29',
       cameraState: 'Normal',
       alertCount: 0,
-      eventTag: { label: 'Вход персонала', type: 'info' }, // Using info for gray/neutral
+      eventTag: { label: 'Вход персонала', type: 'info' },
     },
     {
       id: 103,
@@ -153,18 +123,6 @@ export class VideoArchiveComponent implements OnInit {
       alertCount: 0,
       eventTag: { label: 'Низкая активность', type: 'info' },
     },
-    {
-      id: 104,
-      title: 'Птичник 1 - Зона А',
-      date: '14.01.2026',
-      status: 'Online',
-      fps: 25,
-      quality: '',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 0,
-      eventTag: { label: 'Скопление поголовья', type: 'primary' }, // Blueish
-    },
   ]);
 
   // Sidebar Events Mock
@@ -173,8 +131,6 @@ export class VideoArchiveComponent implements OnInit {
     { time: '08:30', title: 'Обнаружен объект', location: 'Птичник 3 - Камера 1', type: 'primary' },
     { time: '10:25', title: 'Аномальная активность', location: 'Птичник 1 - Камера 1', type: 'danger' },
     { time: '08:30', title: 'Движение', location: 'Птичник 3 - Камера 1', type: 'info' },
-    { time: '08:30', title: 'Обнаружен объект', location: 'Птичник 3 - Камера 1', type: 'primary' },
-    { time: '08:30', title: 'Движение', location: 'Птичник 3 - Камера 1', type: 'primary' },
   ]);
 
   ngOnInit(): void {
@@ -187,7 +143,7 @@ export class VideoArchiveComponent implements OnInit {
 
   playStream(stream: VideoStreamMock) {
     // Mock play functionality
-    const streamUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'; // Placeholder
+    const streamUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
     this.dialogService.open(VideoPlayerDialogComponent, {
       header: stream.title,

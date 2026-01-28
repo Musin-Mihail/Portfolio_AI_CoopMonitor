@@ -36,9 +36,24 @@
     "EDIT": "Edit",
     "DELETE": "Delete",
     "SEARCH": "Search",
-    "CONFIRM_DELETE": "Are you sure?",
+    "CONFIRM_DELETE": "Are you sure you want to delete this record?",
     "SUCCESS": "Success",
-    "ERROR": "Error"
+    "ERROR": "Error",
+    "REQUIRED": "Required",
+    "SELECT_OPTION": "Select an option",
+    "DATE": "Date",
+    "HOUSE": "House",
+    "RESPONSIBLE": "Responsible Person",
+    "PHOTO": "Photo",
+    "VIDEO": "Video",
+    "FILE_SELECTED": "File selected",
+    "NO_FILE": "No file selected",
+    "UPLOAD_PHOTO": "Upload Photo",
+    "UPLOAD_VIDEO": "Upload Video",
+    "SAVED_SUCCESS": "Record saved successfully",
+    "UPDATED_SUCCESS": "Record updated successfully",
+    "DELETED_SUCCESS": "Record deleted successfully",
+    "CLOSE": "Close"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
@@ -74,7 +89,31 @@
     "TITLE": "Houses List",
     "NAME": "Name",
     "AREA": "Area (m²)",
-    "CAPACITY": "Capacity"
+    "CAPACITY": "Capacity",
+    "DIALOG_TITLE_ADD": "New House",
+    "DIALOG_TITLE_EDIT": "Edit House"
+  },
+  "MD_FEEDS": {
+    "TITLE": "Feeds List",
+    "NAME": "Name",
+    "TYPE": "Type",
+    "DESCRIPTION": "Description",
+    "DIALOG_TITLE_ADD": "New Feed",
+    "DIALOG_TITLE_EDIT": "Edit Feed",
+    "TYPE_REQ": "Type is required",
+    "NAME_REQ": "Name is required"
+  },
+  "MD_PERSONNEL": {
+    "TITLE": "Personnel List",
+    "FULL_NAME": "Full Name",
+    "JOB_TITLE": "Job Title",
+    "PHONE": "Phone Number",
+    "EMAIL": "Email",
+    "ACTIVE": "Active Personnel",
+    "STATUS": "Status",
+    "CONTACTS": "Contacts",
+    "DIALOG_TITLE_ADD": "New Personnel",
+    "DIALOG_TITLE_EDIT": "Edit Personnel"
   },
   "LOGS_MORTALITY": {
     "TITLE": "Mortality Log",
@@ -82,7 +121,79 @@
     "HOUSE": "House",
     "QTY": "Qty",
     "REASON": "Reason",
-    "PHOTO": "Photo"
+    "PHOTO": "Photo",
+    "PHOTO_EVIDENCE": "Photo Evidence",
+    "FILE_EXISTS": "File already uploaded (click to replace)"
+  },
+  "LOGS_DISEASE": {
+    "TITLE": "Disease Log",
+    "DIAGNOSIS": "Diagnosis",
+    "TREATMENT": "Treatment",
+    "MEDICINE": "Medicine",
+    "DOSAGE": "Dosage",
+    "DIALOG_TITLE_ADD": "Add Disease Record",
+    "DIALOG_TITLE_EDIT": "Edit Disease Record"
+  },
+  "LOGS_FEED_WATER": {
+    "TITLE": "Feed & Water Log",
+    "FEED_TYPE": "Feed Type",
+    "FEED_KG": "Feed (kg)",
+    "WATER_L": "Water (L)",
+    "DIALOG_TITLE_ADD": "Add Record",
+    "DIALOG_TITLE_EDIT": "Edit Record"
+  },
+  "LOGS_WEIGHING": {
+    "TITLE": "Weighing Log",
+    "WEIGHT_G": "Weight (g)",
+    "MUSIC": "Music",
+    "SOOTHING_MUSIC": "Soothing music",
+    "MUSIC_HINT": "Was music played to reduce bird stress?",
+    "VIDEO_EVIDENCE": "Video Evidence",
+    "VIDEO_REQ": "Video is required for new records",
+    "VIDEO_SAVED": "Video saved",
+    "DIALOG_TITLE_ADD": "Add Weighing",
+    "DIALOG_TITLE_EDIT": "Edit Weighing"
+  },
+  "LOGS_MARKING": {
+    "TITLE": "Marking Log",
+    "BIRD_AGE": "Bird Age (Days)",
+    "MARKING_TYPE": "Marking Type",
+    "DETAILS": "Details",
+    "IDENTIFIER": "Bird Identifier (Optional)",
+    "PROTOCOL_INFO": "Protocol for age {{age}} days: {{protocol}}",
+    "PROTOCOL_OLDER": "Tape + Number",
+    "PROTOCOL_YOUNGER": "Paint + Ring",
+    "TAPE_COLOR": "Tape Color",
+    "PAINT_COLOR": "Paint Color",
+    "PAINTED_NUMBER": "Painted Number",
+    "RING_NUMBER": "Ring Number",
+    "PHOTO_REC": "Photo Evidence (Recommended)",
+    "DIALOG_TITLE_ADD": "New Marking",
+    "DIALOG_TITLE_EDIT": "Edit Marking"
+  },
+  "REPORTS_PAGE": {
+    "TITLE": "Reports Archive",
+    "GENERATE_BTN": "Run Daily Report",
+    "GENERATING": "Generating...",
+    "DATE": "Report Date",
+    "TYPE": "Type",
+    "STATUS": "Status",
+    "GENERATED_AT": "Gen:",
+    "MSG_TRIGGERED": "Report generation triggered. Check back in a few seconds.",
+    "MSG_FAILED": "Failed to trigger generation"
+  },
+  "VIDEO_WALL": {
+    "TITLE": "Video Wall",
+    "TAB_LIVE": "Live Stream",
+    "TAB_ARCHIVE": "Archive",
+    "QUALITY": "Quality",
+    "AI_EVENTS": "AI Events",
+    "STATS_TODAY": "Today's Statistics",
+    "TOTAL_EVENTS": "Total Events",
+    "ACTIVE_CAMS": "Active Cameras",
+    "ALERTS": "Alerts",
+    "VIEW_BTN": "View >",
+    "ALERT_LABEL": "Alert"
   },
   "SYSTEM_STATUS": {
     "REFRESH": "Refresh Status",

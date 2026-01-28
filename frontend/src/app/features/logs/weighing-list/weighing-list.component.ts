@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { WeighingService } from '../../../core/services/weighing.service';
 import { VideoService } from '../../../core/services/video.service';
 import { WeighingRecord } from '../../../core/models/logs.models';
@@ -14,7 +15,7 @@ import { VideoPlayerDialogComponent } from '../../video-wall/video-player-dialog
 @Component({
   selector: 'app-weighing-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, TooltipModule],
+  imports: [CommonModule, TableModule, ButtonModule, TooltipModule, TranslateModule],
   templateUrl: './weighing-list.component.html',
 })
 export class WeighingListComponent implements OnInit {
@@ -23,6 +24,7 @@ export class WeighingListComponent implements OnInit {
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService);
 
   dataSource = signal<WeighingRecord[]>([]);
 
@@ -33,14 +35,18 @@ export class WeighingListComponent implements OnInit {
   loadData() {
     this.service.getRecords().subscribe({
       next: (data) => this.dataSource.set(data),
-      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error loading records' }),
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('COMMON.ERROR'),
+          detail: 'Error loading records',
+        }),
     });
   }
 
   openDialog(record?: WeighingRecord) {
     const ref = this.dialogService.open(WeighingDialogComponent, {
-      // header: record ? 'Edit Weighing Record' : 'Add Weighing Record', // <-- УБРАТЬ ЭТО
-      showHeader: false, // <-- ДОБАВИТЬ ЭТО (скрывает стандартную полосу)
+      showHeader: false,
       width: '450px',
       modal: true,
       data: record || null,
@@ -50,12 +56,20 @@ export class WeighingListComponent implements OnInit {
       if (result) {
         if (record) {
           this.service.updateRecord(record.id, result).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record updated' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.UPDATED_SUCCESS'),
+            });
             this.loadData();
           });
         } else {
           this.service.createRecord(result).subscribe(() => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record created' });
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+            });
             this.loadData();
           });
         }
@@ -65,8 +79,18 @@ export class WeighingListComponent implements OnInit {
 
   deleteRecord(id: number) {
     this.confirmationService.confirm({
-      message: 'Are you sure?',
-      accept: () => this.service.deleteRecord(id).subscribe(() => this.loadData()),
+      message: this.translate.instant('COMMON.CONFIRM_DELETE'),
+      header: this.translate.instant('COMMON.DELETE'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () =>
+        this.service.deleteRecord(id).subscribe(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translate.instant('COMMON.SUCCESS'),
+            detail: this.translate.instant('COMMON.DELETED_SUCCESS'),
+          });
+          this.loadData();
+        }),
     });
   }
 
@@ -78,7 +102,7 @@ export class WeighingListComponent implements OnInit {
     const streamUrl = this.videoService.getStreamUrl(bucket, fileName);
 
     this.dialogService.open(VideoPlayerDialogComponent, {
-      header: 'Weighing Evidence',
+      header: this.translate.instant('LOGS_WEIGHING.VIDEO_EVIDENCE'),
       width: '70vw',
       contentStyle: { padding: '0', 'background-color': '#000' },
       data: {

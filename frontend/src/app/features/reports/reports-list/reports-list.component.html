@@ -1,5 +1,5 @@
 <div class="flex justify-between items-center mb-6">
-  <h1 class="text-[28px] font-bold m-0 text-[#1A1C21] font-serif">Reports Archive</h1>
+  <h1 class="text-[28px] font-bold m-0 text-[#1A1C21] font-serif">{{ "REPORTS_PAGE.TITLE" | translate }}</h1>
   <div class="flex gap-3">
     <button
       (click)="loadReports()"
@@ -17,7 +17,7 @@
         [class.pi-play]="!isGenerating()"
         [class.pi-spin]="isGenerating()"
         [class.pi-spinner]="isGenerating()"></i>
-      <span>Run Daily Report</span>
+      <span>{{ (isGenerating() ? "REPORTS_PAGE.GENERATING" : "REPORTS_PAGE.GENERATE_BTN") | translate }}</span>
     </button>
   </div>
 </div>
@@ -35,18 +35,18 @@
         <p-tableHeaderCheckbox />
       </th>
       <th pSortableColumn="reportDate">
-        Report Date
+        {{ "REPORTS_PAGE.DATE" | translate }}
         <p-sortIcon field="reportDate" />
       </th>
       <th pSortableColumn="reportType">
-        Type
+        {{ "REPORTS_PAGE.TYPE" | translate }}
         <p-sortIcon field="reportType" />
       </th>
       <th pSortableColumn="houseName">
-        House
+        {{ "COMMON.HOUSE" | translate }}
         <p-sortIcon field="houseName" />
       </th>
-      <th pSortableColumn="status">Status</th>
+      <th pSortableColumn="status">{{ "REPORTS_PAGE.STATUS" | translate }}</th>
       <th style="width: 6rem"></th>
     </tr>
   </ng-template>
@@ -59,7 +59,9 @@
       </td>
       <td class="font-medium text-[#1A1C21]">
         {{ report.reportDate | date: "mediumDate" }}
-        <div class="text-[11px] text-slate-400 font-normal">Gen: {{ report.generatedAt | date: "shortTime" }}</div>
+        <div class="text-[11px] text-slate-400 font-normal">
+          {{ "REPORTS_PAGE.GENERATED_AT" | translate }} {{ report.generatedAt | date: "shortTime" }}
+        </div>
       </td>
       <td>
         <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-[11px] font-bold uppercase tracking-wider">

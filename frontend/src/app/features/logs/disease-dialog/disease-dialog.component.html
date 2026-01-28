@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -17,7 +17,7 @@
       <label
         for="houseId"
         class="font-medium text-slate-700">
-        House
+        {{ "COMMON.HOUSE" | translate }}
       </label>
       <p-select
         id="houseId"
@@ -25,12 +25,12 @@
         [options]="houses()"
         optionLabel="name"
         optionValue="id"
-        placeholder="Select a House"
+        [placeholder]="'COMMON.SELECT_OPTION' | translate"
         styleClass="w-full" />
       <small
         class="text-red-500"
         *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
-        House is required
+        {{ "COMMON.REQUIRED" | translate }}
       </small>
     </div>
 
@@ -38,7 +38,7 @@
       <label
         for="personnelId"
         class="font-medium text-slate-700">
-        Responsible Person
+        {{ "COMMON.RESPONSIBLE" | translate }}
       </label>
       <p-select
         id="personnelId"
@@ -46,7 +46,7 @@
         [options]="personnel()"
         optionLabel="fullName"
         optionValue="id"
-        placeholder="Select Responsible"
+        [placeholder]="'COMMON.SELECT_OPTION' | translate"
         styleClass="w-full" />
     </div>
 
@@ -54,7 +54,7 @@
       <label
         for="date"
         class="font-medium text-slate-700">
-        Date
+        {{ "COMMON.DATE" | translate }}
       </label>
       <p-datepicker
         id="date"
@@ -69,7 +69,7 @@
       <label
         for="diagnosis"
         class="font-medium text-slate-700">
-        Diagnosis
+        {{ "LOGS_DISEASE.DIAGNOSIS" | translate }}
       </label>
       <input
         pInputText
@@ -80,7 +80,7 @@
       <small
         class="text-red-500"
         *ngIf="form.get('diagnosis')?.hasError('required') && form.get('diagnosis')?.touched">
-        Diagnosis is required
+        {{ "COMMON.REQUIRED" | translate }}
       </small>
     </div>
 
@@ -89,7 +89,7 @@
         <label
           for="medicine"
           class="font-medium text-slate-700">
-          Medicine
+          {{ "LOGS_DISEASE.MEDICINE" | translate }}
         </label>
         <input
           pInputText
@@ -102,7 +102,7 @@
         <label
           for="dosage"
           class="font-medium text-slate-700">
-          Dosage
+          {{ "LOGS_DISEASE.DOSAGE" | translate }}
         </label>
         <input
           pInputText
@@ -113,17 +113,17 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="font-medium text-slate-700">Attachment (Photo)</label>
+      <label class="font-medium text-slate-700">{{ "LOGS_MORTALITY.PHOTO_EVIDENCE" | translate }}</label>
       <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
         <button
           pButton
           type="button"
           icon="pi pi-paperclip"
-          label="Select Photo"
+          [label]="'COMMON.UPLOAD_PHOTO' | translate"
           class="p-button-outlined p-button-secondary p-button-sm"
           (click)="fileInput.click()"></button>
         <span class="text-sm text-slate-600 truncate max-w-[200px]">
-          {{ selectedFile?.name || "No file selected" }}
+          {{ selectedFile?.name || ("COMMON.NO_FILE" | translate) }}
         </span>
         <input
           #fileInput
@@ -137,12 +137,12 @@
 
   <div class="flex justify-end gap-2 pt-8">
     <p-button
-      label="Cancel"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [loading]="isUploading()"
       [disabled]="form.invalid"

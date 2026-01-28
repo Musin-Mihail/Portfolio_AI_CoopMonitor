@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface VideoPlayerData {
   title: string;
@@ -12,7 +13,7 @@ export interface VideoPlayerData {
 @Component({
   selector: 'app-video-player-dialog',
   standalone: true,
-  imports: [CommonModule, ButtonModule],
+  imports: [CommonModule, ButtonModule, TranslateModule],
   templateUrl: './video-player-dialog.component.html',
   styleUrl: './video-player-dialog.component.scss',
 })

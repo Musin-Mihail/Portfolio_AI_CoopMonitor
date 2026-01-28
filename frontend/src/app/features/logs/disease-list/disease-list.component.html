@@ -1,10 +1,10 @@
 <div class="flex justify-between items-center mb-6">
-  <h2 class="text-lg font-medium text-slate-600">Журнал болезней</h2>
+  <h2 class="text-lg font-medium text-slate-600">{{ "LOGS_DISEASE.TITLE" | translate }}</h2>
   <button
     (click)="openDialog()"
     class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors">
     <i class="pi pi-plus text-xs"></i>
-    <span>Новая запись</span>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
   </button>
 </div>
 
@@ -17,20 +17,20 @@
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="date">
-        Date
+        {{ "COMMON.DATE" | translate }}
         <p-sortIcon field="date" />
       </th>
       <th pSortableColumn="houseName">
-        House
+        {{ "COMMON.HOUSE" | translate }}
         <p-sortIcon field="houseName" />
       </th>
       <th pSortableColumn="diagnosis">
-        Diagnosis
+        {{ "LOGS_DISEASE.DIAGNOSIS" | translate }}
         <p-sortIcon field="diagnosis" />
       </th>
-      <th>Treatment</th>
-      <th>Photo</th>
-      <th style="width: 8rem">Actions</th>
+      <th>{{ "LOGS_DISEASE.TREATMENT" | translate }}</th>
+      <th>{{ "COMMON.PHOTO" | translate }}</th>
+      <th style="width: 8rem">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
   <ng-template

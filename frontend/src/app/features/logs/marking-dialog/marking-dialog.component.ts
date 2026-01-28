@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { MarkingRecord } from '../../../core/models/logs.models';
 import { HousesService } from '../../../core/services/houses.service';
@@ -14,7 +15,15 @@ import { PersonnelService } from '../../../core/services/personnel.service';
 @Component({
   selector: 'app-marking-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, DatePickerModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    SelectModule,
+    DatePickerModule,
+    TranslateModule,
+  ],
   templateUrl: './marking-dialog.component.html',
   styleUrl: './marking-dialog.component.scss',
 })
@@ -36,7 +45,7 @@ export class MarkingDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit Marking Record' : 'New Marking Record';
+    this.title = this.data ? 'LOGS_MARKING.DIALOG_TITLE_EDIT' : 'LOGS_MARKING.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],
@@ -63,7 +72,7 @@ export class MarkingDialogComponent implements OnInit {
         color: this.data.color,
         ringNumber: this.data.ringNumber,
       });
-      // Обновляем логику отображения полей возраста
+      // Update age logic on init
       this.onAgeChange();
     }
   }

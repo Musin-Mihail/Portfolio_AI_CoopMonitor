@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -14,7 +14,7 @@
   <div class="flex flex-col gap-5">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Птичник</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "COMMON.HOUSE" | translate }}</label>
         <p-select
           formControlName="houseId"
           [options]="houses()"
@@ -24,7 +24,7 @@
           [style]="{ width: '100%' }" />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Ответственный</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "COMMON.RESPONSIBLE" | translate }}</label>
         <p-select
           formControlName="personnelId"
           [options]="personnel()"
@@ -37,7 +37,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Дата</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "COMMON.DATE" | translate }}</label>
         <p-datepicker
           formControlName="date"
           dateFormat="yy-mm-dd"
@@ -46,7 +46,7 @@
           styleClass="w-full" />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Вес (граммы)</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "LOGS_WEIGHING.WEIGHT_G" | translate }}</label>
         <p-inputnumber
           formControlName="weightGrams"
           suffix=" g"
@@ -62,15 +62,15 @@
       <div
         class="flex flex-col cursor-pointer"
         (click)="form.get('isMusicPlayed')?.setValue(!form.get('isMusicPlayed')?.value)">
-        <span class="text-sm font-bold text-slate-800">Успокаивающая музыка</span>
-        <span class="text-xs text-slate-500">Включалась ли музыка для снижения стресса птицы?</span>
+        <span class="text-sm font-bold text-slate-800">{{ "LOGS_WEIGHING.SOOTHING_MUSIC" | translate }}</span>
+        <span class="text-xs text-slate-500">{{ "LOGS_WEIGHING.MUSIC_HINT" | translate }}</span>
       </div>
       <i class="pi pi-music text-blue-500 ml-auto text-xl"></i>
     </div>
 
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-semibold text-slate-700">
-        Видео фиксация
+        {{ "LOGS_WEIGHING.VIDEO_EVIDENCE" | translate }}
         <span class="text-red-500">*</span>
       </label>
 
@@ -83,7 +83,13 @@
         </div>
         <div class="flex flex-col flex-1">
           <span class="text-sm font-bold text-slate-800">
-            {{ selectedFile ? selectedFile.name : data?.videoUrl ? "Видео загружено" : "Загрузить видео" }}
+            {{
+              selectedFile
+                ? selectedFile.name
+                : data?.videoUrl
+                  ? ("LOGS_WEIGHING.VIDEO_SAVED" | translate)
+                  : ("COMMON.UPLOAD_VIDEO" | translate)
+            }}
           </span>
           <span class="text-xs text-slate-500">
             {{ selectedFile ? (selectedFile.size / 1024 / 1024 | number: "1.1-2") + " MB" : "MP4, MOV (max 50MB)" }}
@@ -104,19 +110,19 @@
       <small
         class="text-red-500 text-xs"
         *ngIf="form.hasError('fileRequired') && form.touched">
-        Видео обязательно для новой записи
+        {{ "LOGS_WEIGHING.VIDEO_REQ" | translate }}
       </small>
     </div>
   </div>
 
   <div class="flex justify-end gap-3 pt-8 mt-4">
     <p-button
-      label="Отмена"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Сохранить"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [disabled]="form.invalid"
       [rounded]="true"

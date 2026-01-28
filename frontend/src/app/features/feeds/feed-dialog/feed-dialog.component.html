@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -17,7 +17,7 @@
       <label
         for="name"
         class="font-medium text-slate-700">
-        Feed Name
+        {{ "MD_FEEDS.NAME" | translate }}
       </label>
       <input
         pInputText
@@ -28,7 +28,7 @@
       <small
         class="text-red-500"
         *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
-        Name is required
+        {{ "MD_FEEDS.NAME_REQ" | translate }}
       </small>
     </div>
 
@@ -36,18 +36,18 @@
       <label
         for="type"
         class="font-medium text-slate-700">
-        Type
+        {{ "MD_FEEDS.TYPE" | translate }}
       </label>
       <p-select
         id="type"
         formControlName="type"
         [options]="types"
-        placeholder="Select a type"
+        [placeholder]="'COMMON.SELECT_OPTION' | translate"
         styleClass="w-full" />
       <small
         class="text-red-500"
         *ngIf="form.get('type')?.hasError('required') && form.get('type')?.touched">
-        Type is required
+        {{ "MD_FEEDS.TYPE_REQ" | translate }}
       </small>
     </div>
 
@@ -55,7 +55,7 @@
       <label
         for="description"
         class="font-medium text-slate-700">
-        Description
+        {{ "MD_FEEDS.DESCRIPTION" | translate }}
       </label>
       <textarea
         pTextarea
@@ -68,12 +68,12 @@
 
   <div class="flex justify-end gap-2 pt-8">
     <p-button
-      label="Cancel"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [disabled]="form.invalid"
       [rounded]="true"

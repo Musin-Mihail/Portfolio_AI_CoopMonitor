@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { DiseaseRecord } from '../../../core/models/logs.models';
 import { HousesService } from '../../../core/services/houses.service';
@@ -15,7 +16,15 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
 @Component({
   selector: 'app-disease-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, DatePickerModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    SelectModule,
+    DatePickerModule,
+    TranslateModule,
+  ],
   templateUrl: './disease-dialog.component.html',
   styleUrl: './disease-dialog.component.scss',
 })
@@ -37,7 +46,8 @@ export class DiseaseDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    this.title = this.data ? 'Edit Disease Record' : 'Add Disease Record';
+    // Используем ключи перевода
+    this.title = this.data ? 'LOGS_DISEASE.DIALOG_TITLE_EDIT' : 'LOGS_DISEASE.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],

@@ -3,7 +3,7 @@
   (ngSubmit)="onSubmit()"
   class="flex flex-col p-6">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
       type="button"
       (click)="onCancel()"
@@ -18,7 +18,7 @@
         <label
           for="houseId"
           class="font-medium text-slate-700">
-          House
+          {{ "COMMON.HOUSE" | translate }}
         </label>
         <p-select
           id="houseId"
@@ -26,12 +26,12 @@
           [options]="houses()"
           optionLabel="name"
           optionValue="id"
-          placeholder="Select House"
+          [placeholder]="'COMMON.SELECT_OPTION' | translate"
           styleClass="w-full" />
         <small
           class="text-red-500"
           *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
-          Required
+          {{ "COMMON.REQUIRED" | translate }}
         </small>
       </div>
 
@@ -39,7 +39,7 @@
         <label
           for="personnelId"
           class="font-medium text-slate-700">
-          Responsible
+          {{ "COMMON.RESPONSIBLE" | translate }}
         </label>
         <p-select
           id="personnelId"
@@ -47,7 +47,7 @@
           [options]="personnel()"
           optionLabel="fullName"
           optionValue="id"
-          placeholder="Select Person"
+          [placeholder]="'COMMON.SELECT_OPTION' | translate"
           styleClass="w-full" />
       </div>
     </div>
@@ -57,7 +57,7 @@
         <label
           for="date"
           class="font-medium text-slate-700">
-          Date
+          {{ "COMMON.DATE" | translate }}
         </label>
         <p-datepicker
           id="date"
@@ -72,7 +72,7 @@
         <label
           for="birdAgeDays"
           class="font-medium text-slate-700">
-          Bird Age (Days)
+          {{ "LOGS_MARKING.BIRD_AGE" | translate }}
         </label>
         <input
           pInputText
@@ -87,42 +87,44 @@
     <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-md flex items-center gap-2">
       <i class="pi pi-info-circle text-lg"></i>
       <span>
-        Protocol for age
-        <strong>{{ age() }}</strong>
-        days:
-        <strong>{{ isOlder() ? "Tape + Number" : "Paint + Ring" }}</strong>
+        {{
+          "LOGS_MARKING.PROTOCOL_INFO"
+            | translate
+              : {
+                  age: age(),
+                  protocol: (isOlder() ? "LOGS_MARKING.PROTOCOL_OLDER" : "LOGS_MARKING.PROTOCOL_YOUNGER") | translate,
+                }
+        }}
       </span>
     </div>
 
     <div class="border border-dashed border-slate-300 p-4 rounded-md">
       <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
-        {{ isOlder() ? "Tape & Number Protocol" : "Paint & Ring Protocol" }}
+        {{ (isOlder() ? "LOGS_MARKING.PROTOCOL_OLDER" : "LOGS_MARKING.PROTOCOL_YOUNGER") | translate }}
       </h3>
       <div class="flex flex-row gap-4">
         <div class="flex-1 flex flex-col gap-2">
           <label
             for="color"
             class="font-medium text-slate-700">
-            {{ isOlder() ? "Tape Color" : "Paint Color" }}
+            {{ (isOlder() ? "LOGS_MARKING.TAPE_COLOR" : "LOGS_MARKING.PAINT_COLOR") | translate }}
           </label>
           <input
             pInputText
             id="color"
             formControlName="color"
-            [placeholder]="isOlder() ? 'e.g. Blue Tape' : 'e.g. Red Strip'"
             class="w-full" />
         </div>
         <div class="flex-1 flex flex-col gap-2">
           <label
             for="ringNumber"
             class="font-medium text-slate-700">
-            {{ isOlder() ? "Painted Number" : "Ring Number" }}
+            {{ (isOlder() ? "LOGS_MARKING.PAINTED_NUMBER" : "LOGS_MARKING.RING_NUMBER") | translate }}
           </label>
           <input
             pInputText
             id="ringNumber"
             formControlName="ringNumber"
-            [placeholder]="isOlder() ? 'Big digits on back' : 'Optional'"
             class="w-full" />
         </div>
       </div>
@@ -132,28 +134,27 @@
       <label
         for="birdIdentifier"
         class="font-medium text-slate-700">
-        Bird Identifier (Optional)
+        {{ "LOGS_MARKING.IDENTIFIER" | translate }}
       </label>
       <input
         pInputText
         id="birdIdentifier"
         formControlName="birdIdentifier"
-        placeholder="Internal ID"
         class="w-full" />
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="font-medium text-slate-700">Photo Evidence (Recommended)</label>
+      <label class="font-medium text-slate-700">{{ "LOGS_MARKING.PHOTO_REC" | translate }}</label>
       <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
         <button
           pButton
           type="button"
           icon="pi pi-camera"
-          label="Select Photo"
+          [label]="'COMMON.UPLOAD_PHOTO' | translate"
           class="p-button-outlined p-button-secondary p-button-sm"
           (click)="fileInput.click()"></button>
         <span class="text-sm text-slate-600 truncate max-w-[200px]">
-          {{ selectedFile?.name || "No file selected" }}
+          {{ selectedFile?.name || ("COMMON.NO_FILE" | translate) }}
         </span>
         <input
           #fileInput
@@ -167,12 +168,12 @@
 
   <div class="flex justify-end gap-2 pt-8">
     <p-button
-      label="Cancel"
+      [label]="'COMMON.CANCEL' | translate"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      [label]="'COMMON.SAVE' | translate"
       type="submit"
       [disabled]="form.invalid"
       [rounded]="true"
