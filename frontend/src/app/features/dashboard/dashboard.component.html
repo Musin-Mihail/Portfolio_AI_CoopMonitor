@@ -1,6 +1,8 @@
 <div class="flex flex-col xl:flex-row gap-10 pb-8">
   <div class="flex-1 flex flex-col gap-8 min-w-0">
-    <h1 class="text-[32px] font-bold text-[#1A1C21] tracking-tight m-0 font-serif">Дашборд</h1>
+    <h1 class="text-[32px] font-bold text-[#1A1C21] tracking-tight m-0 font-serif">
+      {{ "DASHBOARD.TITLE" | translate }}
+    </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
@@ -10,7 +12,7 @@
 
         <div class="flex justify-between items-start mb-8">
           <div>
-            <div class="text-[11px] text-slate-400 mb-1.5 font-medium">Температура</div>
+            <div class="text-[11px] text-slate-400 mb-1.5 font-medium">{{ "DASHBOARD.TEMP" | translate }}</div>
             <div class="text-[28px] font-bold text-[#4CAF50] leading-none">
               {{ house.temp }}
               <span class="text-lg align-top">°C</span>
@@ -34,7 +36,7 @@
 
         <div class="mb-6">
           <div class="flex justify-between text-[11px] text-slate-400 mb-2 font-medium">
-            <span>Time in range</span>
+            <span>{{ "DASHBOARD.TIME_IN_RANGE" | translate }}</span>
             <span class="text-slate-800 font-bold">{{ house.timeInRange }}%</span>
           </div>
           <div class="h-1.5 w-full bg-slate-200/70 rounded-full overflow-hidden">
@@ -46,15 +48,15 @@
 
         <div class="flex justify-between items-center text-[10px] text-slate-400 pt-4 border-t border-slate-200/50">
           <div>
-            <div class="mb-0.5">Загрузка партии</div>
+            <div class="mb-0.5">{{ "DASHBOARD.BATCH_START" | translate }}</div>
             <div class="text-slate-600 font-semibold">{{ house.batchStart }}</div>
           </div>
           <div class="text-center">
-            <div class="mb-0.5">Количество голов</div>
-            <div class="text-slate-600 font-semibold">{{ house.count }} шт</div>
+            <div class="mb-0.5">Количество</div>
+            <div class="text-slate-600 font-semibold">{{ house.count }} {{ "DASHBOARD.HEADS" | translate }}</div>
           </div>
           <div class="text-right">
-            <div class="mb-0.5">Отгрузка партии</div>
+            <div class="mb-0.5">{{ "DASHBOARD.BATCH_END" | translate }}</div>
             <div class="text-slate-600 font-semibold">{{ house.batchEnd }}</div>
           </div>
         </div>
@@ -67,12 +69,12 @@
         <div class="flex justify-between items-start mb-6">
           <div class="flex items-center gap-2">
             <i class="pi pi-thermometer text-blue-500 text-sm"></i>
-            <span class="font-bold text-slate-800">Микроклимат (24ч)</span>
+            <span class="font-bold text-slate-800">{{ "DASHBOARD.MICROCLIMATE_24H" | translate }}</span>
           </div>
           <div
             class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors">
             <i class="pi pi-calendar text-slate-400 text-xs"></i>
-            <span class="text-xs text-slate-600 font-semibold">last 7 days</span>
+            <span class="text-xs text-slate-600 font-semibold">{{ "DASHBOARD.LAST_7_DAYS" | translate }}</span>
             <i class="pi pi-angle-down text-slate-400 text-xs"></i>
           </div>
         </div>
@@ -114,7 +116,7 @@
 
       <div class="bg-white rounded-[24px] p-6 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
         <div class="flex justify-between items-center mb-8">
-          <span class="text-blue-500 font-semibold text-sm">Сегодня 18/02/2026</span>
+          <span class="text-blue-500 font-semibold text-sm">{{ "DASHBOARD.TODAY" | translate }} 18/02/2026</span>
           <span class="text-slate-400 text-xs bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
             55°/40°
             <i class="pi pi-sun text-yellow-400 ml-1"></i>
@@ -140,7 +142,7 @@
         </div>
 
         <div class="flex justify-between items-center mt-12 mb-8">
-          <span class="text-slate-500 font-semibold text-sm">Завтра 19/02/2026</span>
+          <span class="text-slate-500 font-semibold text-sm">{{ "DASHBOARD.TOMORROW" | translate }} 19/02/2026</span>
           <span class="text-slate-400 text-xs bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
             55°/40°
             <i class="pi pi-sun text-yellow-400 ml-1"></i>
@@ -234,7 +236,9 @@
 
   <aside class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-10 pt-2">
     <div>
-      <h3 class="text-sm font-bold text-slate-800 mb-6 font-serif">Notifications</h3>
+      <h3 class="text-sm font-bold text-slate-800 mb-6 font-serif">
+        {{ "DASHBOARD.NOTIFICATIONS" | translate }}
+      </h3>
 
       <div class="flex flex-col gap-8 relative">
         <div class="flex gap-4 items-start group cursor-pointer">
@@ -269,22 +273,13 @@
             <div class="text-[10px] text-slate-400 mt-1">12 hours ago</div>
           </div>
         </div>
-
-        <div class="flex gap-4 items-start group cursor-pointer">
-          <div
-            class="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 group-hover:text-blue-500 group-hover:bg-blue-50 transition-colors">
-            <i class="pi pi-wifi text-xs"></i>
-          </div>
-          <div>
-            <div class="text-xs font-bold text-slate-800">Andi Lane subscribed.</div>
-            <div class="text-[10px] text-slate-400 mt-1">Today, 11:59 AM</div>
-          </div>
-        </div>
       </div>
     </div>
 
     <div>
-      <h3 class="text-sm font-bold text-slate-800 mb-4 font-serif">Documents</h3>
+      <h3 class="text-sm font-bold text-slate-800 mb-4 font-serif">
+        {{ "DASHBOARD.DOCUMENTS" | translate }}
+      </h3>
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-3 text-slate-500 hover:text-[#4CAF50] cursor-pointer group transition-colors">
           <div
@@ -304,7 +299,9 @@
     </div>
 
     <div>
-      <h3 class="text-sm font-bold text-slate-800 mb-4 font-serif">Support</h3>
+      <h3 class="text-sm font-bold text-slate-800 mb-4 font-serif">
+        {{ "DASHBOARD.SUPPORT" | translate }}
+      </h3>
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-3 text-slate-500 hover:text-[#4CAF50] cursor-pointer group transition-colors">
           <div

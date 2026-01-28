@@ -1,6 +1,8 @@
 <div class="h-full flex flex-col p-6">
   <div class="flex justify-between items-center mb-8">
-    <h1 class="text-[32px] font-bold m-0 text-[#1A1C21] font-serif">Журналы</h1>
+    <h1 class="text-[32px] font-bold m-0 text-[#1A1C21] font-serif">
+      {{ "LOGS_LAYOUT.TITLE" | translate }}
+    </h1>
   </div>
 
   <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex-1 flex flex-col min-h-0">
@@ -11,9 +13,20 @@
         (onChange)="onLogChange($event)"
         optionLabel="label"
         optionValue="value"
-        placeholder="Выбрать журнал"
+        [placeholder]="'LOGS_LAYOUT.SELECT_LOG' | translate"
         styleClass="w-full border-slate-200"
-        [style]="{ 'border-radius': '12px' }" />
+        [style]="{ 'border-radius': '12px' }">
+        <ng-template
+          pTemplate="selectedItem"
+          let-item>
+          {{ item.label | translate }}
+        </ng-template>
+        <ng-template
+          pTemplate="item"
+          let-item>
+          {{ item.label | translate }}
+        </ng-template>
+      </p-select>
     </div>
 
     <div class="flex-1 overflow-auto">

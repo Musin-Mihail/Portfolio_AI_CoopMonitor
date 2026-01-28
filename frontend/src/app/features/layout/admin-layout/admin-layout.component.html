@@ -1,5 +1,7 @@
 <div class="h-full flex flex-col p-6">
-  <h1 class="text-[32px] font-bold m-0 text-[#1A1C21] mb-8 font-serif">Администрирование</h1>
+  <h1 class="text-[32px] font-bold m-0 text-[#1A1C21] mb-8 font-serif">
+    {{ "ADMIN_LAYOUT.TITLE" | translate }}
+  </h1>
 
   <div class="mb-8">
     <div class="bg-[#F1F5F9] p-1 rounded-xl inline-flex">
@@ -10,7 +12,7 @@
         [class.shadow-sm]="activeTab() === 'audit'"
         [class.text-[#1A1C21]]="activeTab() === 'audit'"
         [class.text-slate-500]="activeTab() !== 'audit'">
-        Логи
+        {{ "ADMIN_LAYOUT.TABS.LOGS" | translate }}
       </button>
       <button
         (click)="onTabChange('users')"
@@ -19,7 +21,7 @@
         [class.shadow-sm]="activeTab() === 'users'"
         [class.text-[#1A1C21]]="activeTab() === 'users'"
         [class.text-slate-500]="activeTab() !== 'users'">
-        Пользователи
+        {{ "ADMIN_LAYOUT.TABS.USERS" | translate }}
       </button>
       <button
         (click)="onTabChange('settings')"
@@ -28,7 +30,7 @@
         [class.shadow-sm]="activeTab() === 'settings'"
         [class.text-[#1A1C21]]="activeTab() === 'settings'"
         [class.text-slate-500]="activeTab() !== 'settings'">
-        Система
+        {{ "ADMIN_LAYOUT.TABS.SYSTEM" | translate }}
       </button>
     </div>
   </div>

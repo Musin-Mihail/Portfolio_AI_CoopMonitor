@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { SelectModule } from 'primeng/select';
+import { TranslateModule } from '@ngx-translate/core'; // Import
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectModule],
+  imports: [CommonModule, FormsModule, SelectModule, TranslateModule], // Add Module
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -60,7 +61,6 @@ export class DashboardComponent implements OnInit {
     const ctx = this.climateChartCanvas.nativeElement.getContext('2d');
     if (!ctx) return;
 
-    // Very subtle gradient
     const gradientGreen = ctx.createLinearGradient(0, 0, 0, 200);
     gradientGreen.addColorStop(0, 'rgba(76, 175, 80, 0.05)');
     gradientGreen.addColorStop(1, 'rgba(76, 175, 80, 0)');
@@ -149,7 +149,7 @@ export class DashboardComponent implements OnInit {
             grid: {
               display: true,
               color: '#f1f5f9',
-              tickBorderDash: [4, 4], // Dashed lines
+              tickBorderDash: [4, 4],
             } as any,
             ticks: { color: '#94a3b8', font: { size: 10, family: 'Inter' }, stepSize: 1, padding: 10 },
             border: { display: false },

@@ -1,10 +1,12 @@
 <div class="flex justify-between items-center mb-6">
-  <h2 class="text-lg font-medium text-slate-600">Список птичников</h2>
+  <h2 class="text-lg font-medium text-slate-600">
+    {{ "MD_HOUSES.TITLE" | translate }}
+  </h2>
   <button
     (click)="openDialog()"
     class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
     <i class="pi pi-plus text-xs"></i>
-    <span>Новая запись</span>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
   </button>
 </div>
 
@@ -19,22 +21,22 @@
       <th
         pSortableColumn="name"
         style="width: 30%">
-        Name
+        {{ "MD_HOUSES.NAME" | translate }}
         <p-sortIcon field="name" />
       </th>
       <th
         pSortableColumn="area"
         style="width: 25%">
-        Area (m²)
+        {{ "MD_HOUSES.AREA" | translate }}
         <p-sortIcon field="area" />
       </th>
       <th
         pSortableColumn="capacity"
         style="width: 25%">
-        Capacity (Birds)
+        {{ "MD_HOUSES.CAPACITY" | translate }}
         <p-sortIcon field="capacity" />
       </th>
-      <th style="width: 20%">Actions</th>
+      <th style="width: 20%">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
 
@@ -61,7 +63,7 @@
             [text]="true"
             severity="secondary"
             (onClick)="openDialog(h)"
-            pTooltip="Edit" />
+            [pTooltip]="'COMMON.EDIT' | translate" />
 
           <p-button
             icon="pi pi-trash"
@@ -69,7 +71,7 @@
             [text]="true"
             severity="danger"
             (onClick)="deleteHouse(h.id)"
-            pTooltip="Delete" />
+            [pTooltip]="'COMMON.DELETE' | translate" />
         </div>
       </td>
     </tr>

@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core'; // Import
 import { MortalityService } from '../../../core/services/mortality.service';
 import { MortalityRecord } from '../../../core/models/logs.models';
 import { MortalityDialogComponent } from '../mortality-dialog/mortality-dialog.component';
@@ -13,7 +14,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
 @Component({
   selector: 'app-mortality-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, TooltipModule],
+  imports: [CommonModule, TableModule, ButtonModule, TooltipModule, TranslateModule], // Add Module
   templateUrl: './mortality-list.component.html',
 })
 export class MortalityListComponent implements OnInit {
@@ -22,6 +23,7 @@ export class MortalityListComponent implements OnInit {
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService); // Inject
 
   dataSource = signal<MortalityRecord[]>([]);
 
@@ -38,7 +40,7 @@ export class MortalityListComponent implements OnInit {
 
   openDialog(record?: MortalityRecord): void {
     const ref = this.dialogService.open(MortalityDialogComponent, {
-      showHeader: false, // Изменено
+      showHeader: false,
       width: '450px',
       modal: true,
       data: record || null,
@@ -62,9 +64,11 @@ export class MortalityListComponent implements OnInit {
   }
 
   deleteRecord(id: number): void {
-    this.confirmationService.confirm({
-      message: 'Delete record?',
-      accept: () => this.service.deleteRecord(id).subscribe(() => this.loadData()),
+    this.translate.get('COMMON.CONFIRM_DELETE').subscribe((msg) => {
+      this.confirmationService.confirm({
+        message: msg,
+        accept: () => this.service.deleteRecord(id).subscribe(() => this.loadData()),
+      });
     });
   }
 

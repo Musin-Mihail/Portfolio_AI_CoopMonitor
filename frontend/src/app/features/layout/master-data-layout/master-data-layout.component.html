@@ -1,5 +1,7 @@
 <div class="h-full flex flex-col p-6">
-  <h1 class="text-[32px] font-bold m-0 text-[#1A1C21] mb-8 font-serif">Справочники</h1>
+  <h1 class="text-[32px] font-bold m-0 text-[#1A1C21] mb-8 font-serif">
+    {{ "MD_LAYOUT.TITLE" | translate }}
+  </h1>
 
   <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100 flex-1 flex flex-col min-h-0">
     <div class="mb-6 w-64">
@@ -10,7 +12,18 @@
         optionLabel="label"
         optionValue="value"
         styleClass="w-full border-slate-200"
-        [style]="{ 'border-radius': '12px' }" />
+        [style]="{ 'border-radius': '12px' }">
+        <ng-template
+          pTemplate="selectedItem"
+          let-item>
+          {{ item.label | translate }}
+        </ng-template>
+        <ng-template
+          pTemplate="item"
+          let-item>
+          {{ item.label | translate }}
+        </ng-template>
+      </p-select>
     </div>
 
     <div class="flex-1 overflow-auto">

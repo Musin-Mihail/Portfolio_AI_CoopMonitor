@@ -6,7 +6,7 @@
     [rounded]="true"
     [text]="true"
     severity="secondary"
-    pTooltip="Refresh Status" />
+    [pTooltip]="'SYSTEM_STATUS.REFRESH' | translate" />
 </div>
 
 <div
@@ -28,13 +28,13 @@
           <i class="pi pi-cloud-upload text-xl"></i>
         </div>
         <div>
-          <div class="font-semibold text-lg">SaaS Synchronization</div>
+          <div class="font-semibold text-lg">{{ "SYSTEM_STATUS.SAAS_SYNC" | translate }}</div>
           <div class="text-sm text-slate-500">
             <span
               [class.text-green-600]="data.saaS.isConnected"
               [class.text-red-500]="!data.saaS.isConnected"
               class="font-medium">
-              {{ data.saaS.isConnected ? "Connected" : "Offline" }}
+              {{ (data.saaS.isConnected ? "SYSTEM_STATUS.CONNECTED" : "SYSTEM_STATUS.OFFLINE") | translate }}
             </span>
           </div>
         </div>
@@ -43,7 +43,7 @@
 
     <div class="mt-4">
       <div class="flex justify-between text-sm text-slate-600 mb-2">
-        <span>Daily Traffic Usage</span>
+        <span>{{ "SYSTEM_STATUS.DAILY_USAGE" | translate }}</span>
         <span class="font-medium">{{ data.saaS.usagePercent }}%</span>
       </div>
       <p-progressbar
@@ -58,7 +58,7 @@
       <p-divider />
 
       <div class="flex justify-between items-center text-sm">
-        <span class="text-slate-500">Last Sync:</span>
+        <span class="text-slate-500">{{ "SYSTEM_STATUS.LAST_SYNC" | translate }}:</span>
         <span class="font-mono">{{ (data.saaS.lastSync | date: "medium") || "Never" }}</span>
       </div>
     </div>
@@ -72,7 +72,7 @@
           <i class="pi pi-bell text-xl"></i>
         </div>
         <div>
-          <div class="font-semibold text-lg">Notifications</div>
+          <div class="font-semibold text-lg">{{ "SYSTEM_STATUS.NOTIFICATIONS" | translate }}</div>
           <div class="text-sm text-slate-500">Channel: Telegram</div>
         </div>
       </div>
@@ -106,22 +106,22 @@
           <i class="pi pi-info-circle text-xl"></i>
         </div>
         <div>
-          <div class="font-semibold text-lg">Application Info</div>
+          <div class="font-semibold text-lg">{{ "SYSTEM_STATUS.APP_INFO" | translate }}</div>
         </div>
       </div>
     </ng-template>
 
     <div class="mt-4 flex flex-col gap-3">
       <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
-        <span class="text-slate-600">Version</span>
+        <span class="text-slate-600">{{ "SYSTEM_STATUS.VERSION" | translate }}</span>
         <span class="font-semibold">{{ data.appVersion }}</span>
       </div>
       <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
-        <span class="text-slate-600">Environment</span>
+        <span class="text-slate-600">{{ "SYSTEM_STATUS.ENV" | translate }}</span>
         <span class="font-semibold">{{ data.environment }}</span>
       </div>
       <div class="flex justify-between items-center py-2">
-        <span class="text-slate-600">Server Time (UTC)</span>
+        <span class="text-slate-600">{{ "SYSTEM_STATUS.SERVER_TIME" | translate }}</span>
         <span class="font-mono text-sm">{{ data.serverTimeUtc | date: "medium" }}</span>
       </div>
     </div>

@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
+import { TranslateModule } from '@ngx-translate/core'; // Import
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-master-data-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SelectModule, FormsModule],
+  imports: [CommonModule, RouterOutlet, SelectModule, FormsModule, TranslateModule], // Add Module
   templateUrl: './master-data-layout.component.html',
 })
 export class MasterDataLayoutComponent implements OnInit {
@@ -16,10 +17,11 @@ export class MasterDataLayoutComponent implements OnInit {
 
   selectedOption = signal<string>('');
 
+  // Use translation keys
   masterDataOptions = [
-    { label: 'Птичники', value: '/master-data/houses' },
-    { label: 'Персонал', value: '/master-data/personnel' },
-    { label: 'Корма', value: '/master-data/feeds' },
+    { label: 'MENU.MD_HOUSES', value: '/master-data/houses' },
+    { label: 'MENU.MD_PERSONNEL', value: '/master-data/personnel' },
+    { label: 'MENU.MD_FEEDS', value: '/master-data/feeds' },
   ];
 
   ngOnInit() {

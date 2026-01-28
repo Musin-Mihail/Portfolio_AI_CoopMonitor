@@ -1,10 +1,12 @@
 <div class="flex justify-between items-center mb-6">
-  <h2 class="text-lg font-medium text-slate-600">Журнал падежа</h2>
+  <h2 class="text-lg font-medium text-slate-600">
+    {{ "LOGS_MORTALITY.TITLE" | translate }}
+  </h2>
   <button
     (click)="openDialog()"
     class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
     <i class="pi pi-plus text-xs"></i>
-    <span>Новая запись</span>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
   </button>
 </div>
 
@@ -18,19 +20,19 @@
     <tr>
       <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
       <th pSortableColumn="date">
-        Date
+        {{ "LOGS_MORTALITY.DATE" | translate }}
         <p-sortIcon field="date" />
       </th>
       <th pSortableColumn="houseName">
-        House
+        {{ "LOGS_MORTALITY.HOUSE" | translate }}
         <p-sortIcon field="houseName" />
       </th>
       <th pSortableColumn="quantity">
-        Qty
+        {{ "LOGS_MORTALITY.QTY" | translate }}
         <p-sortIcon field="quantity" />
       </th>
-      <th>Reason</th>
-      <th>Photo</th>
+      <th>{{ "LOGS_MORTALITY.REASON" | translate }}</th>
+      <th>{{ "LOGS_MORTALITY.PHOTO" | translate }}</th>
       <th style="width: 8rem"></th>
     </tr>
   </ng-template>

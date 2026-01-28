@@ -1,19 +1,5 @@
 {
   "APP_NAME": "AGROBIONIC",
-  "COMMON": {
-    "SAVE": "Save",
-    "CANCEL": "Cancel",
-    "DELETE": "Delete",
-    "EDIT": "Edit",
-    "CREATE": "Create New",
-    "ACTIONS": "Actions",
-    "YES": "Yes",
-    "NO": "No",
-    "SEARCH": "Search",
-    "BACK": "Back",
-    "ERROR": "Error",
-    "SUCCESS": "Success"
-  },
   "MENU": {
     "HOME": "Home",
     "DASHBOARD": "Dashboard",
@@ -21,7 +7,7 @@
     "LOGS": "Logs",
     "REPORTS": "Reports",
     "MASTER_DATA": "Master Data",
-    "ADMIN": "Administration",
+    "ADMIN": "Admin",
     "LOGS_MORTALITY": "Mortality",
     "LOGS_FEED_WATER": "Feed & Water",
     "LOGS_DISEASE": "Diseases",
@@ -32,39 +18,83 @@
     "MD_FEEDS": "Feeds",
     "ADMIN_USERS": "Users",
     "ADMIN_AUDIT": "Audit",
-    "ADMIN_STATUS": "System Status",
-    "LOGIN": "Login"
+    "ADMIN_STATUS": "System Status"
   },
   "AUTH": {
-    "TITLE": "Sign in to manage your farm",
+    "TITLE": "Sign in to your account",
     "USERNAME": "Username",
     "PASSWORD": "Password",
-    "USERNAME_REQ": "Username is required",
-    "PASSWORD_REQ": "Password is required",
-    "INVALID_CREDENTIALS": "Invalid username or password",
     "SIGN_IN": "Sign In",
-    "LOGOUT": "Logout"
+    "USERNAME_REQ": "Username is required",
+    "PASSWORD_REQ": "Password is required"
   },
-  "primeng": {
-    "dayNames": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    "dayNamesShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    "dayNamesMin": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-    "monthNames": [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ],
-    "monthNamesShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    "today": "Today",
-    "clear": "Clear"
+  "COMMON": {
+    "NEW_RECORD": "New Record",
+    "ACTIONS": "Actions",
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "SEARCH": "Search",
+    "CONFIRM_DELETE": "Are you sure?",
+    "SUCCESS": "Success",
+    "ERROR": "Error"
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "TEMP": "Temperature",
+    "TIME_IN_RANGE": "Time in range",
+    "BATCH_START": "Batch Start",
+    "BATCH_END": "Batch End",
+    "HEADS": "heads",
+    "MICROCLIMATE_24H": "Microclimate (24h)",
+    "LAST_7_DAYS": "last 7 days",
+    "TODAY": "Today",
+    "TOMORROW": "Tomorrow",
+    "NOTIFICATIONS": "Notifications",
+    "DOCUMENTS": "Documents",
+    "SUPPORT": "Support"
+  },
+  "ADMIN_LAYOUT": {
+    "TITLE": "Administration",
+    "TABS": {
+      "LOGS": "Logs",
+      "USERS": "Users",
+      "SYSTEM": "System"
+    }
+  },
+  "LOGS_LAYOUT": {
+    "TITLE": "Logs",
+    "SELECT_LOG": "Select Log"
+  },
+  "MD_LAYOUT": {
+    "TITLE": "Master Data"
+  },
+  "MD_HOUSES": {
+    "TITLE": "Houses List",
+    "NAME": "Name",
+    "AREA": "Area (m²)",
+    "CAPACITY": "Capacity"
+  },
+  "LOGS_MORTALITY": {
+    "TITLE": "Mortality Log",
+    "DATE": "Date",
+    "HOUSE": "House",
+    "QTY": "Qty",
+    "REASON": "Reason",
+    "PHOTO": "Photo"
+  },
+  "SYSTEM_STATUS": {
+    "REFRESH": "Refresh Status",
+    "SAAS_SYNC": "SaaS Synchronization",
+    "CONNECTED": "Connected",
+    "OFFLINE": "Offline",
+    "DAILY_USAGE": "Daily Traffic Usage",
+    "LAST_SYNC": "Last Sync",
+    "NOTIFICATIONS": "Notifications",
+    "APP_INFO": "Application Info",
+    "VERSION": "Version",
+    "ENV": "Environment",
+    "SERVER_TIME": "Server Time (UTC)"
   }
 }

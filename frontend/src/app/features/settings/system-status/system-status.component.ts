@@ -7,13 +7,23 @@ import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core'; // Import
 import { SettingsService } from '../../../core/services/settings.service';
 import { SystemStatus } from '../../../core/models/settings.models';
 
 @Component({
   selector: 'app-system-status',
   standalone: true,
-  imports: [CommonModule, CardModule, ProgressBarModule, ButtonModule, TagModule, DividerModule, TooltipModule],
+  imports: [
+    CommonModule,
+    CardModule,
+    ProgressBarModule,
+    ButtonModule,
+    TagModule,
+    DividerModule,
+    TooltipModule,
+    TranslateModule,
+  ], // Add Module
   templateUrl: './system-status.component.html',
 })
 export class SystemStatusComponent implements OnInit {

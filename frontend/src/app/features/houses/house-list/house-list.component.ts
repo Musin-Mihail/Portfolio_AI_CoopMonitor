@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
-import { MessageService, ConfirmationService } from 'primeng/api'; // Импорт сервисов
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { TooltipModule } from 'primeng/tooltip'; // Import
+import { TranslateModule, TranslateService } from '@ngx-translate/core'; // Import
 import { HousesService } from '../../../core/services/houses.service';
 import { House } from '../../../core/models/master-data.models';
 import { HouseDialogComponent } from '../house-dialog/house-dialog.component';
@@ -11,14 +13,15 @@ import { HouseDialogComponent } from '../house-dialog/house-dialog.component';
 @Component({
   selector: 'app-house-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule],
+  imports: [CommonModule, TableModule, ButtonModule, TooltipModule, TranslateModule], // Add Module
   templateUrl: './house-list.component.html',
 })
 export class HouseListComponent implements OnInit {
   private service = inject(HousesService);
   private dialogService = inject(DialogService);
-  private messageService = inject(MessageService); // Инжект
-  private confirmationService = inject(ConfirmationService); // Инжект
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
+  private translate = inject(TranslateService); // Inject
 
   dataSource = signal<House[]>([]);
 
@@ -35,7 +38,7 @@ export class HouseListComponent implements OnInit {
 
   openDialog(house?: House) {
     const ref = this.dialogService.open(HouseDialogComponent, {
-      showHeader: false, // Изменено
+      showHeader: false,
       width: '400px',
       data: house || null,
     });
@@ -57,23 +60,25 @@ export class HouseListComponent implements OnInit {
     });
   }
 
-  // Метод удаления
   deleteHouse(id: number) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this house?',
-      header: 'Confirm Delete',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.service.deleteHouse(id).subscribe({
-          next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'House deleted' });
-            this.load();
-          },
-          error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not delete house' });
-          },
-        });
-      },
+    // Получаем переведенный текст подтверждения
+    this.translate.get('COMMON.CONFIRM_DELETE').subscribe((msg) => {
+      this.confirmationService.confirm({
+        message: msg,
+        header: 'Confirm',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.service.deleteHouse(id).subscribe({
+            next: () => {
+              this.messageService.add({ severity: 'success', summary: 'Success', detail: 'House deleted' });
+              this.load();
+            },
+            error: () => {
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not delete house' });
+            },
+          });
+        },
+      });
     });
   }
 }
