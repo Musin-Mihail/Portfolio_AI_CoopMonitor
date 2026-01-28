@@ -1,4 +1,25 @@
-/* All styles via Tailwind */
 :host {
   display: block;
+  height: 100%;
+}
+
+/* Custom Scrollbar for the sidebar and grid to match the clean aesthetic */
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 99px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+  }
 }

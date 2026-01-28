@@ -3,31 +3,44 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 // PrimeNG Imports
-import { TabsModule } from 'primeng/tabs';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { ListboxModule } from 'primeng/listbox';
-import { ProgressBarModule } from 'primeng/progressbar';
 import { DialogService } from 'primeng/dynamicdialog';
-import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { VideoService } from '../../../core/services/video.service';
-import { FileMetadata } from '../../../core/models/file.models';
 import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
+
+interface VideoStreamMock {
+  id: number;
+  title: string;
+  status: 'Online' | 'Offline';
+  fps: number;
+  quality: string;
+  time: string;
+  cameraState: 'Normal' | 'Alert';
+  alertCount: number;
+  imageUrl?: string; // For mock background
+
+  // Archive specific properties
+  date?: string;
+  eventTag?: {
+    label: string;
+    type: 'danger' | 'warning' | 'info' | 'primary';
+  };
+}
+
+interface AiEventMock {
+  time: string;
+  title: string;
+  location: string;
+  // ДОБАВЛЕНО 'primary' сюда:
+  type: 'danger' | 'warning' | 'info' | 'primary';
+}
 
 @Component({
   selector: 'app-video-archive',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TabsModule,
-    CardModule,
-    ButtonModule,
-    ListboxModule,
-    ProgressBarModule,
-    TagModule,
-  ],
+  imports: [CommonModule, FormsModule, ButtonModule, TooltipModule],
   templateUrl: './video-archive.component.html',
   styleUrls: ['./video-archive.component.scss'],
 })
@@ -35,74 +48,156 @@ export class VideoArchiveComponent implements OnInit {
   private videoService = inject(VideoService);
   private dialogService = inject(DialogService);
 
-  // Data for Bucket Selector (Listbox)
-  buckets = [
-    { label: 'User Uploads', value: 'user-uploads' },
-    { label: 'Video Clips', value: 'video-clips' },
-    { label: 'Raw Video', value: 'raw-video' },
-    { label: 'AI Results', value: 'ai-results' },
-  ];
+  // State
+  activeTab = signal<'live' | 'archive'>('live');
 
-  selectedBucket = signal<string>('user-uploads');
-  files = signal<FileMetadata[]>([]);
-  isLoading = signal<boolean>(false);
+  // Mocks based on "Трансляция.jpg"
+  liveStreams = signal<VideoStreamMock[]>([
+    {
+      id: 1,
+      title: 'Птичник 1 - Зона А',
+      status: 'Online',
+      fps: 25,
+      quality: '1080p',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 2,
+    },
+    {
+      id: 2,
+      title: 'Птичник 1 - Зона А',
+      status: 'Online',
+      fps: 25,
+      quality: '1080p',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 2,
+    },
+    {
+      id: 3,
+      title: 'Птичник 1 - Зона А',
+      status: 'Online',
+      fps: 25,
+      quality: '1080p',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 2,
+    },
+    {
+      id: 4,
+      title: 'Птичник 1 - Зона А',
+      status: 'Online',
+      fps: 25,
+      quality: '1080p',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 2,
+    },
+    {
+      id: 5,
+      title: 'Птичник 1 - Зона А',
+      status: 'Online',
+      fps: 25,
+      quality: '1080p',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 2,
+    },
+    {
+      id: 6,
+      title: 'Птичник 1 - Зона А',
+      status: 'Online',
+      fps: 25,
+      quality: '1080p',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 2,
+    },
+  ]);
 
-  // Mock Live Streams
-  liveStreams = [
-    { id: 1, name: 'House 1 - Main Cam', status: 'Online' },
-    { id: 2, name: 'House 1 - Thermal', status: 'Online' },
-    { id: 3, name: 'House 2 - Main Cam', status: 'Offline' },
-  ];
+  // Mocks based on "Архив.png"
+  archiveStreams = signal<VideoStreamMock[]>([
+    {
+      id: 101,
+      title: 'Птичник 1 - Зона А',
+      date: '14.01.2026',
+      status: 'Online', // Reused for UI consistency
+      fps: 25, // not shown in archive but keeping model consistent
+      quality: '',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 0,
+      eventTag: { label: 'Падеж обнаружен', type: 'danger' },
+    },
+    {
+      id: 102,
+      title: 'Птичник 1 - Зона А',
+      date: '14.01.2026',
+      status: 'Online',
+      fps: 25,
+      quality: '',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 0,
+      eventTag: { label: 'Вход персонала', type: 'info' }, // Using info for gray/neutral
+    },
+    {
+      id: 103,
+      title: 'Птичник 1 - Зона А',
+      date: '14.01.2026',
+      status: 'Online',
+      fps: 25,
+      quality: '',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 0,
+      eventTag: { label: 'Низкая активность', type: 'info' },
+    },
+    {
+      id: 104,
+      title: 'Птичник 1 - Зона А',
+      date: '14.01.2026',
+      status: 'Online',
+      fps: 25,
+      quality: '',
+      time: '18:29',
+      cameraState: 'Normal',
+      alertCount: 0,
+      eventTag: { label: 'Скопление поголовья', type: 'primary' }, // Blueish
+    },
+  ]);
+
+  // Sidebar Events Mock
+  aiEvents = signal<AiEventMock[]>([
+    { time: '10:25', title: 'Аномальная активность', location: 'Птичник 1 - Камера 1', type: 'danger' },
+    { time: '08:30', title: 'Обнаружен объект', location: 'Птичник 3 - Камера 1', type: 'primary' },
+    { time: '10:25', title: 'Аномальная активность', location: 'Птичник 1 - Камера 1', type: 'danger' },
+    { time: '08:30', title: 'Движение', location: 'Птичник 3 - Камера 1', type: 'info' },
+    { time: '08:30', title: 'Обнаружен объект', location: 'Птичник 3 - Камера 1', type: 'primary' },
+    { time: '08:30', title: 'Движение', location: 'Птичник 3 - Камера 1', type: 'primary' },
+  ]);
 
   ngOnInit(): void {
-    this.loadFiles(this.selectedBucket());
+    // Initial data load if needed
   }
 
-  // PrimeNG Listbox emits standard change event with value
-  onBucketChange(event: any) {
-    // event.value is the selected value
-    this.loadFiles(event.value);
+  setTab(tab: 'live' | 'archive') {
+    this.activeTab.set(tab);
   }
 
-  loadFiles(bucket: string) {
-    if (!bucket) return;
-    this.isLoading.set(true);
-    this.videoService.listFiles(bucket).subscribe({
-      next: (data) => {
-        this.files.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-        this.files.set([]);
-      },
-    });
-  }
-
-  playVideo(file: FileMetadata) {
-    const streamUrl = this.videoService.getStreamUrl(file.bucket, file.name);
+  playStream(stream: VideoStreamMock) {
+    // Mock play functionality
+    const streamUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'; // Placeholder
 
     this.dialogService.open(VideoPlayerDialogComponent, {
-      header: file.name,
-      width: '70vw',
+      header: stream.title,
+      width: '80vw',
       contentStyle: { padding: '0', 'background-color': '#000' },
       data: {
-        title: file.name,
+        title: stream.title,
         streamUrl: streamUrl,
-        mimeType: file.contentType,
+        mimeType: 'video/mp4',
       },
     });
-  }
-
-  formatSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  isPlayable(file: FileMetadata): boolean {
-    return file.contentType.startsWith('video/') || file.name.endsWith('.mp4');
   }
 }
