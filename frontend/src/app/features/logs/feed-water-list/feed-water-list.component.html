@@ -1,80 +1,78 @@
-<div class="card p-6">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-semibold m-0">Feed & Water Logs</h1>
-    <p-button
-      label="Add Record"
-      icon="pi pi-plus"
-      (onClick)="openDialog()" />
-  </div>
-
-  <p-table
-    [value]="dataSource()"
-    [tableStyle]="{ 'min-width': '50rem' }"
-    [paginator]="true"
-    [rows]="10"
-    stripedRows>
-    <ng-template pTemplate="header">
-      <tr>
-        <th
-          pSortableColumn="date"
-          style="width: 20%">
-          Date
-          <p-sortIcon field="date" />
-        </th>
-        <th
-          pSortableColumn="houseName"
-          style="width: 20%">
-          House
-          <p-sortIcon field="houseName" />
-        </th>
-        <th
-          pSortableColumn="feedName"
-          style="width: 20%">
-          Feed
-          <p-sortIcon field="feedName" />
-        </th>
-        <th
-          pSortableColumn="feedQuantityKg"
-          style="width: 15%">
-          Feed (kg)
-          <p-sortIcon field="feedQuantityKg" />
-        </th>
-        <th
-          pSortableColumn="waterQuantityLiters"
-          style="width: 15%">
-          Water (L)
-          <p-sortIcon field="waterQuantityLiters" />
-        </th>
-        <th style="width: 10%">Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template
-      pTemplate="body"
-      let-element>
-      <tr>
-        <td>{{ element.date | date: "shortDate" }}</td>
-        <td>{{ element.houseName }}</td>
-        <td>{{ element.feedName || "-" }}</td>
-        <td class="font-medium text-amber-700">{{ element.feedQuantityKg }}</td>
-        <td class="font-medium text-blue-600">{{ element.waterQuantityLiters }}</td>
-        <td>
-          <p-button
-            icon="pi pi-trash"
-            [rounded]="true"
-            [text]="true"
-            severity="danger"
-            (onClick)="deleteRecord(element.id)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td
-          colspan="6"
-          class="text-center p-4">
-          No feed & water records found.
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+<div class="flex justify-between items-center mb-4">
+  <h2 class="text-lg font-medium text-slate-600">Корм и вода</h2>
+  <p-button
+    label="Add Record"
+    icon="pi pi-plus"
+    (onClick)="openDialog()" />
 </div>
+
+<p-table
+  [value]="dataSource()"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [paginator]="true"
+  [rows]="10"
+  stripedRows>
+  <ng-template pTemplate="header">
+    <tr>
+      <th
+        pSortableColumn="date"
+        style="width: 20%">
+        Date
+        <p-sortIcon field="date" />
+      </th>
+      <th
+        pSortableColumn="houseName"
+        style="width: 20%">
+        House
+        <p-sortIcon field="houseName" />
+      </th>
+      <th
+        pSortableColumn="feedName"
+        style="width: 20%">
+        Feed
+        <p-sortIcon field="feedName" />
+      </th>
+      <th
+        pSortableColumn="feedQuantityKg"
+        style="width: 15%">
+        Feed (kg)
+        <p-sortIcon field="feedQuantityKg" />
+      </th>
+      <th
+        pSortableColumn="waterQuantityLiters"
+        style="width: 15%">
+        Water (L)
+        <p-sortIcon field="waterQuantityLiters" />
+      </th>
+      <th style="width: 10%">Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-element>
+    <tr>
+      <td>{{ element.date | date: "shortDate" }}</td>
+      <td>{{ element.houseName }}</td>
+      <td>{{ element.feedName || "-" }}</td>
+      <td class="font-medium text-amber-700">{{ element.feedQuantityKg }}</td>
+      <td class="font-medium text-blue-600">{{ element.waterQuantityLiters }}</td>
+      <td>
+        <p-button
+          icon="pi pi-trash"
+          [rounded]="true"
+          [text]="true"
+          severity="danger"
+          (onClick)="deleteRecord(element.id)" />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td
+        colspan="6"
+        class="text-center p-4">
+        No feed & water records found.
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -1,0 +1,14 @@
+<div class="card p-6 min-h-full">
+  <div class="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
+    <h1 class="text-2xl font-semibold m-0 text-slate-800">Журналы</h1>
+    <p-select
+      [options]="logOptions"
+      [ngModel]="selectedLog()"
+      (onChange)="onLogChange($event)"
+      placeholder="Выбрать журнал"
+      variant="filled"
+      styleClass="w-64" />
+  </div>
+
+  <router-outlet />
+</div>

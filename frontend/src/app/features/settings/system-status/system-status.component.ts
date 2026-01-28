@@ -15,7 +15,6 @@ import { SystemStatus } from '../../../core/models/settings.models';
   standalone: true,
   imports: [CommonModule, CardModule, ProgressBarModule, ButtonModule, TagModule, DividerModule, TooltipModule],
   templateUrl: './system-status.component.html',
-  styleUrls: ['./system-status.component.scss'],
 })
 export class SystemStatusComponent implements OnInit {
   private service = inject(SettingsService);

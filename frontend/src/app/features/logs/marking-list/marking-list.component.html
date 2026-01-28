@@ -1,112 +1,101 @@
-<div class="card p-6">
-  <div class="flex justify-between items-center mb-6">
-    <div class="flex items-center gap-4">
-      <h1 class="text-2xl font-semibold m-0">Журналы</h1>
-      <p-select
-        [options]="logOptions"
-        [(ngModel)]="selectedLog"
-        (onChange)="onLogChange($event)"
-        placeholder="Выбрать журнал"
-        variant="filled"
-        styleClass="w-64" />
-    </div>
-    <p-button
-      label="Новая запись"
-      icon="pi pi-plus"
-      (onClick)="openDialog()" />
-  </div>
-
-  <p-table
-    [value]="dataSource()"
-    [tableStyle]="{ 'min-width': '50rem' }"
-    [paginator]="true"
-    [rows]="10"
-    stripedRows>
-    <ng-template pTemplate="header">
-      <tr>
-        <th
-          pSortableColumn="date"
-          style="width: 15%">
-          Date
-          <p-sortIcon field="date" />
-        </th>
-        <th
-          pSortableColumn="houseName"
-          style="width: 15%">
-          House
-          <p-sortIcon field="houseName" />
-        </th>
-        <th
-          pSortableColumn="birdAgeDays"
-          style="width: 10%">
-          Age
-          <p-sortIcon field="birdAgeDays" />
-        </th>
-        <th
-          pSortableColumn="markingType"
-          style="width: 15%">
-          Type
-          <p-sortIcon field="markingType" />
-        </th>
-        <th style="width: 30%">Details</th>
-        <th style="width: 15%">Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template
-      pTemplate="body"
-      let-element>
-      <tr>
-        <td>{{ element.date | date: "shortDate" }}</td>
-        <td>{{ element.houseName }}</td>
-        <td>{{ element.birdAgeDays }} days</td>
-        <td>
-          <span
-            class="px-2 py-1 rounded text-xs font-semibold"
-            [class.bg-orange-100]="element.markingType === 'TapeNumber'"
-            [class.text-orange-800]="element.markingType === 'TapeNumber'"
-            [class.bg-cyan-100]="element.markingType !== 'TapeNumber'"
-            [class.text-cyan-800]="element.markingType !== 'TapeNumber'">
-            {{ element.markingType }}
-          </span>
-        </td>
-        <td class="text-sm">
-          <div *ngIf="element.color">
-            <span class="text-slate-500">Color:</span>
-            {{ element.color }}
-          </div>
-          <div *ngIf="element.ringNumber">
-            <span class="text-slate-500">Num:</span>
-            {{ element.ringNumber }}
-          </div>
-        </td>
-        <td>
-          <div class="flex gap-2">
-            <p-button
-              *ngIf="element.attachmentUrl"
-              icon="pi pi-image"
-              [rounded]="true"
-              [text]="true"
-              severity="secondary"
-              (onClick)="viewPhoto(element.attachmentUrl)"
-              pTooltip="View Photo" />
-            <p-button
-              icon="pi pi-trash"
-              [rounded]="true"
-              [text]="true"
-              severity="danger"
-              (onClick)="deleteRecord(element.id)" />
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td
-          colspan="6"
-          class="text-center p-4">
-          No marking records found.
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+<div class="flex justify-between items-center mb-4">
+  <h2 class="text-lg font-medium text-slate-600">Журнал маркировки</h2>
+  <p-button
+    label="Новая запись"
+    icon="pi pi-plus"
+    (onClick)="openDialog()" />
 </div>
+
+<p-table
+  [value]="dataSource()"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [paginator]="true"
+  [rows]="10"
+  stripedRows>
+  <ng-template pTemplate="header">
+    <tr>
+      <th
+        pSortableColumn="date"
+        style="width: 15%">
+        Date
+        <p-sortIcon field="date" />
+      </th>
+      <th
+        pSortableColumn="houseName"
+        style="width: 15%">
+        House
+        <p-sortIcon field="houseName" />
+      </th>
+      <th
+        pSortableColumn="birdAgeDays"
+        style="width: 10%">
+        Age
+        <p-sortIcon field="birdAgeDays" />
+      </th>
+      <th
+        pSortableColumn="markingType"
+        style="width: 15%">
+        Type
+        <p-sortIcon field="markingType" />
+      </th>
+      <th style="width: 30%">Details</th>
+      <th style="width: 15%">Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-element>
+    <tr>
+      <td>{{ element.date | date: "shortDate" }}</td>
+      <td>{{ element.houseName }}</td>
+      <td>{{ element.birdAgeDays }} days</td>
+      <td>
+        <span
+          class="px-2 py-1 rounded text-xs font-semibold"
+          [class.bg-orange-100]="element.markingType === 'TapeNumber'"
+          [class.text-orange-800]="element.markingType === 'TapeNumber'"
+          [class.bg-cyan-100]="element.markingType !== 'TapeNumber'"
+          [class.text-cyan-800]="element.markingType !== 'TapeNumber'">
+          {{ element.markingType }}
+        </span>
+      </td>
+      <td class="text-sm">
+        <div *ngIf="element.color">
+          <span class="text-slate-500">Color:</span>
+          {{ element.color }}
+        </div>
+        <div *ngIf="element.ringNumber">
+          <span class="text-slate-500">Num:</span>
+          {{ element.ringNumber }}
+        </div>
+      </td>
+      <td>
+        <div class="flex gap-2">
+          <p-button
+            *ngIf="element.attachmentUrl"
+            icon="pi pi-image"
+            [rounded]="true"
+            [text]="true"
+            severity="secondary"
+            (onClick)="viewPhoto(element.attachmentUrl)"
+            pTooltip="View Photo" />
+          <p-button
+            icon="pi pi-trash"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            (onClick)="deleteRecord(element.id)" />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td
+        colspan="6"
+        class="text-center p-4">
+        No marking records found.
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

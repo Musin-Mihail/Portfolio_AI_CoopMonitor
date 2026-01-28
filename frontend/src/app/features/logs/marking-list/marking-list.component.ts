@@ -1,10 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -16,32 +13,20 @@ import { MarkingDialogComponent } from '../marking-dialog/marking-dialog.compone
 @Component({
   selector: 'app-marking-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, SelectModule, FormsModule, TooltipModule],
+  imports: [CommonModule, TableModule, ButtonModule, TooltipModule],
   templateUrl: './marking-list.component.html',
 })
 export class MarkingListComponent implements OnInit {
   private service = inject(MarkingService);
   private fileService = inject(FileUploadService);
-  private router = inject(Router);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
   dataSource = signal<MarkingRecord[]>([]);
-  logOptions = [
-    { label: 'Падёж', value: '/logs/mortality' },
-    { label: 'Корм и вода', value: '/logs/feed-water' },
-    { label: 'Болезни', value: '/logs/disease' },
-    { label: 'Взвешивание', value: '/logs/weighing' },
-    { label: 'Маркировка', value: '/logs/marking' },
-  ];
-  selectedLog = '/logs/marking';
 
   ngOnInit() {
     this.loadData();
-  }
-  onLogChange(event: any) {
-    this.router.navigate([event.value]);
   }
 
   loadData() {

@@ -1,0 +1,29 @@
+<div class="card p-6 min-h-full">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold m-0 text-slate-800">Администрирование</h1>
+  </div>
+
+  <div class="mb-6">
+    <p-tabs [value]="activeTab()">
+      <p-tablist>
+        <p-tab
+          value="audit"
+          (click)="onTabChange('audit')">
+          Аудит и Логи
+        </p-tab>
+        <p-tab
+          value="users"
+          (click)="onTabChange('users')">
+          Пользователи
+        </p-tab>
+        <p-tab
+          value="settings"
+          (click)="onTabChange('settings')">
+          Статус системы
+        </p-tab>
+      </p-tablist>
+    </p-tabs>
+  </div>
+
+  <router-outlet />
+</div>

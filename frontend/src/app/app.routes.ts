@@ -2,18 +2,25 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { authGuard } from './core/guards/auth.guard';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
+import { VideoArchiveComponent } from './features/video-wall/video-archive/video-archive.component';
+
+// Layouts
+import { AdminLayoutComponent } from './features/layout/admin-layout/admin-layout.component';
+import { LogsLayoutComponent } from './features/layout/logs-layout/logs-layout.component';
+import { MasterDataLayoutComponent } from './features/layout/master-data-layout/master-data-layout.component';
+
+// Features
 import { HouseListComponent } from './features/houses/house-list/house-list.component';
 import { PersonnelListComponent } from './features/personnel/personnel-list/personnel-list.component';
 import { FeedListComponent } from './features/feeds/feed-list/feed-list.component';
-import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MortalityListComponent } from './features/logs/mortality-list/mortality-list.component';
 import { FeedWaterListComponent } from './features/logs/feed-water-list/feed-water-list.component';
 import { DiseaseListComponent } from './features/logs/disease-list/disease-list.component';
 import { WeighingListComponent } from './features/logs/weighing-list/weighing-list.component';
 import { MarkingListComponent } from './features/logs/marking-list/marking-list.component';
-import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
 import { UserListComponent } from './features/admin/user-list/user-list.component';
-import { VideoArchiveComponent } from './features/video-wall/video-archive/video-archive.component';
 import { AuditListComponent } from './features/admin/audit-list/audit-list.component';
 import { SystemStatusComponent } from './features/settings/system-status/system-status.component';
 
@@ -39,35 +46,41 @@ export const routes: Routes = [
         path: 'reports',
         component: ReportsListComponent,
       },
-      // Группа Журналы
+      // Группа Журналы (Logs)
       {
         path: 'logs',
-        redirectTo: 'logs/mortality',
-        pathMatch: 'full',
+        component: LogsLayoutComponent,
+        children: [
+          { path: '', redirectTo: 'mortality', pathMatch: 'full' },
+          { path: 'mortality', component: MortalityListComponent },
+          { path: 'feed-water', component: FeedWaterListComponent },
+          { path: 'disease', component: DiseaseListComponent },
+          { path: 'weighing', component: WeighingListComponent },
+          { path: 'marking', component: MarkingListComponent },
+        ],
       },
-      { path: 'logs/mortality', component: MortalityListComponent },
-      { path: 'logs/feed-water', component: FeedWaterListComponent },
-      { path: 'logs/disease', component: DiseaseListComponent },
-      { path: 'logs/weighing', component: WeighingListComponent },
-      { path: 'logs/marking', component: MarkingListComponent },
       // Группа Справочники (Master Data)
       {
         path: 'master-data',
-        redirectTo: 'master-data/houses',
-        pathMatch: 'full',
+        component: MasterDataLayoutComponent,
+        children: [
+          { path: '', redirectTo: 'houses', pathMatch: 'full' },
+          { path: 'houses', component: HouseListComponent },
+          { path: 'personnel', component: PersonnelListComponent },
+          { path: 'feeds', component: FeedListComponent },
+        ],
       },
-      { path: 'master-data/houses', component: HouseListComponent },
-      { path: 'master-data/personnel', component: PersonnelListComponent },
-      { path: 'master-data/feeds', component: FeedListComponent },
-      // Группа Администрирование
+      // Группа Администрирование (Admin)
       {
         path: 'admin',
-        redirectTo: 'admin/audit',
-        pathMatch: 'full',
+        component: AdminLayoutComponent,
+        children: [
+          { path: '', redirectTo: 'audit', pathMatch: 'full' },
+          { path: 'users', component: UserListComponent },
+          { path: 'audit', component: AuditListComponent },
+          { path: 'settings', component: SystemStatusComponent },
+        ],
       },
-      { path: 'admin/users', component: UserListComponent },
-      { path: 'admin/audit', component: AuditListComponent },
-      { path: 'admin/settings', component: SystemStatusComponent },
     ],
   },
   { path: '**', redirectTo: '' },
