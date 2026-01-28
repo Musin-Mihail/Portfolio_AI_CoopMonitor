@@ -1,290 +1,218 @@
-import { Component, inject, effect, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
+import { House, Personnel } from '../../../core/models/master-data.models';
 import { HousesService } from '../../../core/services/houses.service';
 import { PersonnelService } from '../../../core/services/personnel.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-marking-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, DatePickerModule],
   template: `
-    <h2 mat-dialog-title>New Marking Record</h2>
     <form
       [formGroup]="form"
-      (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <div class="row">
-            <mat-form-field
-              appearance="outline"
-              class="half-width">
-              <mat-label>House</mat-label>
-              <mat-select formControlName="houseId">
-                <mat-option
-                  *ngFor="let h of houses()"
-                  [value]="h.id">
-                  {{ h.name }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="form.get('houseId')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-5 pt-2">
+      <div class="flex flex-row gap-4">
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="houseId"
+            class="font-medium">
+            House
+          </label>
+          <p-select
+            id="houseId"
+            formControlName="houseId"
+            [options]="houses()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select House"
+            styleClass="w-full" />
+          <small
+            class="text-red-500"
+            *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
+            Required
+          </small>
+        </div>
 
-            <mat-form-field
-              appearance="outline"
-              class="half-width">
-              <mat-label>Responsible</mat-label>
-              <mat-select formControlName="personnelId">
-                <mat-option
-                  *ngFor="let p of personnel()"
-                  [value]="p.id">
-                  {{ p.fullName }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="personnelId"
+            class="font-medium">
+            Responsible
+          </label>
+          <p-select
+            id="personnelId"
+            formControlName="personnelId"
+            [options]="personnel()"
+            optionLabel="fullName"
+            optionValue="id"
+            placeholder="Select Person"
+            styleClass="w-full" />
+        </div>
+      </div>
 
-          <div class="row">
-            <mat-form-field
-              appearance="outline"
-              class="half-width">
-              <mat-label>Date</mat-label>
-              <input
-                matInput
-                [matDatepicker]="picker"
-                formControlName="date" />
-              <mat-datepicker-toggle
-                matIconSuffix
-                [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
+      <div class="flex flex-row gap-4">
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="date"
+            class="font-medium">
+            Date
+          </label>
+          <p-datepicker
+            id="date"
+            formControlName="date"
+            dateFormat="yy-mm-dd"
+            appendTo="body"
+            styleClass="w-full"
+            [showIcon]="true" />
+        </div>
 
-            <mat-form-field
-              appearance="outline"
-              class="half-width">
-              <mat-label>Bird Age (Days)</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="birdAgeDays"
-                (input)="onAgeChange()" />
-              <mat-error *ngIf="form.get('birdAgeDays')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
-          </div>
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="birdAgeDays"
+            class="font-medium">
+            Bird Age (Days)
+          </label>
+          <input
+            pInputText
+            id="birdAgeDays"
+            type="number"
+            formControlName="birdAgeDays"
+            (input)="onAgeChange()"
+            class="w-full" />
+        </div>
+      </div>
 
-          <div class="info-box">
-            <mat-icon>info</mat-icon>
-            <span>
-              Protocol for age
-              <strong>{{ age() }}</strong>
-              days:
-              <strong>{{ isOlder() ? 'Tape + Number' : 'Paint + Ring' }}</strong>
-            </span>
-          </div>
+      <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-md flex items-center gap-2">
+        <i class="pi pi-info-circle text-lg"></i>
+        <span>
+          Protocol for age
+          <strong>{{ age() }}</strong>
+          days:
+          <strong>{{ isOlder() ? 'Tape + Number' : 'Paint + Ring' }}</strong>
+        </span>
+      </div>
 
-          <div
-            *ngIf="!isOlder()"
-            class="protocol-section">
-            <h3>Paint & Ring Protocol</h3>
-            <div class="row">
-              <mat-form-field
-                appearance="outline"
-                class="half-width">
-                <mat-label>Paint Color</mat-label>
-                <input
-                  matInput
-                  formControlName="color"
-                  placeholder="e.g. Red Strip" />
-              </mat-form-field>
-              <mat-form-field
-                appearance="outline"
-                class="half-width">
-                <mat-label>Ring Number</mat-label>
-                <input
-                  matInput
-                  formControlName="ringNumber"
-                  placeholder="Optional" />
-              </mat-form-field>
-            </div>
-          </div>
-
-          <div
-            *ngIf="isOlder()"
-            class="protocol-section">
-            <h3>Tape & Number Protocol</h3>
-            <div class="row">
-              <mat-form-field
-                appearance="outline"
-                class="half-width">
-                <mat-label>Tape Color</mat-label>
-                <input
-                  matInput
-                  formControlName="color"
-                  placeholder="e.g. Blue Tape" />
-              </mat-form-field>
-              <mat-form-field
-                appearance="outline"
-                class="half-width">
-                <mat-label>Painted Number</mat-label>
-                <input
-                  matInput
-                  formControlName="ringNumber"
-                  placeholder="Big digits on back" />
-              </mat-form-field>
-            </div>
-          </div>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Bird Identifier (Optional)</mat-label>
+      <div class="border border-dashed border-slate-300 p-4 rounded-md">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+          {{ isOlder() ? 'Tape & Number Protocol' : 'Paint & Ring Protocol' }}
+        </h3>
+        <div class="flex flex-row gap-4">
+          <div class="flex-1 flex flex-col gap-2">
+            <label
+              for="color"
+              class="font-medium">
+              {{ isOlder() ? 'Tape Color' : 'Paint Color' }}
+            </label>
             <input
-              matInput
-              formControlName="birdIdentifier"
-              placeholder="Internal ID if any" />
-          </mat-form-field>
-
-          <div class="file-upload">
-            <label>Photo Evidence (Recommended)</label>
-            <div class="file-input-wrapper">
-              <button
-                type="button"
-                mat-stroked-button
-                (click)="fileInput.click()">
-                <mat-icon>camera_alt</mat-icon>
-                Select Photo
-              </button>
-              <span class="file-name">{{ selectedFile?.name || 'No file selected' }}</span>
-              <input
-                #fileInput
-                type="file"
-                accept="image/*"
-                (change)="onFileSelected($event)"
-                style="display: none;" />
-            </div>
+              pInputText
+              id="color"
+              formControlName="color"
+              [placeholder]="isOlder() ? 'e.g. Blue Tape' : 'e.g. Red Strip'"
+              class="w-full" />
+          </div>
+          <div class="flex-1 flex flex-col gap-2">
+            <label
+              for="ringNumber"
+              class="font-medium">
+              {{ isOlder() ? 'Painted Number' : 'Ring Number' }}
+            </label>
+            <input
+              pInputText
+              id="ringNumber"
+              formControlName="ringNumber"
+              [placeholder]="isOlder() ? 'Big digits on back' : 'Optional'"
+              class="w-full" />
           </div>
         </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()">
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          color="primary"
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label
+          for="birdIdentifier"
+          class="font-medium">
+          Bird Identifier (Optional)
+        </label>
+        <input
+          pInputText
+          id="birdIdentifier"
+          formControlName="birdIdentifier"
+          placeholder="Internal ID"
+          class="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Photo Evidence (Recommended)</label>
+        <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-camera"
+            label="Select Photo"
+            class="p-button-outlined p-button-secondary p-button-sm"
+            (click)="fileInput.click()"></button>
+          <span class="text-sm text-slate-600 truncate max-w-[200px]">
+            {{ selectedFile?.name || 'No file selected' }}
+          </span>
+          <input
+            #fileInput
+            type="file"
+            (change)="onFileSelected($event)"
+            style="display: none"
+            accept="image/*" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Save"
           type="submit"
-          [disabled]="form.invalid">
-          Save Record
-        </button>
-      </mat-dialog-actions>
+          [disabled]="form.invalid" />
+      </div>
     </form>
   `,
-  styles: [
-    `
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        min-width: 450px;
-      }
-      .row {
-        display: flex;
-        gap: 16px;
-      }
-      .half-width {
-        flex: 1;
-      }
-      mat-form-field {
-        width: 100%;
-      }
-      .info-box {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background-color: #e3f2fd;
-        padding: 10px;
-        border-radius: 4px;
-        color: #0d47a1;
-        mat-icon {
-          font-size: 20px;
-          height: 20px;
-          width: 20px;
-        }
-      }
-      .protocol-section {
-        border: 1px dashed #ccc;
-        padding: 10px;
-        border-radius: 4px;
-        h3 {
-          margin-top: 0;
-          font-size: 1rem;
-          color: #555;
-        }
-      }
-      .file-upload {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        label {
-          font-weight: 500;
-          color: rgba(0, 0, 0, 0.6);
-        }
-      }
-      .file-input-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .file-name {
-        font-size: 0.9rem;
-        color: #555;
-      }
-    `,
-  ],
 })
-export class MarkingDialogComponent {
+export class MarkingDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
   private housesService = inject(HousesService);
   private personnelService = inject(PersonnelService);
-  public dialogRef = inject(MatDialogRef<MarkingDialogComponent>);
+  public ref = inject(DynamicDialogRef);
 
-  houses = toSignal(this.housesService.getHouses());
-  personnel = toSignal(this.personnelService.getPersonnels());
-
+  form: FormGroup;
+  houses = signal<House[]>([]);
+  personnel = signal<Personnel[]>([]);
   selectedFile: File | null = null;
   age = signal<number>(0);
   isOlder = signal<boolean>(false);
 
-  form: FormGroup = this.fb.group({
-    houseId: ['', Validators.required],
-    personnelId: [null],
-    date: [new Date(), Validators.required],
-    birdAgeDays: [0, [Validators.required, Validators.min(0)]],
-    birdIdentifier: [''],
-    color: [''],
-    ringNumber: [''],
-  });
+  constructor() {
+    this.form = this.fb.group({
+      houseId: [null, Validators.required],
+      personnelId: [null],
+      date: [new Date(), Validators.required],
+      birdAgeDays: [0, [Validators.required, Validators.min(0)]],
+      birdIdentifier: [''],
+      color: [''],
+      ringNumber: [''],
+    });
+  }
+
+  ngOnInit() {
+    this.housesService.getHouses().subscribe((data) => this.houses.set(data));
+    this.personnelService.getPersonnels().subscribe((data) => this.personnel.set(data));
+  }
 
   onAgeChange() {
     const ageVal = this.form.get('birdAgeDays')?.value || 0;
@@ -301,20 +229,22 @@ export class MarkingDialogComponent {
 
   onSubmit() {
     if (this.form.valid) {
-      // Determine marking type based on age
       const markingType = this.isOlder() ? 'TapeNumber' : 'PaintRing';
 
       const result = {
         ...this.form.value,
         markingType: markingType,
         photoFile: this.selectedFile,
-        date: this.form.value.date.toISOString(),
+        // Ensure date is ISO
+        date: this.form.value.date instanceof Date ? this.form.value.date.toISOString() : this.form.value.date,
       };
-      this.dialogRef.close(result);
+      this.ref.close(result);
+    } else {
+      this.form.markAllAsTouched();
     }
   }
 
   onCancel() {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }

@@ -1,143 +1,103 @@
-<div class="container">
-  <div class="header">
-    <h1>Marking Records</h1>
-    <div class="actions">
-      <button
-        mat-flat-button
-        color="primary"
-        (click)="openDialog()">
-        <mat-icon>add</mat-icon>
-        New Marking
-      </button>
-    </div>
+<div class="card p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold m-0">Marking Records</h1>
+    <p-button
+      label="Add Record"
+      icon="pi pi-plus"
+      (onClick)="openDialog()" />
   </div>
 
-  <table
-    mat-table
-    [dataSource]="dataSource()"
-    class="mat-elevation-z8">
-    <ng-container matColumnDef="date">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Date
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.date | date: "shortDate" }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="house">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        House
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.houseName }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="age">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Age
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        {{ element.birdAgeDays }} days
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="type">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Type
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        <span
-          class="badge"
-          [class.tape]="element.markingType === 'TapeNumber'">
-          {{ element.markingType }}
-        </span>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="details">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Details
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        Color:
-        <strong>{{ element.color || "-" }}</strong>
-        , Num:
-        <strong>{{ element.ringNumber || "-" }}</strong>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="evidence">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Evidence
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        <a
-          *ngIf="element.attachmentUrl"
-          [href]="getDownloadUrl(element.attachmentUrl)"
-          target="_blank"
-          mat-button
-          color="accent">
-          <mat-icon>image</mat-icon>
-          Photo
-        </a>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th
-        mat-header-cell
-        *matHeaderCellDef>
-        Actions
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let element">
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="deleteRecord(element.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-
-    <tr
-      mat-header-row
-      *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
-
-  <div
-    *ngIf="dataSource().length === 0"
-    class="no-records">
-    No marking records found.
-  </div>
+  <p-table
+    [value]="dataSource()"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [paginator]="true"
+    [rows]="10"
+    stripedRows>
+    <ng-template pTemplate="header">
+      <tr>
+        <th
+          pSortableColumn="date"
+          style="width: 15%">
+          Date
+          <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="houseName"
+          style="width: 15%">
+          House
+          <p-sortIcon field="houseName" />
+        </th>
+        <th
+          pSortableColumn="birdAgeDays"
+          style="width: 10%">
+          Age
+          <p-sortIcon field="birdAgeDays" />
+        </th>
+        <th
+          pSortableColumn="markingType"
+          style="width: 15%">
+          Type
+          <p-sortIcon field="markingType" />
+        </th>
+        <th style="width: 30%">Details</th>
+        <th style="width: 15%">Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-element>
+      <tr>
+        <td>{{ element.date | date: "shortDate" }}</td>
+        <td>{{ element.houseName }}</td>
+        <td>{{ element.birdAgeDays }} days</td>
+        <td>
+          <span
+            class="px-2 py-1 rounded text-xs font-semibold"
+            [class.bg-orange-100]="element.markingType === 'TapeNumber'"
+            [class.text-orange-800]="element.markingType === 'TapeNumber'"
+            [class.bg-cyan-100]="element.markingType !== 'TapeNumber'"
+            [class.text-cyan-800]="element.markingType !== 'TapeNumber'">
+            {{ element.markingType }}
+          </span>
+        </td>
+        <td class="text-sm">
+          <div *ngIf="element.color">
+            <span class="text-slate-500">Color:</span>
+            {{ element.color }}
+          </div>
+          <div *ngIf="element.ringNumber">
+            <span class="text-slate-500">Num:</span>
+            {{ element.ringNumber }}
+          </div>
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <p-button
+              *ngIf="element.attachmentUrl"
+              icon="pi pi-image"
+              [rounded]="true"
+              [text]="true"
+              severity="secondary"
+              (onClick)="viewPhoto(element.attachmentUrl)"
+              pTooltip="View Photo" />
+            <p-button
+              icon="pi pi-trash"
+              [rounded]="true"
+              [text]="true"
+              severity="danger"
+              (onClick)="deleteRecord(element.id)" />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td
+          colspan="6"
+          class="text-center p-4">
+          No marking records found.
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

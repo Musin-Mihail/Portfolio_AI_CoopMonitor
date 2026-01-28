@@ -1,18 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
+import { CheckboxModule } from 'primeng/checkbox';
+import { House, Personnel } from '../../../core/models/master-data.models';
 import { HousesService } from '../../../core/services/houses.service';
 import { PersonnelService } from '../../../core/services/personnel.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-weighing-dialog',
@@ -20,203 +17,180 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatCheckboxModule,
-    MatIconModule,
+    InputTextModule,
+    ButtonModule,
+    SelectModule,
+    DatePickerModule,
+    CheckboxModule,
   ],
   template: `
-    <h2 mat-dialog-title>New Weighing Record</h2>
     <form
       [formGroup]="form"
-      (ngSubmit)="onSubmit()">
-      <mat-dialog-content>
-        <div class="form-container">
-          <div class="row">
-            <mat-form-field
-              appearance="outline"
-              class="half-width">
-              <mat-label>House</mat-label>
-              <mat-select formControlName="houseId">
-                <mat-option
-                  *ngFor="let h of houses()"
-                  [value]="h.id">
-                  {{ h.name }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="form.get('houseId')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
-
-            <mat-form-field
-              appearance="outline"
-              class="half-width">
-              <mat-label>Responsible</mat-label>
-              <mat-select formControlName="personnelId">
-                <mat-option
-                  *ngFor="let p of personnel()"
-                  [value]="p.id">
-                  {{ p.fullName }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Date</mat-label>
-            <input
-              matInput
-              [matDatepicker]="picker"
-              formControlName="date" />
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error *ngIf="form.get('date')?.hasError('required')">Required</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Weight (grams)</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="weightGrams" />
-            <mat-error *ngIf="form.get('weightGrams')?.hasError('required')">Required</mat-error>
-          </mat-form-field>
-
-          <div class="checkbox-container">
-            <mat-checkbox
-              formControlName="isMusicPlayed"
-              color="primary">
-              Calming Music Played (Stress Reduction)
-            </mat-checkbox>
-          </div>
-
-          <div class="file-upload">
-            <label>Video Evidence (Required)</label>
-            <div class="file-input-wrapper">
-              <button
-                type="button"
-                mat-stroked-button
-                (click)="fileInput.click()">
-                <mat-icon>videocam</mat-icon>
-                Select Video
-              </button>
-              <span class="file-name">{{ selectedFile?.name || 'No file selected' }}</span>
-              <input
-                #fileInput
-                type="file"
-                accept="video/*"
-                (change)="onFileSelected($event)"
-                style="display: none;" />
-            </div>
-            <mat-error
-              *ngIf="form.hasError('fileRequired') && form.touched"
-              class="custom-error">
-              Video evidence is mandatory
-            </mat-error>
-          </div>
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-5 pt-2">
+      <div class="flex flex-row gap-4">
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="houseId"
+            class="font-medium">
+            House
+          </label>
+          <p-select
+            id="houseId"
+            formControlName="houseId"
+            [options]="houses()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select House"
+            styleClass="w-full" />
+          <small
+            class="text-red-500"
+            *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
+            Required
+          </small>
         </div>
-      </mat-dialog-content>
-      <mat-dialog-actions align="end">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()">
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          color="primary"
+
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="personnelId"
+            class="font-medium">
+            Responsible
+          </label>
+          <p-select
+            id="personnelId"
+            formControlName="personnelId"
+            [options]="personnel()"
+            optionLabel="fullName"
+            optionValue="id"
+            placeholder="Select Person"
+            styleClass="w-full" />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label
+          for="date"
+          class="font-medium">
+          Date
+        </label>
+        <p-datepicker
+          id="date"
+          formControlName="date"
+          dateFormat="yy-mm-dd"
+          appendTo="body"
+          styleClass="w-full"
+          [showIcon]="true" />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label
+          for="weightGrams"
+          class="font-medium">
+          Weight (grams)
+        </label>
+        <input
+          pInputText
+          id="weightGrams"
+          type="number"
+          formControlName="weightGrams"
+          class="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('weightGrams')?.hasError('required') && form.get('weightGrams')?.touched">
+          Weight is required
+        </small>
+      </div>
+
+      <div class="flex items-center gap-2 mt-2">
+        <p-checkbox
+          formControlName="isMusicPlayed"
+          [binary]="true"
+          inputId="music" />
+        <label
+          for="music"
+          class="cursor-pointer select-none">
+          Calming Music Played (Stress Reduction)
+        </label>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Video Evidence (Required)</label>
+        <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-video"
+            label="Select Video"
+            class="p-button-outlined p-button-secondary p-button-sm"
+            (click)="fileInput.click()"></button>
+          <span class="text-sm text-slate-600 truncate max-w-[200px]">
+            {{ selectedFile?.name || 'No file selected' }}
+          </span>
+          <input
+            #fileInput
+            type="file"
+            (change)="onFileSelected($event)"
+            style="display: none"
+            accept="video/*" />
+        </div>
+        <small
+          class="text-red-500"
+          *ngIf="form.hasError('fileRequired') && form.touched">
+          Video evidence is mandatory
+        </small>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onCancel()" />
+        <p-button
+          label="Save"
           type="submit"
-          [disabled]="form.invalid">
-          Save Record
-        </button>
-      </mat-dialog-actions>
+          [disabled]="form.invalid" />
+      </div>
     </form>
   `,
-  styles: [
-    `
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        min-width: 400px;
-      }
-      .row {
-        display: flex;
-        gap: 16px;
-      }
-      .half-width {
-        flex: 1;
-      }
-      mat-form-field {
-        width: 100%;
-      }
-      .checkbox-container {
-        margin-bottom: 10px;
-      }
-      .file-upload {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        label {
-          font-weight: 500;
-          color: rgba(0, 0, 0, 0.6);
-        }
-      }
-      .file-input-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .file-name {
-        font-size: 0.9rem;
-        color: #555;
-      }
-      .custom-error {
-        font-size: 0.75rem;
-        color: #f44336;
-        margin-top: 4px;
-      }
-    `,
-  ],
 })
-export class WeighingDialogComponent {
+export class WeighingDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
   private housesService = inject(HousesService);
   private personnelService = inject(PersonnelService);
-  public dialogRef = inject(MatDialogRef<WeighingDialogComponent>);
+  public ref = inject(DynamicDialogRef);
 
-  houses = toSignal(this.housesService.getHouses());
-  personnel = toSignal(this.personnelService.getPersonnels());
-
+  form: FormGroup;
+  houses = signal<House[]>([]);
+  personnel = signal<Personnel[]>([]);
   selectedFile: File | null = null;
 
-  form: FormGroup = this.fb.group(
-    {
-      houseId: ['', Validators.required],
-      personnelId: [null],
-      date: [new Date(), Validators.required],
-      weightGrams: ['', [Validators.required, Validators.min(1)]],
-      isMusicPlayed: [false],
-    },
-    { validators: this.fileRequiredValidator.bind(this) },
-  );
+  constructor() {
+    this.form = this.fb.group(
+      {
+        houseId: [null, Validators.required],
+        personnelId: [null],
+        date: [new Date(), Validators.required],
+        weightGrams: [null, [Validators.required, Validators.min(1)]],
+        isMusicPlayed: [false],
+      },
+      { validators: this.fileRequiredValidator.bind(this) },
+    );
+  }
+
+  ngOnInit() {
+    this.housesService.getHouses().subscribe((data) => this.houses.set(data));
+    this.personnelService.getPersonnels().subscribe((data) => this.personnel.set(data));
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-      this.form.updateValueAndValidity(); // Trigger validation
+      this.form.updateValueAndValidity();
     }
   }
 
-  // Custom validator for file
   fileRequiredValidator(group: FormGroup) {
     return this.selectedFile ? null : { fileRequired: true };
   }
@@ -226,15 +200,16 @@ export class WeighingDialogComponent {
       const result = {
         ...this.form.value,
         videoFile: this.selectedFile,
-        date: this.form.value.date.toISOString(),
+        // Ensure date is ISO string for backend
+        date: this.form.value.date instanceof Date ? this.form.value.date.toISOString() : this.form.value.date,
       };
-      this.dialogRef.close(result);
+      this.ref.close(result);
     } else {
       this.form.markAllAsTouched();
     }
   }
 
   onCancel() {
-    this.dialogRef.close();
+    this.ref.close();
   }
 }
