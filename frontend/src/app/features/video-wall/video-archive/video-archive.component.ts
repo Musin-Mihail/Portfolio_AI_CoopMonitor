@@ -1,13 +1,16 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatChipsModule } from '@angular/material/chips';
+import { FormsModule } from '@angular/forms';
+
+// PrimeNG Imports
+import { TabsModule } from 'primeng/tabs';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { ListboxModule } from 'primeng/listbox';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { DialogService } from 'primeng/dynamicdialog';
+import { TagModule } from 'primeng/tag';
+
 import { VideoService } from '../../../core/services/video.service';
 import { FileMetadata } from '../../../core/models/file.models';
 import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
@@ -17,23 +20,29 @@ import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-
   standalone: true,
   imports: [
     CommonModule,
-    MatTabsModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatProgressBarModule,
-    MatDialogModule,
-    MatChipsModule,
+    FormsModule,
+    TabsModule,
+    CardModule,
+    ButtonModule,
+    ListboxModule,
+    ProgressBarModule,
+    TagModule,
   ],
   templateUrl: './video-archive.component.html',
   styleUrls: ['./video-archive.component.scss'],
 })
 export class VideoArchiveComponent implements OnInit {
   private videoService = inject(VideoService);
-  private dialog = inject(MatDialog);
+  private dialogService = inject(DialogService);
 
-  buckets = ['user-uploads', 'video-clips', 'raw-video', 'ai-results'];
+  // Data for Bucket Selector (Listbox)
+  buckets = [
+    { label: 'User Uploads', value: 'user-uploads' },
+    { label: 'Video Clips', value: 'video-clips' },
+    { label: 'Raw Video', value: 'raw-video' },
+    { label: 'AI Results', value: 'ai-results' },
+  ];
+
   selectedBucket = signal<string>('user-uploads');
   files = signal<FileMetadata[]>([]);
   isLoading = signal<boolean>(false);
@@ -49,19 +58,14 @@ export class VideoArchiveComponent implements OnInit {
     this.loadFiles(this.selectedBucket());
   }
 
-  onTabChange(index: number) {
-    // 0 = Live, 1 = Archive
-    if (index === 1) {
-      this.loadFiles(this.selectedBucket());
-    }
-  }
-
-  selectBucket(bucket: string) {
-    this.selectedBucket.set(bucket);
-    this.loadFiles(bucket);
+  // PrimeNG Listbox emits standard change event with value
+  onBucketChange(event: any) {
+    // event.value is the selected value
+    this.loadFiles(event.value);
   }
 
   loadFiles(bucket: string) {
+    if (!bucket) return;
     this.isLoading.set(true);
     this.videoService.listFiles(bucket).subscribe({
       next: (data) => {
@@ -78,8 +82,10 @@ export class VideoArchiveComponent implements OnInit {
   playVideo(file: FileMetadata) {
     const streamUrl = this.videoService.getStreamUrl(file.bucket, file.name);
 
-    this.dialog.open(VideoPlayerDialogComponent, {
-      panelClass: 'no-padding-dialog',
+    this.dialogService.open(VideoPlayerDialogComponent, {
+      header: file.name,
+      width: '70vw',
+      contentStyle: { padding: '0', 'background-color': '#000' },
       data: {
         title: file.name,
         streamUrl: streamUrl,

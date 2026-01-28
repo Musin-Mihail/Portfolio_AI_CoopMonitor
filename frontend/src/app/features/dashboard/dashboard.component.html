@@ -1,222 +1,240 @@
-<div class="dashboard-container">
-  <div class="header-row">
-    <h1>Dashboard</h1>
-    <div class="controls">
-      <mat-form-field
-        appearance="outline"
-        subscriptSizing="dynamic">
-        <mat-label>Select House</mat-label>
-        <mat-select
-          [value]="selectedHouseId()"
-          (selectionChange)="onHouseChange($event.value)"
-          [disabled]="houses().length === 0">
-          <mat-option
-            *ngFor="let house of houses()"
-            [value]="house.id">
-            {{ house.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+<div class="dashboard-container p-4 max-w-[1600px] mx-auto">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+    <h1 class="text-2xl font-bold m-0 text-slate-800 dark:text-slate-100">Dashboard</h1>
+    <div class="flex items-center gap-3">
+      <p-select
+        [options]="houses()"
+        [(ngModel)]="selectedHouseId"
+        optionLabel="name"
+        optionValue="id"
+        (onChange)="onHouseChange()"
+        placeholder="Select House"
+        [style]="{ width: '200px' }"
+        [disabled]="houses().length === 0" />
 
-      <button
-        mat-icon-button
-        color="primary"
-        (click)="refreshAll()"
-        title="Refresh Data">
-        <mat-icon>refresh</mat-icon>
-      </button>
+      <p-button
+        icon="pi pi-refresh"
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        (onClick)="refreshAll()"
+        pTooltip="Refresh Data" />
     </div>
   </div>
 
   <div
-    class="loading-shade"
+    class="mb-4"
     *ngIf="isLoading()">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p-progressbar
+      mode="indeterminate"
+      [style]="{ height: '4px' }" />
   </div>
 
   <ng-container *ngIf="summary() as data">
-    <div class="status-row">
-      <div class="cycle-info">
-        <span class="label">Day of Cycle:</span>
-        <span class="value">{{ data.dayOfCycle }}</span>
+    <div class="flex flex-wrap items-center gap-4 mb-6">
+      <div class="bg-blue-50 text-blue-700 px-4 py-2 rounded-full flex items-center gap-2 border border-blue-100">
+        <span class="font-medium">Day of Cycle:</span>
+        <span class="font-bold text-lg">{{ data.dayOfCycle }}</span>
       </div>
 
       <div
-        class="alerts-container"
+        class="flex gap-2"
         *ngIf="data.activeAlerts.length > 0">
-        <mat-chip-set>
-          <mat-chip
-            *ngFor="let alert of data.activeAlerts"
-            color="warn"
-            selected
-            highlighted>
-            <mat-icon matChipAvatar>warning</mat-icon>
-            {{ alert }}
-          </mat-chip>
-        </mat-chip-set>
+        <p-tag
+          *ngFor="let alert of data.activeAlerts"
+          severity="danger"
+          icon="pi pi-exclamation-triangle"
+          [value]="alert"
+          [rounded]="true" />
       </div>
+
       <div
-        class="alerts-container"
+        class="flex gap-2"
         *ngIf="data.activeAlerts.length === 0">
-        <mat-chip
-          color="accent"
-          selected>
-          <mat-icon matChipAvatar>check_circle</mat-icon>
-          All Systems Normal
-        </mat-chip>
+        <p-tag
+          severity="success"
+          icon="pi pi-check-circle"
+          value="All Systems Normal"
+          [rounded]="true" />
       </div>
     </div>
 
-    <div class="grid">
-      <mat-card class="dashboard-card climate-card">
-        <mat-card-header>
-          <mat-icon
-            mat-card-avatar
-            color="primary">
-            thermostat
-          </mat-icon>
-          <mat-card-title>Current Climate</mat-card-title>
-          <mat-card-subtitle>Last Update: {{ data.currentClimate.lastUpdate | date: "shortTime" }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metrics-grid">
-            <div class="metric-item">
-              <span class="metric-label">Temperature</span>
-              <span class="metric-value">{{ data.currentClimate.temperature | number: "1.1-1" }}°C</span>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <p-card styleClass="h-full shadow-sm">
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 px-4 pt-4">
+            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+              <i class="pi pi-compass text-xl"></i>
             </div>
-            <div class="metric-item">
-              <span class="metric-label">Humidity</span>
-              <span class="metric-value">{{ data.currentClimate.humidity | number: "1.0-0" }}%</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">CO2</span>
-              <span class="metric-value">{{ data.currentClimate.co2 | number: "1.0-0" }} ppm</span>
-            </div>
-            <div class="metric-item">
-              <span class="metric-label">NH3</span>
-              <span class="metric-value">{{ data.currentClimate.nh3 | number: "1.1-1" }} ppm</span>
+            <div>
+              <div class="font-semibold text-lg">Current Climate</div>
+              <div class="text-sm text-slate-500">
+                Last Update: {{ data.currentClimate.lastUpdate | date: "shortTime" }}
+              </div>
             </div>
           </div>
+        </ng-template>
 
-          <div class="progress-section">
-            <div class="progress-label">
-              <span>Time in Range (24h)</span>
-              <span>{{ data.currentClimate.timeInRangePercent | number: "1.0-0" }}%</span>
+        <div class="mt-2">
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex flex-col">
+              <span class="text-xs text-slate-500 uppercase">Temp</span>
+              <span class="text-xl font-semibold text-slate-800">
+                {{ data.currentClimate.temperature | number: "1.1-1" }}°C
+              </span>
             </div>
-            <mat-progress-bar
-              mode="determinate"
-              [value]="data.currentClimate.timeInRangePercent"
-              [color]="data.currentClimate.timeInRangePercent > 70 ? 'primary' : 'warn'"></mat-progress-bar>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card
-        class="dashboard-card chart-card"
-        style="grid-column: span 2">
-        <mat-card-header class="chart-header">
-          <mat-card-title>Climate History</mat-card-title>
-          <mat-button-toggle-group
-            [value]="chartPeriod().toString()"
-            (change)="onPeriodChange($event.value)"
-            class="small-toggles">
-            <mat-button-toggle value="12">12h</mat-button-toggle>
-            <mat-button-toggle value="24">24h</mat-button-toggle>
-            <mat-button-toggle value="48">48h</mat-button-toggle>
-          </mat-button-toggle-group>
-        </mat-card-header>
-        <mat-card-content class="chart-content">
-          <div class="chart-wrapper">
-            <canvas #climateChart></canvas>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="dashboard-card audio-card">
-        <mat-card-header>
-          <mat-icon
-            mat-card-avatar
-            [class.green-icon]="data.audioStatus.status === 'Healthy'"
-            [class.red-icon]="data.audioStatus.status === 'Warning'">
-            graphic_eq
-          </mat-icon>
-          <mat-card-title>Audio & Welfare</mat-card-title>
-          <mat-card-subtitle>Status: {{ data.audioStatus.status }}</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content class="centered-content">
-          <div
-            class="audio-status-box"
-            [class.warning-box]="data.audioStatus.status === 'Warning'">
-            <div class="status-icon">
-              <mat-icon *ngIf="data.audioStatus.status === 'Healthy'">check</mat-icon>
-              <mat-icon *ngIf="data.audioStatus.status === 'Warning'">priority_high</mat-icon>
-              <mat-icon *ngIf="data.audioStatus.status === 'Unknown'">question_mark</mat-icon>
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex flex-col">
+              <span class="text-xs text-slate-500 uppercase">Humidity</span>
+              <span class="text-xl font-semibold text-slate-800">
+                {{ data.currentClimate.humidity | number: "1.0-0" }}%
+              </span>
             </div>
-            <div class="status-label">
-              {{ data.audioStatus.lastClassification || "No Data" }}
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex flex-col">
+              <span class="text-xs text-slate-500 uppercase">CO2</span>
+              <span class="text-xl font-semibold text-slate-800">
+                {{ data.currentClimate.co2 | number: "1.0-0" }}
+                <span class="text-xs font-normal">ppm</span>
+              </span>
             </div>
-          </div>
-          <div
-            class="sub-text"
-            *ngIf="data.audioStatus.lastUpdate && data.audioStatus.status !== 'Unknown'">
-            Updated: {{ data.audioStatus.lastUpdate | date: "mediumTime" }}
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="dashboard-card production-card">
-        <mat-card-header>
-          <mat-icon
-            mat-card-avatar
-            class="orange-icon">
-            inventory_2
-          </mat-icon>
-          <mat-card-title>Production (Today)</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="metrics-list">
-            <div class="list-item">
-              <span class="item-label">Feed Consumed</span>
-              <span class="item-value">{{ data.todayMetrics.feedConsumedKg | number: "1.1-1" }} kg</span>
-            </div>
-            <mat-divider></mat-divider>
-            <div class="list-item">
-              <span class="item-label">Water Consumed</span>
-              <span class="item-value">{{ data.todayMetrics.waterConsumedLiters | number: "1.1-1" }} L</span>
-            </div>
-            <mat-divider></mat-divider>
-            <div class="list-item">
-              <span class="item-label">Est. ADG (Gain)</span>
-              <span class="item-value">
-                {{ data.todayMetrics.estimatedADG ? (data.todayMetrics.estimatedADG | number: "1.1-1") + " g" : "N/A" }}
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex flex-col">
+              <span class="text-xs text-slate-500 uppercase">NH3</span>
+              <span class="text-xl font-semibold text-slate-800">
+                {{ data.currentClimate.nh3 | number: "1.1-1" }}
+                <span class="text-xs font-normal">ppm</span>
               </span>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
 
-      <mat-card class="dashboard-card mortality-card">
-        <mat-card-header>
-          <mat-icon
-            mat-card-avatar
-            color="warn">
-            dangerous
-          </mat-icon>
-          <mat-card-title>Mortality (Today)</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="centered-content">
-          <div class="big-number warn-text">
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm text-slate-600">
+              <span>Time in Range (24h)</span>
+              <span class="font-medium">{{ data.currentClimate.timeInRangePercent | number: "1.0-0" }}%</span>
+            </div>
+            <p-progressbar
+              [value]="data.currentClimate.timeInRangePercent"
+              [showValue]="false"
+              [style]="{ height: '8px' }"
+              [color]="data.currentClimate.timeInRangePercent > 70 ? 'var(--p-primary-color)' : 'var(--p-red-500)'" />
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="h-full shadow-sm md:col-span-2">
+        <ng-template pTemplate="header">
+          <div class="flex justify-between items-center px-4 pt-4">
+            <div class="font-semibold text-lg">Climate History</div>
+            <p-selectbutton
+              [options]="periodOptions"
+              [(ngModel)]="chartPeriod"
+              (onChange)="onPeriodChange()"
+              optionLabel="label"
+              optionValue="value"
+              size="small" />
+          </div>
+        </ng-template>
+
+        <div class="h-[300px] w-full relative mt-2">
+          <canvas #climateChart></canvas>
+        </div>
+      </p-card>
+
+      <p-card styleClass="h-full shadow-sm">
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 px-4 pt-4">
+            <div
+              class="w-10 h-10 rounded-full flex items-center justify-center"
+              [class.bg-green-100]="data.audioStatus.status === 'Healthy'"
+              [class.text-green-600]="data.audioStatus.status === 'Healthy'"
+              [class.bg-red-100]="data.audioStatus.status === 'Warning'"
+              [class.text-red-600]="data.audioStatus.status === 'Warning'"
+              [class.bg-gray-100]="data.audioStatus.status === 'Unknown'"
+              [class.text-gray-600]="data.audioStatus.status === 'Unknown'">
+              <i class="pi pi-volume-up text-xl"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-lg">Audio & Welfare</div>
+              <div class="text-sm text-slate-500">Status: {{ data.audioStatus.status }}</div>
+            </div>
+          </div>
+        </ng-template>
+
+        <div class="flex flex-col items-center justify-center h-[250px]">
+          <div
+            class="w-24 h-24 rounded-full flex items-center justify-center mb-4 transition-colors duration-300"
+            [class.bg-green-50]="data.audioStatus.status === 'Healthy'"
+            [class.text-green-600]="data.audioStatus.status === 'Healthy'"
+            [class.bg-red-50]="data.audioStatus.status === 'Warning'"
+            [class.text-red-600]="data.audioStatus.status === 'Warning'"
+            [class.bg-slate-100]="data.audioStatus.status === 'Unknown'"
+            [class.text-slate-500]="data.audioStatus.status === 'Unknown'">
+            <i
+              class="pi text-4xl"
+              [class.pi-check]="data.audioStatus.status === 'Healthy'"
+              [class.pi-exclamation-circle]="data.audioStatus.status === 'Warning'"
+              [class.pi-question]="data.audioStatus.status === 'Unknown'"></i>
+          </div>
+          <div class="font-bold text-xl text-slate-700">
+            {{ data.audioStatus.lastClassification || "No Data" }}
+          </div>
+          <div class="text-sm text-slate-500 mt-2">
+            Updated: {{ data.audioStatus.lastUpdate ? (data.audioStatus.lastUpdate | date: "mediumTime") : "-" }}
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="h-full shadow-sm">
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 px-4 pt-4">
+            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+              <i class="pi pi-box text-xl"></i>
+            </div>
+            <div class="font-semibold text-lg">Production (Today)</div>
+          </div>
+        </ng-template>
+
+        <div class="flex flex-col gap-4 mt-2">
+          <div class="flex justify-between items-center py-2 border-b border-slate-100">
+            <span class="text-slate-600">Feed Consumed</span>
+            <span class="font-semibold text-lg">{{ data.todayMetrics.feedConsumedKg | number: "1.1-1" }} kg</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-slate-100">
+            <span class="text-slate-600">Water Consumed</span>
+            <span class="font-semibold text-lg">{{ data.todayMetrics.waterConsumedLiters | number: "1.1-1" }} L</span>
+          </div>
+          <div class="flex justify-between items-center py-2">
+            <span class="text-slate-600">Est. ADG (Gain)</span>
+            <span class="font-semibold text-lg">
+              {{ data.todayMetrics.estimatedADG ? (data.todayMetrics.estimatedADG | number: "1.1-1") + " g" : "N/A" }}
+            </span>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="h-full shadow-sm">
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 px-4 pt-4">
+            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+              <i class="pi pi-times-circle text-xl"></i>
+            </div>
+            <div class="font-semibold text-lg">Mortality (Today)</div>
+          </div>
+        </ng-template>
+
+        <div class="flex flex-col items-center justify-center h-[200px]">
+          <div class="text-5xl font-bold text-red-600 mb-2">
             {{ data.todayMetrics.mortalityCount }}
           </div>
-          <div class="sub-text">Birds</div>
-          <div class="rate-badge">Rate: {{ data.todayMetrics.mortalityRatePercent | number: "1.2-2" }}%</div>
-        </mat-card-content>
-      </mat-card>
+          <div class="text-slate-500 mb-4">Birds</div>
+          <span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+            Rate: {{ data.todayMetrics.mortalityRatePercent | number: "1.2-2" }}%
+          </span>
+        </div>
+      </p-card>
     </div>
   </ng-container>
 
   <div
-    class="empty-state"
+    class="text-center p-10 text-slate-500 italic bg-white rounded-lg border border-slate-200 shadow-sm mt-4"
     *ngIf="!summary() && !isLoading()">
     <p *ngIf="houses().length === 0">No houses configured. Go to Settings > Houses.</p>
     <p *ngIf="houses().length > 0">Select a house to view data.</p>

@@ -1,8 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
 
 export interface VideoPlayerData {
   title: string;
@@ -13,50 +12,49 @@ export interface VideoPlayerData {
 @Component({
   selector: 'app-video-player-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, ButtonModule],
   template: `
-    <h2 mat-dialog-title>{{ data.title }}</h2>
-    <mat-dialog-content class="player-content">
-      <video
-        #player
-        controls
-        autoplay
-        [src]="data.streamUrl"
-        class="video-element">
-        Your browser does not support the video tag.
-      </video>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button
-        mat-button
-        mat-dialog-close>
-        Close
-      </button>
-    </mat-dialog-actions>
+    <div class="w-full h-full flex flex-col bg-black">
+      <div class="flex-grow flex items-center justify-center overflow-hidden">
+        <video
+          #player
+          controls
+          autoplay
+          [src]="data.streamUrl"
+          class="max-w-full max-h-[70vh] w-auto h-auto outline-none">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="flex justify-end p-2 bg-black border-t border-slate-800">
+        <p-button
+          label="Close"
+          icon="pi pi-times"
+          [text]="true"
+          severity="secondary"
+          styleClass="text-white hover:text-slate-300"
+          (onClick)="close()" />
+      </div>
+    </div>
   `,
   styles: [
     `
-      .player-content {
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        background-color: black;
-      }
-      .video-element {
+      :host {
+        display: block;
         width: 100%;
-        max-height: 70vh;
-        outline: none;
-      }
-      mat-dialog-content {
-        max-width: 800px;
-        width: 80vw;
+        height: 100%;
       }
     `,
   ],
 })
 export class VideoPlayerDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<VideoPlayerDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: VideoPlayerData,
-  ) {}
+  public ref = inject(DynamicDialogRef);
+  public config = inject(DynamicDialogConfig);
+
+  get data(): VideoPlayerData {
+    return this.config.data;
+  }
+
+  close() {
+    this.ref.close();
+  }
 }

@@ -1,18 +1,18 @@
 import { Component, inject, OnInit, OnDestroy, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+
+// PrimeNG Imports
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { TagModule } from 'primeng/tag';
+import { DividerModule } from 'primeng/divider';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MessageService } from 'primeng/api';
 
 import { Chart, registerables } from 'chart.js';
-import { MessageService } from 'primeng/api';
 
 import { DashboardService } from '../../core/services/dashboard.service';
 import { HousesService } from '../../core/services/houses.service';
@@ -28,15 +28,13 @@ Chart.register(...registerables);
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatProgressBarModule,
-    MatChipsModule,
-    MatDividerModule,
-    MatButtonToggleModule,
+    CardModule,
+    ButtonModule,
+    SelectModule,
+    ProgressBarModule,
+    TagModule,
+    DividerModule,
+    SelectButtonModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -56,11 +54,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('climateChart') climateChartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: Chart | null = null;
   historyData = signal<ClimateHistoryPoint[]>([]);
-  chartPeriod = signal<number>(24); // Hours
 
-  constructor() {
-    // We use afterNextRender or simple checks in loadHistory to safe-guard chart creation
-  }
+  // Chart Period Options for SelectButton
+  periodOptions = [
+    { label: '12h', value: 12 },
+    { label: '24h', value: 24 },
+    { label: '48h', value: 48 },
+  ];
+  chartPeriod = signal<number>(24);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.loadHouses();
@@ -91,13 +94,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  onHouseChange(houseId: number): void {
-    this.selectedHouseId.set(houseId);
+  onHouseChange(): void {
+    // PrimeNG Select emits the value directly or via event, but ngModel binding updates the signal/variable
+    // If using (onChange), event.value contains the new value.
+    // However, with signals and ngModel, we can just trigger refresh.
     this.refreshAll();
   }
 
-  onPeriodChange(val: string): void {
-    this.chartPeriod.set(parseInt(val, 10));
+  onPeriodChange(): void {
     const id = this.selectedHouseId();
     if (id) {
       this.loadHistory(id);
@@ -130,14 +134,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.getHistory(houseId, this.chartPeriod()).subscribe({
       next: (data) => {
         this.historyData.set(data);
-        this.updateChart();
+        // Timeout to allow canvas to be present in DOM if it was hidden
+        setTimeout(() => this.updateChart(), 0);
       },
       error: () => console.error('Failed to load history'),
     });
   }
 
   private updateChart(): void {
-    if (!this.climateChartCanvas) return; // Not rendered yet
+    if (!this.climateChartCanvas) return;
 
     const data = this.historyData();
     const labels = data.map((d) => {
@@ -201,7 +206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 display: true,
                 position: 'right',
                 title: { display: true, text: 'Humidity' },
-                grid: { drawOnChartArea: false }, // only want the grid lines for one axis to show up
+                grid: { drawOnChartArea: false },
               },
               x: {
                 grid: { display: false },
