@@ -1,129 +1,145 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-5 pt-2">
-  <div class="flex flex-col gap-2">
-    <label
-      for="houseId"
-      class="font-medium">
-      House
-    </label>
-    <p-select
-      id="houseId"
-      formControlName="houseId"
-      [options]="houses()"
-      optionLabel="name"
-      optionValue="id"
-      placeholder="Select a House"
-      styleClass="w-full" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
-      House is required
-    </small>
+  class="flex flex-col h-full p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="personnelId"
-      class="font-medium">
-      Responsible Person
-    </label>
-    <p-select
-      id="personnelId"
-      formControlName="personnelId"
-      [options]="personnel()"
-      optionLabel="fullName"
-      optionValue="id"
-      placeholder="Select Responsible"
-      styleClass="w-full" />
-  </div>
+  <div class="flex flex-col gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="houseId"
+          class="text-sm font-semibold text-slate-700">
+          Птичник
+          <span class="text-red-500">*</span>
+        </label>
+        <p-select
+          id="houseId"
+          formControlName="houseId"
+          [options]="houses()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Выберите птичник"
+          appendTo="body"
+          [style]="{ width: '100%' }" />
+      </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="date"
-      class="font-medium">
-      Date
-    </label>
-    <p-datepicker
-      id="date"
-      formControlName="date"
-      dateFormat="yy-mm-dd"
-      appendTo="body"
-      styleClass="w-full"
-      [showIcon]="true" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('date')?.hasError('required') && form.get('date')?.touched">
-      Date is required
-    </small>
-  </div>
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="personnelId"
+          class="text-sm font-semibold text-slate-700">
+          Ответственный
+        </label>
+        <p-select
+          id="personnelId"
+          formControlName="personnelId"
+          [options]="personnel()"
+          optionLabel="fullName"
+          optionValue="id"
+          placeholder="Выберите сотрудника"
+          appendTo="body"
+          [style]="{ width: '100%' }" />
+      </div>
+    </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="quantity"
-      class="font-medium">
-      Quantity
-    </label>
-    <input
-      pInputText
-      id="quantity"
-      type="number"
-      formControlName="quantity"
-      class="w-full" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('quantity')?.hasError('required') && form.get('quantity')?.touched">
-      Quantity is required
-    </small>
-  </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="date"
+          class="text-sm font-semibold text-slate-700">
+          Дата
+          <span class="text-red-500">*</span>
+        </label>
+        <p-datepicker
+          id="date"
+          formControlName="date"
+          dateFormat="yy-mm-dd"
+          appendTo="body"
+          [showIcon]="true"
+          styleClass="w-full" />
+      </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="reason"
-      class="font-medium">
-      Reason
-    </label>
-    <input
-      pInputText
-      id="reason"
-      formControlName="reason"
-      placeholder="e.g. Heart failure"
-      class="w-full" />
-  </div>
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="quantity"
+          class="text-sm font-semibold text-slate-700">
+          Количество
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          id="quantity"
+          type="number"
+          formControlName="quantity"
+          class="w-full" />
+      </div>
+    </div>
 
-  <div class="flex flex-col gap-2">
-    <label class="font-medium">Attachment (Photo)</label>
-    <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
-      <button
-        pButton
-        type="button"
-        icon="pi pi-paperclip"
-        label="Select Photo"
-        class="p-button-outlined p-button-secondary p-button-sm"
-        (click)="fileInput.click()"></button>
-      <span class="text-sm text-slate-600 truncate max-w-[200px]">
-        {{ selectedFile?.name || "No file selected" }}
-      </span>
+    <div class="flex flex-col gap-1.5">
+      <label
+        for="reason"
+        class="text-sm font-semibold text-slate-700">
+        Причина
+      </label>
       <input
-        #fileInput
-        type="file"
-        (change)="onFileSelected($event)"
-        style="display: none"
-        accept="image/*" />
+        pInputText
+        id="reason"
+        formControlName="reason"
+        placeholder="Например: Сердечная недостаточность"
+        class="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-semibold text-slate-700">Фото подтверждение</label>
+      <div
+        class="file-upload-box cursor-pointer"
+        (click)="fileInput.click()">
+        <div
+          class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm text-slate-500">
+          <i class="pi pi-camera text-lg"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-sm font-medium text-slate-900">
+            {{
+              selectedFile
+                ? selectedFile.name
+                : data?.attachmentUrl
+                  ? "Файл уже загружен (нажмите для замены)"
+                  : "Выберите фото"
+            }}
+          </span>
+          <span class="text-xs text-slate-400">Нажмите чтобы загрузить</span>
+        </div>
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          class="hidden"
+          accept="image/*" />
+      </div>
     </div>
   </div>
 
-  <div class="flex justify-end gap-2 pt-4">
+  <div class="flex justify-end gap-3 pt-8 mt-auto">
     <p-button
-      label="Cancel"
+      label="Отмена"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      label="Сохранить"
       type="submit"
       [loading]="isUploading()"
-      [disabled]="form.invalid" />
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
   </div>
 </form>

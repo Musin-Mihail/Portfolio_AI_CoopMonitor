@@ -1,128 +1,125 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-5 pt-2">
-  <div class="flex flex-row gap-4">
-    <div class="flex-1 flex flex-col gap-2">
-      <label
-        for="houseId"
-        class="font-medium">
-        House
+  class="flex flex-col p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
+  </div>
+  <div class="flex flex-col gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Птичник</label>
+        <p-select
+          formControlName="houseId"
+          [options]="houses()"
+          optionLabel="name"
+          optionValue="id"
+          appendTo="body"
+          [style]="{ width: '100%' }" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Ответственный</label>
+        <p-select
+          formControlName="personnelId"
+          [options]="personnel()"
+          optionLabel="fullName"
+          optionValue="id"
+          appendTo="body"
+          [style]="{ width: '100%' }" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Дата</label>
+        <p-datepicker
+          formControlName="date"
+          dateFormat="yy-mm-dd"
+          appendTo="body"
+          [showIcon]="true"
+          styleClass="w-full" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Вес (граммы)</label>
+        <p-inputnumber
+          formControlName="weightGrams"
+          suffix=" g"
+          styleClass="w-full" />
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-center gap-3">
+      <p-checkbox
+        formControlName="isMusicPlayed"
+        [binary]="true"
+        inputId="music" />
+      <div
+        class="flex flex-col cursor-pointer"
+        (click)="form.get('isMusicPlayed')?.setValue(!form.get('isMusicPlayed')?.value)">
+        <span class="text-sm font-bold text-slate-800">Успокаивающая музыка</span>
+        <span class="text-xs text-slate-500">Включалась ли музыка для снижения стресса птицы?</span>
+      </div>
+      <i class="pi pi-music text-blue-500 ml-auto text-xl"></i>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-semibold text-slate-700">
+        Видео фиксация
+        <span class="text-red-500">*</span>
       </label>
-      <p-select
-        id="houseId"
-        formControlName="houseId"
-        [options]="houses()"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Select House"
-        styleClass="w-full" />
+
+      <div
+        class="file-upload-box cursor-pointer hover:bg-slate-100 transition-colors"
+        (click)="fileInput.click()">
+        <div
+          class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-200">
+          <i class="pi pi-video text-xl"></i>
+        </div>
+        <div class="flex flex-col flex-1">
+          <span class="text-sm font-bold text-slate-800">
+            {{ selectedFile ? selectedFile.name : data?.videoUrl ? "Видео загружено" : "Загрузить видео" }}
+          </span>
+          <span class="text-xs text-slate-500">
+            {{ selectedFile ? (selectedFile.size / 1024 / 1024 | number: "1.1-2") + " MB" : "MP4, MOV (max 50MB)" }}
+          </span>
+        </div>
+        <div
+          *ngIf="data?.videoUrl && !selectedFile"
+          class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">
+          Saved
+        </div>
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          class="hidden"
+          accept="video/*" />
+      </div>
       <small
-        class="text-red-500"
-        *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
-        Required
+        class="text-red-500 text-xs"
+        *ngIf="form.hasError('fileRequired') && form.touched">
+        Видео обязательно для новой записи
       </small>
     </div>
-
-    <div class="flex-1 flex flex-col gap-2">
-      <label
-        for="personnelId"
-        class="font-medium">
-        Responsible
-      </label>
-      <p-select
-        id="personnelId"
-        formControlName="personnelId"
-        [options]="personnel()"
-        optionLabel="fullName"
-        optionValue="id"
-        placeholder="Select Person"
-        styleClass="w-full" />
-    </div>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="date"
-      class="font-medium">
-      Date
-    </label>
-    <p-datepicker
-      id="date"
-      formControlName="date"
-      dateFormat="yy-mm-dd"
-      appendTo="body"
-      styleClass="w-full"
-      [showIcon]="true" />
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <label
-      for="weightGrams"
-      class="font-medium">
-      Weight (grams)
-    </label>
-    <input
-      pInputText
-      id="weightGrams"
-      type="number"
-      formControlName="weightGrams"
-      class="w-full" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('weightGrams')?.hasError('required') && form.get('weightGrams')?.touched">
-      Weight is required
-    </small>
-  </div>
-
-  <div class="flex items-center gap-2 mt-2">
-    <p-checkbox
-      formControlName="isMusicPlayed"
-      [binary]="true"
-      inputId="music" />
-    <label
-      for="music"
-      class="cursor-pointer select-none">
-      Calming Music Played (Stress Reduction)
-    </label>
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <label class="font-medium">Video Evidence (Required)</label>
-    <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
-      <button
-        pButton
-        type="button"
-        icon="pi pi-video"
-        label="Select Video"
-        class="p-button-outlined p-button-secondary p-button-sm"
-        (click)="fileInput.click()"></button>
-      <span class="text-sm text-slate-600 truncate max-w-[200px]">
-        {{ selectedFile?.name || "No file selected" }}
-      </span>
-      <input
-        #fileInput
-        type="file"
-        (change)="onFileSelected($event)"
-        style="display: none"
-        accept="video/*" />
-    </div>
-    <small
-      class="text-red-500"
-      *ngIf="form.hasError('fileRequired') && form.touched">
-      Video evidence is mandatory
-    </small>
-  </div>
-
-  <div class="flex justify-end gap-2 pt-4">
+  <div class="flex justify-end gap-3 pt-8 mt-4">
     <p-button
-      label="Cancel"
+      label="Отмена"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      label="Сохранить"
       type="submit"
-      [disabled]="form.invalid" />
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
   </div>
 </form>

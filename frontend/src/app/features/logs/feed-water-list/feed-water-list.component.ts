@@ -35,7 +35,7 @@ export class FeedWaterListComponent implements OnInit {
 
   openDialog(record?: FeedWaterRecord) {
     const ref = this.dialogService.open(FeedWaterDialogComponent, {
-      header: record ? 'Edit Feed & Water Record' : 'Add Feed & Water Record',
+      showHeader: false, // Изменено
       width: '500px',
       modal: true,
       data: record || null,

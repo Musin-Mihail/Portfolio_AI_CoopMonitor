@@ -35,7 +35,7 @@ export class HouseListComponent implements OnInit {
 
   openDialog(house?: House) {
     const ref = this.dialogService.open(HouseDialogComponent, {
-      header: house ? 'Edit House' : 'New House',
+      showHeader: false, // Изменено
       width: '400px',
       data: house || null,
     });

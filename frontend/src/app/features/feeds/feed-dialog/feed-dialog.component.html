@@ -1,60 +1,72 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-6 pt-2">
-  <div class="flex flex-col gap-2">
-    <label
-      for="name"
-      class="font-medium">
-      Feed Name
-    </label>
-    <input
-      pInputText
-      id="name"
-      formControlName="name"
-      class="w-full"
-      [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
-      Name is required
-    </small>
+  class="flex flex-col p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="type"
-      class="font-medium">
-      Type
-    </label>
-    <p-select
-      id="type"
-      formControlName="type"
-      [options]="types"
-      placeholder="Select a type"
-      styleClass="w-full" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('type')?.hasError('required') && form.get('type')?.touched">
-      Type is required
-    </small>
+  <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-2">
+      <label
+        for="name"
+        class="font-medium text-slate-700">
+        Feed Name
+      </label>
+      <input
+        pInputText
+        id="name"
+        formControlName="name"
+        class="w-full"
+        [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+      <small
+        class="text-red-500"
+        *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
+        Name is required
+      </small>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="type"
+        class="font-medium text-slate-700">
+        Type
+      </label>
+      <p-select
+        id="type"
+        formControlName="type"
+        [options]="types"
+        placeholder="Select a type"
+        styleClass="w-full" />
+      <small
+        class="text-red-500"
+        *ngIf="form.get('type')?.hasError('required') && form.get('type')?.touched">
+        Type is required
+      </small>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="description"
+        class="font-medium text-slate-700">
+        Description
+      </label>
+      <textarea
+        pTextarea
+        id="description"
+        formControlName="description"
+        rows="3"
+        class="w-full"></textarea>
+    </div>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="description"
-      class="font-medium">
-      Description
-    </label>
-    <textarea
-      pTextarea
-      id="description"
-      formControlName="description"
-      rows="3"
-      class="w-full"></textarea>
-  </div>
-
-  <div class="flex justify-end gap-2 pt-4">
+  <div class="flex justify-end gap-2 pt-8">
     <p-button
       label="Cancel"
       severity="secondary"
@@ -63,6 +75,8 @@
     <p-button
       label="Save"
       type="submit"
-      [disabled]="form.invalid" />
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
   </div>
 </form>

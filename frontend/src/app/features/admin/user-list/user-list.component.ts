@@ -35,7 +35,7 @@ export class UserListComponent implements OnInit {
 
   openDialog(user?: UserDto): void {
     const ref = this.dialogService.open(UserDialogComponent, {
-      header: user ? 'Edit User' : 'Create User',
+      showHeader: false, // Изменено
       width: '400px',
       data: user || null,
     });

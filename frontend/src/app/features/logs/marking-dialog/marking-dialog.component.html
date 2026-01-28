@@ -1,159 +1,171 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-5 pt-2">
-  <div class="flex flex-row gap-4">
-    <div class="flex-1 flex flex-col gap-2">
-      <label
-        for="houseId"
-        class="font-medium">
-        House
-      </label>
-      <p-select
-        id="houseId"
-        formControlName="houseId"
-        [options]="houses()"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Select House"
-        styleClass="w-full" />
-      <small
-        class="text-red-500"
-        *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
-        Required
-      </small>
-    </div>
-
-    <div class="flex-1 flex flex-col gap-2">
-      <label
-        for="personnelId"
-        class="font-medium">
-        Responsible
-      </label>
-      <p-select
-        id="personnelId"
-        formControlName="personnelId"
-        [options]="personnel()"
-        optionLabel="fullName"
-        optionValue="id"
-        placeholder="Select Person"
-        styleClass="w-full" />
-    </div>
+  class="flex flex-col p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
   </div>
 
-  <div class="flex flex-row gap-4">
-    <div class="flex-1 flex flex-col gap-2">
-      <label
-        for="date"
-        class="font-medium">
-        Date
-      </label>
-      <p-datepicker
-        id="date"
-        formControlName="date"
-        dateFormat="yy-mm-dd"
-        appendTo="body"
-        styleClass="w-full"
-        [showIcon]="true" />
-    </div>
-
-    <div class="flex-1 flex flex-col gap-2">
-      <label
-        for="birdAgeDays"
-        class="font-medium">
-        Bird Age (Days)
-      </label>
-      <input
-        pInputText
-        id="birdAgeDays"
-        type="number"
-        formControlName="birdAgeDays"
-        (input)="onAgeChange()"
-        class="w-full" />
-    </div>
-  </div>
-
-  <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-md flex items-center gap-2">
-    <i class="pi pi-info-circle text-lg"></i>
-    <span>
-      Protocol for age
-      <strong>{{ age() }}</strong>
-      days:
-      <strong>{{ isOlder() ? "Tape + Number" : "Paint + Ring" }}</strong>
-    </span>
-  </div>
-
-  <div class="border border-dashed border-slate-300 p-4 rounded-md">
-    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
-      {{ isOlder() ? "Tape & Number Protocol" : "Paint & Ring Protocol" }}
-    </h3>
+  <div class="flex flex-col gap-5">
     <div class="flex flex-row gap-4">
       <div class="flex-1 flex flex-col gap-2">
         <label
-          for="color"
-          class="font-medium">
-          {{ isOlder() ? "Tape Color" : "Paint Color" }}
+          for="houseId"
+          class="font-medium text-slate-700">
+          House
         </label>
-        <input
-          pInputText
-          id="color"
-          formControlName="color"
-          [placeholder]="isOlder() ? 'e.g. Blue Tape' : 'e.g. Red Strip'"
-          class="w-full" />
+        <p-select
+          id="houseId"
+          formControlName="houseId"
+          [options]="houses()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Select House"
+          styleClass="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
+          Required
+        </small>
       </div>
+
       <div class="flex-1 flex flex-col gap-2">
         <label
-          for="ringNumber"
-          class="font-medium">
-          {{ isOlder() ? "Painted Number" : "Ring Number" }}
+          for="personnelId"
+          class="font-medium text-slate-700">
+          Responsible
+        </label>
+        <p-select
+          id="personnelId"
+          formControlName="personnelId"
+          [options]="personnel()"
+          optionLabel="fullName"
+          optionValue="id"
+          placeholder="Select Person"
+          styleClass="w-full" />
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-4">
+      <div class="flex-1 flex flex-col gap-2">
+        <label
+          for="date"
+          class="font-medium text-slate-700">
+          Date
+        </label>
+        <p-datepicker
+          id="date"
+          formControlName="date"
+          dateFormat="yy-mm-dd"
+          appendTo="body"
+          styleClass="w-full"
+          [showIcon]="true" />
+      </div>
+
+      <div class="flex-1 flex flex-col gap-2">
+        <label
+          for="birdAgeDays"
+          class="font-medium text-slate-700">
+          Bird Age (Days)
         </label>
         <input
           pInputText
-          id="ringNumber"
-          formControlName="ringNumber"
-          [placeholder]="isOlder() ? 'Big digits on back' : 'Optional'"
+          id="birdAgeDays"
+          type="number"
+          formControlName="birdAgeDays"
+          (input)="onAgeChange()"
           class="w-full" />
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-md flex items-center gap-2">
+      <i class="pi pi-info-circle text-lg"></i>
+      <span>
+        Protocol for age
+        <strong>{{ age() }}</strong>
+        days:
+        <strong>{{ isOlder() ? "Tape + Number" : "Paint + Ring" }}</strong>
+      </span>
+    </div>
+
+    <div class="border border-dashed border-slate-300 p-4 rounded-md">
+      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+        {{ isOlder() ? "Tape & Number Protocol" : "Paint & Ring Protocol" }}
+      </h3>
+      <div class="flex flex-row gap-4">
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="color"
+            class="font-medium text-slate-700">
+            {{ isOlder() ? "Tape Color" : "Paint Color" }}
+          </label>
+          <input
+            pInputText
+            id="color"
+            formControlName="color"
+            [placeholder]="isOlder() ? 'e.g. Blue Tape' : 'e.g. Red Strip'"
+            class="w-full" />
+        </div>
+        <div class="flex-1 flex flex-col gap-2">
+          <label
+            for="ringNumber"
+            class="font-medium text-slate-700">
+            {{ isOlder() ? "Painted Number" : "Ring Number" }}
+          </label>
+          <input
+            pInputText
+            id="ringNumber"
+            formControlName="ringNumber"
+            [placeholder]="isOlder() ? 'Big digits on back' : 'Optional'"
+            class="w-full" />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="birdIdentifier"
+        class="font-medium text-slate-700">
+        Bird Identifier (Optional)
+      </label>
+      <input
+        pInputText
+        id="birdIdentifier"
+        formControlName="birdIdentifier"
+        placeholder="Internal ID"
+        class="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="font-medium text-slate-700">Photo Evidence (Recommended)</label>
+      <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-camera"
+          label="Select Photo"
+          class="p-button-outlined p-button-secondary p-button-sm"
+          (click)="fileInput.click()"></button>
+        <span class="text-sm text-slate-600 truncate max-w-[200px]">
+          {{ selectedFile?.name || "No file selected" }}
+        </span>
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          style="display: none"
+          accept="image/*" />
       </div>
     </div>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="birdIdentifier"
-      class="font-medium">
-      Bird Identifier (Optional)
-    </label>
-    <input
-      pInputText
-      id="birdIdentifier"
-      formControlName="birdIdentifier"
-      placeholder="Internal ID"
-      class="w-full" />
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <label class="font-medium">Photo Evidence (Recommended)</label>
-    <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
-      <button
-        pButton
-        type="button"
-        icon="pi pi-camera"
-        label="Select Photo"
-        class="p-button-outlined p-button-secondary p-button-sm"
-        (click)="fileInput.click()"></button>
-      <span class="text-sm text-slate-600 truncate max-w-[200px]">
-        {{ selectedFile?.name || "No file selected" }}
-      </span>
-      <input
-        #fileInput
-        type="file"
-        (change)="onFileSelected($event)"
-        style="display: none"
-        accept="image/*" />
-    </div>
-  </div>
-
-  <div class="flex justify-end gap-2 pt-4">
+  <div class="flex justify-end gap-2 pt-8">
     <p-button
       label="Cancel"
       severity="secondary"
@@ -162,6 +174,8 @@
     <p-button
       label="Save"
       type="submit"
-      [disabled]="form.invalid" />
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
   </div>
 </form>

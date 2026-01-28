@@ -23,9 +23,11 @@ export class UserDialogComponent implements OnInit {
   form: FormGroup;
   roles = ['Admin', 'User', 'Viewer'];
   data: UserDto | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit User' : 'Create User';
 
     // If editing (data exists), password is not required.
     const passwordValidators = this.data ? [Validators.minLength(4)] : [Validators.required, Validators.minLength(4)];

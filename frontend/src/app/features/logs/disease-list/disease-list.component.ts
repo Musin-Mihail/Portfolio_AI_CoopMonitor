@@ -38,7 +38,7 @@ export class DiseaseListComponent implements OnInit {
 
   openDialog(record?: DiseaseRecord) {
     const ref = this.dialogService.open(DiseaseDialogComponent, {
-      header: record ? 'Edit Disease Record' : 'Add Disease Record',
+      showHeader: false, // Отключаем стандартный заголовок
       width: '450px',
       modal: true,
       data: record || null,

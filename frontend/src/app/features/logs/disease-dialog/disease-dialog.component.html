@@ -1,129 +1,141 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-5 pt-2">
-  <div class="flex flex-col gap-2">
-    <label
-      for="houseId"
-      class="font-medium">
-      House
-    </label>
-    <p-select
-      id="houseId"
-      formControlName="houseId"
-      [options]="houses()"
-      optionLabel="name"
-      optionValue="id"
-      placeholder="Select a House"
-      styleClass="w-full" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
-      House is required
-    </small>
+  class="flex flex-col p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="personnelId"
-      class="font-medium">
-      Responsible Person
-    </label>
-    <p-select
-      id="personnelId"
-      formControlName="personnelId"
-      [options]="personnel()"
-      optionLabel="fullName"
-      optionValue="id"
-      placeholder="Select Responsible"
-      styleClass="w-full" />
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <label
-      for="date"
-      class="font-medium">
-      Date
-    </label>
-    <p-datepicker
-      id="date"
-      formControlName="date"
-      dateFormat="yy-mm-dd"
-      appendTo="body"
-      styleClass="w-full"
-      [showIcon]="true" />
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <label
-      for="diagnosis"
-      class="font-medium">
-      Diagnosis
-    </label>
-    <input
-      pInputText
-      id="diagnosis"
-      formControlName="diagnosis"
-      placeholder="e.g. Coccidiosis"
-      class="w-full" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('diagnosis')?.hasError('required') && form.get('diagnosis')?.touched">
-      Diagnosis is required
-    </small>
-  </div>
-
-  <div class="flex gap-4">
-    <div class="flex-1 flex flex-col gap-2">
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-2">
       <label
-        for="medicine"
-        class="font-medium">
-        Medicine
+        for="houseId"
+        class="font-medium text-slate-700">
+        House
+      </label>
+      <p-select
+        id="houseId"
+        formControlName="houseId"
+        [options]="houses()"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select a House"
+        styleClass="w-full" />
+      <small
+        class="text-red-500"
+        *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
+        House is required
+      </small>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="personnelId"
+        class="font-medium text-slate-700">
+        Responsible Person
+      </label>
+      <p-select
+        id="personnelId"
+        formControlName="personnelId"
+        [options]="personnel()"
+        optionLabel="fullName"
+        optionValue="id"
+        placeholder="Select Responsible"
+        styleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="date"
+        class="font-medium text-slate-700">
+        Date
+      </label>
+      <p-datepicker
+        id="date"
+        formControlName="date"
+        dateFormat="yy-mm-dd"
+        appendTo="body"
+        styleClass="w-full"
+        [showIcon]="true" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="diagnosis"
+        class="font-medium text-slate-700">
+        Diagnosis
       </label>
       <input
         pInputText
-        id="medicine"
-        formControlName="medicine"
+        id="diagnosis"
+        formControlName="diagnosis"
+        placeholder="e.g. Coccidiosis"
         class="w-full" />
+      <small
+        class="text-red-500"
+        *ngIf="form.get('diagnosis')?.hasError('required') && form.get('diagnosis')?.touched">
+        Diagnosis is required
+      </small>
     </div>
 
-    <div class="flex-1 flex flex-col gap-2">
-      <label
-        for="dosage"
-        class="font-medium">
-        Dosage
-      </label>
-      <input
-        pInputText
-        id="dosage"
-        formControlName="dosage"
-        class="w-full" />
+    <div class="flex gap-4">
+      <div class="flex-1 flex flex-col gap-2">
+        <label
+          for="medicine"
+          class="font-medium text-slate-700">
+          Medicine
+        </label>
+        <input
+          pInputText
+          id="medicine"
+          formControlName="medicine"
+          class="w-full" />
+      </div>
+
+      <div class="flex-1 flex flex-col gap-2">
+        <label
+          for="dosage"
+          class="font-medium text-slate-700">
+          Dosage
+        </label>
+        <input
+          pInputText
+          id="dosage"
+          formControlName="dosage"
+          class="w-full" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="font-medium text-slate-700">Attachment (Photo)</label>
+      <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-paperclip"
+          label="Select Photo"
+          class="p-button-outlined p-button-secondary p-button-sm"
+          (click)="fileInput.click()"></button>
+        <span class="text-sm text-slate-600 truncate max-w-[200px]">
+          {{ selectedFile?.name || "No file selected" }}
+        </span>
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          style="display: none"
+          accept="image/*" />
+      </div>
     </div>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label class="font-medium">Attachment (Photo)</label>
-    <div class="flex items-center gap-3 border border-slate-200 p-3 rounded bg-slate-50">
-      <button
-        pButton
-        type="button"
-        icon="pi pi-paperclip"
-        label="Select Photo"
-        class="p-button-outlined p-button-secondary p-button-sm"
-        (click)="fileInput.click()"></button>
-      <span class="text-sm text-slate-600 truncate max-w-[200px]">
-        {{ selectedFile?.name || "No file selected" }}
-      </span>
-      <input
-        #fileInput
-        type="file"
-        (change)="onFileSelected($event)"
-        style="display: none"
-        accept="image/*" />
-    </div>
-  </div>
-
-  <div class="flex justify-end gap-2 pt-4">
+  <div class="flex justify-end gap-2 pt-8">
     <p-button
       label="Cancel"
       severity="secondary"
@@ -133,6 +145,8 @@
       label="Save"
       type="submit"
       [loading]="isUploading()"
-      [disabled]="form.invalid" />
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
   </div>
 </form>

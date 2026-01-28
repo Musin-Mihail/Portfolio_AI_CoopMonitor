@@ -32,9 +32,11 @@ export class MarkingDialogComponent implements OnInit {
   age = signal<number>(0);
   isOlder = signal<boolean>(false);
   data: MarkingRecord | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit Marking Record' : 'New Marking Record';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],

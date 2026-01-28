@@ -35,7 +35,7 @@ export class FeedListComponent implements OnInit {
 
   openDialog(feed?: Feed): void {
     const ref = this.dialogService.open(FeedDialogComponent, {
-      header: feed ? 'Edit Feed' : 'New Feed',
+      showHeader: false, // Изменено
       width: '400px',
       data: feed || null,
     });

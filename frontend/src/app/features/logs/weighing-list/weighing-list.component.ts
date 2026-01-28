@@ -39,7 +39,8 @@ export class WeighingListComponent implements OnInit {
 
   openDialog(record?: WeighingRecord) {
     const ref = this.dialogService.open(WeighingDialogComponent, {
-      header: record ? 'Edit Weighing Record' : 'Add Weighing Record',
+      // header: record ? 'Edit Weighing Record' : 'Add Weighing Record', // <-- УБРАТЬ ЭТО
+      showHeader: false, // <-- ДОБАВИТЬ ЭТО (скрывает стандартную полосу)
       width: '450px',
       modal: true,
       data: record || null,

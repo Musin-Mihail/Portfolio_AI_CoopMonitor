@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
+import { InputNumberModule } from 'primeng/inputnumber'; // <-- Добавлен импорт
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { WeighingRecord } from '../../../core/models/logs.models';
 import { HousesService } from '../../../core/services/houses.service';
@@ -23,6 +24,7 @@ import { PersonnelService } from '../../../core/services/personnel.service';
     SelectModule,
     DatePickerModule,
     CheckboxModule,
+    InputNumberModule, // <-- Добавлен модуль
   ],
   templateUrl: './weighing-dialog.component.html',
   styleUrl: './weighing-dialog.component.scss',
@@ -39,9 +41,11 @@ export class WeighingDialogComponent implements OnInit {
   personnel = signal<Personnel[]>([]);
   selectedFile: File | null = null;
   data: WeighingRecord | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit Weighing Record' : 'Add Weighing Record';
 
     this.form = this.fb.group(
       {
@@ -67,7 +71,6 @@ export class WeighingDialogComponent implements OnInit {
         weightGrams: this.data.weightGrams,
         isMusicPlayed: this.data.isMusicPlayed,
       });
-      // Обновляем валидаторы, так как файл теперь опционален (если он уже есть)
       this.form.updateValueAndValidity();
     }
   }
@@ -81,8 +84,6 @@ export class WeighingDialogComponent implements OnInit {
   }
 
   fileRequiredValidator(group: FormGroup) {
-    // If we have existing data (editing) and videoUrl exists, we don't strictly need a new file.
-    // If creating new record, file is mandatory.
     if (this.data?.videoUrl) {
       return null;
     }

@@ -1,71 +1,82 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-6 pt-2">
-  <div class="flex flex-col gap-2">
-    <label
-      for="name"
-      class="font-medium text-slate-700 dark:text-slate-300">
-      Name
-    </label>
-    <input
-      pInputText
-      id="name"
-      formControlName="name"
-      placeholder="House #1"
-      [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
-      Name is required
-    </small>
+  class="flex flex-col p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="area"
-      class="font-medium text-slate-700 dark:text-slate-300">
-      Area (m²)
-    </label>
-    <input
-      pInputText
-      id="area"
-      type="number"
-      formControlName="area" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('area')?.hasError('required') && form.get('area')?.touched">
-      Area is required
-    </small>
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-1.5">
+      <label
+        for="name"
+        class="text-sm font-semibold text-slate-700">
+        Название
+        <span class="text-red-500">*</span>
+      </label>
+      <input
+        pInputText
+        id="name"
+        formControlName="name"
+        placeholder="Птичник #1"
+        [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+      <small
+        class="text-red-500 text-xs"
+        *ngIf="form.get('name')?.hasError('required') && form.get('name')?.touched">
+        Обязательное поле
+      </small>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="area"
+          class="text-sm font-semibold text-slate-700">
+          Площадь (м²)
+          <span class="text-red-500">*</span>
+        </label>
+        <p-inputnumber
+          formControlName="area"
+          mode="decimal"
+          inputId="area"
+          [useGrouping]="false"
+          styleClass="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="capacity"
+          class="text-sm font-semibold text-slate-700">
+          Вместимость (гол.)
+          <span class="text-red-500">*</span>
+        </label>
+        <p-inputnumber
+          formControlName="capacity"
+          mode="decimal"
+          inputId="capacity"
+          [useGrouping]="false"
+          styleClass="w-full" />
+      </div>
+    </div>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="capacity"
-      class="font-medium text-slate-700 dark:text-slate-300">
-      Capacity (Birds)
-    </label>
-    <input
-      pInputText
-      id="capacity"
-      type="number"
-      formControlName="capacity" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('capacity')?.hasError('required') && form.get('capacity')?.touched">
-      Capacity is required
-    </small>
-  </div>
-
-  <div class="flex justify-end gap-2 pt-4">
+  <div class="flex justify-end gap-3 pt-8 border-t border-slate-50 mt-6">
     <p-button
-      label="Cancel"
+      label="Отмена"
       severity="secondary"
       [text]="true"
       (onClick)="onCancel()" />
     <p-button
-      label="Save"
+      label="Сохранить"
       type="submit"
-      [disabled]="form.invalid" />
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
   </div>
 </form>

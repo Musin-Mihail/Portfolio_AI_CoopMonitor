@@ -33,9 +33,11 @@ export class DiseaseDialogComponent implements OnInit {
   selectedFile: File | null = null;
   isUploading = signal<boolean>(false);
   data: DiseaseRecord | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit Disease Record' : 'Add Disease Record';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],

@@ -4,12 +4,19 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { InputNumberModule } from 'primeng/inputnumber'; // <-- Добавлен импорт
 import { House } from '../../../core/models/master-data.models';
 
 @Component({
   selector: 'app-house-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    InputNumberModule, // <-- Добавлен модуль
+  ],
   templateUrl: './house-dialog.component.html',
   styleUrl: './house-dialog.component.scss',
 })
@@ -20,9 +27,11 @@ export class HouseDialogComponent {
 
   form: FormGroup;
   data: House | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit House' : 'New House';
 
     this.form = this.fb.group({
       name: [this.data?.name || '', Validators.required],

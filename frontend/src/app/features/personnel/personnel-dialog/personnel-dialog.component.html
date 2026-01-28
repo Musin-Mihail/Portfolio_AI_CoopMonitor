@@ -1,84 +1,96 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col gap-6 pt-2">
-  <div class="flex flex-col gap-2">
-    <label
-      for="fullName"
-      class="font-medium">
-      Full Name
-    </label>
-    <input
-      pInputText
-      id="fullName"
-      formControlName="fullName"
-      class="w-full"
-      [class.ng-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('fullName')?.hasError('required') && form.get('fullName')?.touched">
-      Name is required
-    </small>
+  class="flex flex-col p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="jobTitle"
-      class="font-medium">
-      Job Title
-    </label>
-    <input
-      pInputText
-      id="jobTitle"
-      formControlName="jobTitle"
-      class="w-full" />
+  <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-2">
+      <label
+        for="fullName"
+        class="font-medium text-slate-700">
+        Full Name
+      </label>
+      <input
+        pInputText
+        id="fullName"
+        formControlName="fullName"
+        class="w-full"
+        [class.ng-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched" />
+      <small
+        class="text-red-500"
+        *ngIf="form.get('fullName')?.hasError('required') && form.get('fullName')?.touched">
+        Name is required
+      </small>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="jobTitle"
+        class="font-medium text-slate-700">
+        Job Title
+      </label>
+      <input
+        pInputText
+        id="jobTitle"
+        formControlName="jobTitle"
+        class="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="phoneNumber"
+        class="font-medium text-slate-700">
+        Phone Number
+      </label>
+      <input
+        pInputText
+        id="phoneNumber"
+        formControlName="phoneNumber"
+        class="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="email"
+        class="font-medium text-slate-700">
+        Email
+      </label>
+      <input
+        pInputText
+        id="email"
+        formControlName="email"
+        class="w-full" />
+      <small
+        class="text-red-500"
+        *ngIf="form.get('email')?.hasError('email')">
+        Invalid email address
+      </small>
+    </div>
+
+    <div
+      class="flex items-center gap-2"
+      *ngIf="data">
+      <p-toggleswitch
+        inputId="isActive"
+        formControlName="isActive" />
+      <label
+        for="isActive"
+        class="font-medium text-slate-700">
+        Active Personnel
+      </label>
+    </div>
   </div>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="phoneNumber"
-      class="font-medium">
-      Phone Number
-    </label>
-    <input
-      pInputText
-      id="phoneNumber"
-      formControlName="phoneNumber"
-      class="w-full" />
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <label
-      for="email"
-      class="font-medium">
-      Email
-    </label>
-    <input
-      pInputText
-      id="email"
-      formControlName="email"
-      class="w-full" />
-    <small
-      class="text-red-500"
-      *ngIf="form.get('email')?.hasError('email')">
-      Invalid email address
-    </small>
-  </div>
-
-  <div
-    class="flex items-center gap-2"
-    *ngIf="data">
-    <p-toggleswitch
-      inputId="isActive"
-      formControlName="isActive" />
-    <label
-      for="isActive"
-      class="font-medium">
-      Active Personnel
-    </label>
-  </div>
-
-  <div class="flex justify-end gap-2 pt-4">
+  <div class="flex justify-end gap-2 pt-8">
     <p-button
       label="Cancel"
       severity="secondary"
@@ -87,6 +99,8 @@
     <p-button
       label="Save"
       type="submit"
-      [disabled]="form.invalid" />
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
   </div>
 </form>

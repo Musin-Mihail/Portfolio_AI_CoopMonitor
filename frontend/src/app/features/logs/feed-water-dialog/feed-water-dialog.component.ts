@@ -32,9 +32,11 @@ export class FeedWaterDialogComponent implements OnInit {
   personnel = signal<Personnel[]>([]);
   feeds = signal<Feed[]>([]);
   data: FeedWaterRecord | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit Feed & Water' : 'Add Feed & Water';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],

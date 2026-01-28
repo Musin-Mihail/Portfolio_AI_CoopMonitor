@@ -23,9 +23,11 @@ export class FeedDialogComponent {
   form: FormGroup;
   data: Feed | null = null;
   types = ['Starter', 'Grower', 'Finisher', 'Supplement'];
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit Feed' : 'New Feed';
 
     this.form = this.fb.group({
       name: [this.data?.name || '', Validators.required],

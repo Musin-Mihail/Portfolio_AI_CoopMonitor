@@ -42,9 +42,11 @@ export class MortalityDialogComponent implements OnInit {
   selectedFile: File | null = null;
   isUploading = signal<boolean>(false);
   data: MortalityRecord | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit Mortality Record' : 'Add Mortality Record';
 
     this.form = this.fb.group({
       houseId: [null, Validators.required],

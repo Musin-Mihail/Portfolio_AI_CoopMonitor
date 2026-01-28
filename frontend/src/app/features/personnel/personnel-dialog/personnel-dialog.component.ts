@@ -21,9 +21,11 @@ export class PersonnelDialogComponent {
 
   form: FormGroup;
   data: Personnel | null = null;
+  title: string = '';
 
   constructor() {
     this.data = this.config.data;
+    this.title = this.data ? 'Edit Personnel' : 'New Personnel';
 
     this.form = this.fb.group({
       fullName: [this.data?.fullName || '', Validators.required],

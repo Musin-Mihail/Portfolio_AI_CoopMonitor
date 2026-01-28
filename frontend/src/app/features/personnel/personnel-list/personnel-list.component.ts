@@ -36,7 +36,7 @@ export class PersonnelListComponent implements OnInit {
 
   openDialog(person?: Personnel): void {
     const ref = this.dialogService.open(PersonnelDialogComponent, {
-      header: person ? 'Edit Personnel' : 'New Personnel',
+      showHeader: false, // Изменено
       width: '400px',
       data: person || null,
     });
