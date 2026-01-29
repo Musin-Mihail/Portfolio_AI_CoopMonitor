@@ -19,21 +19,26 @@ export class WeighingService {
   }
 
   createRecord(dto: CreateWeighingDto): Observable<WeighingRecord> {
-    const formData = new FormData();
-    formData.append('houseId', dto.houseId.toString());
-    if (dto.personnelId) formData.append('personnelId', dto.personnelId.toString());
-    formData.append('date', dto.date);
-    formData.append('weightGrams', dto.weightGrams.toString());
-    formData.append('isMusicPlayed', String(dto.isMusicPlayed));
+    const formData = this.createFormData(dto);
+    // Mandatory for create
     formData.append('videoFile', dto.videoFile);
-
     return this.http.post<WeighingRecord>(this.API_URL, formData);
   }
 
-  // NOTE: For updates, if video is not changed, logic differs slightly.
-  // Ideally backend should accept nullable videoFile on Update.
-  // This assumes we might not send a new video file.
   updateRecord(id: number, dto: Partial<CreateWeighingDto> & { videoFile?: File }): Observable<void> {
+    const formData = this.createFormData(dto as CreateWeighingDto);
+    // Optional for update
+    if (dto.videoFile) {
+      formData.append('videoFile', dto.videoFile);
+    }
+    return this.http.put<void>(`${this.API_URL}/${id}`, formData);
+  }
+
+  deleteRecord(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${id}`);
+  }
+
+  private createFormData(dto: CreateWeighingDto): FormData {
     const formData = new FormData();
     if (dto.houseId) formData.append('houseId', dto.houseId.toString());
     if (dto.personnelId) formData.append('personnelId', dto.personnelId.toString());
@@ -41,14 +46,14 @@ export class WeighingService {
     if (dto.weightGrams) formData.append('weightGrams', dto.weightGrams.toString());
     if (dto.isMusicPlayed !== undefined) formData.append('isMusicPlayed', String(dto.isMusicPlayed));
 
-    if (dto.videoFile) {
-      formData.append('videoFile', dto.videoFile);
-    }
+    if (dto.birdIdentifier) formData.append('birdIdentifier', dto.birdIdentifier);
+    if (dto.temperature) formData.append('temperature', dto.temperature.toString());
+    if (dto.updateMarking !== undefined) formData.append('updateMarking', String(dto.updateMarking));
+    if (dto.symptoms) formData.append('symptoms', dto.symptoms);
+    if (dto.actions) formData.append('actions', dto.actions);
+    if (dto.vetPrescriptions) formData.append('vetPrescriptions', dto.vetPrescriptions);
+    if (dto.notes) formData.append('notes', dto.notes);
 
-    return this.http.put<void>(`${this.API_URL}/${id}`, formData);
-  }
-
-  deleteRecord(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+    return formData;
   }
 }

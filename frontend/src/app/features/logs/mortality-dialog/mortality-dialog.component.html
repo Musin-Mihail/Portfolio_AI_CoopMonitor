@@ -12,7 +12,7 @@
     </button>
   </div>
 
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-5 overflow-y-auto max-h-[70vh] pr-2">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label
@@ -83,17 +83,59 @@
       </div>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="birdIdentifier"
+          class="text-sm font-semibold text-slate-700">
+          Bird No (№ птицы)
+        </label>
+        <input
+          pInputText
+          id="birdIdentifier"
+          formControlName="birdIdentifier"
+          class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="reason"
+          class="text-sm font-semibold text-slate-700">
+          {{ "LOGS_MORTALITY.REASON" | translate }}
+        </label>
+        <input
+          pInputText
+          id="reason"
+          formControlName="reason"
+          class="w-full" />
+      </div>
+    </div>
+
     <div class="flex flex-col gap-1.5">
       <label
-        for="reason"
+        for="circumstances"
         class="text-sm font-semibold text-slate-700">
-        {{ "LOGS_MORTALITY.REASON" | translate }}
+        Circumstances (Обстоятельства)
       </label>
-      <input
-        pInputText
-        id="reason"
-        formControlName="reason"
-        class="w-full" />
+      <textarea
+        pTextarea
+        id="circumstances"
+        formControlName="circumstances"
+        rows="2"
+        class="w-full"></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label
+        for="vetComment"
+        class="text-sm font-semibold text-slate-700">
+        Vet Comment (Комментарий ветеринара)
+      </label>
+      <textarea
+        pTextarea
+        id="vetComment"
+        formControlName="vetComment"
+        rows="2"
+        class="w-full"></textarea>
     </div>
 
     <div class="flex flex-col gap-1.5">
@@ -127,7 +169,7 @@
     </div>
   </div>
 
-  <div class="flex justify-end gap-3 pt-8 mt-auto">
+  <div class="flex justify-end gap-3 pt-8 mt-auto border-t border-slate-50">
     <p-button
       [label]="'COMMON.CANCEL' | translate"
       severity="secondary"

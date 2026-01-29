@@ -8,6 +8,7 @@ import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TextareaModule } from 'primeng/textarea';
 import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { WeighingRecord } from '../../../core/models/logs.models';
@@ -26,6 +27,7 @@ import { PersonnelService } from '../../../core/services/personnel.service';
     DatePickerModule,
     CheckboxModule,
     InputNumberModule,
+    TextareaModule,
     TranslateModule,
   ],
   templateUrl: './weighing-dialog.component.html',
@@ -56,6 +58,14 @@ export class WeighingDialogComponent implements OnInit {
         date: [new Date(), Validators.required],
         weightGrams: [null, [Validators.required, Validators.min(1)]],
         isMusicPlayed: [false],
+        // New
+        birdIdentifier: [''],
+        temperature: [null],
+        updateMarking: [false],
+        symptoms: [''],
+        actions: [''],
+        vetPrescriptions: [''],
+        notes: [''],
       },
       { validators: this.fileRequiredValidator.bind(this) },
     );
@@ -72,9 +82,22 @@ export class WeighingDialogComponent implements OnInit {
         date: new Date(this.data.date),
         weightGrams: this.data.weightGrams,
         isMusicPlayed: this.data.isMusicPlayed,
+        // New
+        birdIdentifier: this.data.birdIdentifier,
+        temperature: this.data.temperature,
+        updateMarking: this.data.updateMarking,
+        symptoms: this.data.symptoms,
+        actions: this.data.actions,
+        vetPrescriptions: this.data.vetPrescriptions,
+        notes: this.data.notes,
       });
       this.form.updateValueAndValidity();
     }
+  }
+
+  toggleCheckbox(controlName: string) {
+    const val = this.form.get(controlName)?.value;
+    this.form.get(controlName)?.setValue(!val);
   }
 
   onFileSelected(event: any) {

@@ -40,14 +40,13 @@ public class MarkingController : ControllerBase
 
         return Ok(records.Select(r => new MarkingRecordDto(
             r.Id, r.HouseId, r.House?.Name, r.PersonnelId, r.Personnel?.FullName,
-            r.Date, r.BirdAgeDays, r.BirdIdentifier, r.MarkingType, r.Color, r.RingNumber, r.AttachmentUrl, r.CreatedAt
+            r.Date, r.BirdAgeDays, r.BirdIdentifier, r.MarkingType, r.Color, r.RingNumber, r.Notes, r.AttachmentUrl, r.CreatedAt
         )));
     }
 
     [HttpPost]
     public async Task<ActionResult<MarkingRecordDto>> CreateRecord([FromForm] CreateMarkingDto dto, [FromForm] IFormFile? photoFile)
     {
-        // Валидация протокола
         if ((dto.BirdAgeDays < 14 && dto.MarkingType != "PaintRing") || (dto.BirdAgeDays >= 14 && dto.MarkingType != "TapeNumber"))
             return BadRequest($"Invalid marking type '{dto.MarkingType}' for age {dto.BirdAgeDays}.");
 
@@ -55,7 +54,6 @@ public class MarkingController : ControllerBase
         if (photoFile != null && photoFile.Length > 0)
         {
             string bucket = "user-uploads";
-            // Формируем имя файла: user-uploads/YYYY-MM-DD/marking_HouseID_TIMESTAMP.ext
             var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
             string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/marking_House{dto.HouseId}_{timestamp}{Path.GetExtension(photoFile.FileName)}";
 
@@ -74,6 +72,7 @@ public class MarkingController : ControllerBase
             MarkingType = dto.MarkingType,
             Color = dto.Color,
             RingNumber = dto.RingNumber,
+            Notes = dto.Notes,
             AttachmentUrl = attachmentUrl
         };
 
@@ -85,18 +84,16 @@ public class MarkingController : ControllerBase
 
         return Ok(new MarkingRecordDto(
             record.Id, record.HouseId, record.House?.Name, record.PersonnelId, record.Personnel?.FullName,
-            record.Date, record.BirdAgeDays, record.BirdIdentifier, record.MarkingType, record.Color, record.RingNumber, record.AttachmentUrl, record.CreatedAt
+            record.Date, record.BirdAgeDays, record.BirdIdentifier, record.MarkingType, record.Color, record.RingNumber, record.Notes, record.AttachmentUrl, record.CreatedAt
         ));
     }
 
-    // НОВЫЙ МЕТОД: Обновление
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateRecord(int id, [FromForm] CreateMarkingDto dto, [FromForm] IFormFile? photoFile)
     {
         var record = await _context.MarkingRecords.FindAsync(id);
         if (record == null) return NotFound();
 
-        // Протокол
         if ((dto.BirdAgeDays < 14 && dto.MarkingType != "PaintRing") || (dto.BirdAgeDays >= 14 && dto.MarkingType != "TapeNumber"))
             return BadRequest($"Invalid marking type '{dto.MarkingType}' for age {dto.BirdAgeDays}.");
 
@@ -119,6 +116,7 @@ public class MarkingController : ControllerBase
         record.MarkingType = dto.MarkingType;
         record.Color = dto.Color;
         record.RingNumber = dto.RingNumber;
+        record.Notes = dto.Notes;
 
         await _context.SaveChangesAsync();
         return NoContent();

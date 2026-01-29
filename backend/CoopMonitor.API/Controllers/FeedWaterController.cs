@@ -50,6 +50,9 @@ public class FeedWaterController : ControllerBase
             r.Feed?.Name,
             r.FeedQuantityKg,
             r.WaterQuantityLiters,
+            r.BirdIdentifier,
+            r.Medicine,
+            r.Comments,
             r.CreatedAt
         )));
     }
@@ -76,6 +79,9 @@ public class FeedWaterController : ControllerBase
             r.Feed?.Name,
             r.FeedQuantityKg,
             r.WaterQuantityLiters,
+            r.BirdIdentifier,
+            r.Medicine,
+            r.Comments,
             r.CreatedAt
         );
     }
@@ -90,7 +96,10 @@ public class FeedWaterController : ControllerBase
             Date = dto.Date,
             FeedId = dto.FeedId,
             FeedQuantityKg = dto.FeedQuantityKg,
-            WaterQuantityLiters = dto.WaterQuantityLiters
+            WaterQuantityLiters = dto.WaterQuantityLiters,
+            BirdIdentifier = dto.BirdIdentifier,
+            Medicine = dto.Medicine,
+            Comments = dto.Comments
         };
 
         _context.FeedWaterRecords.Add(record);
@@ -111,6 +120,9 @@ public class FeedWaterController : ControllerBase
             record.Feed?.Name,
             record.FeedQuantityKg,
             record.WaterQuantityLiters,
+            record.BirdIdentifier,
+            record.Medicine,
+            record.Comments,
             record.CreatedAt
         ));
     }
@@ -127,6 +139,9 @@ public class FeedWaterController : ControllerBase
         record.FeedId = dto.FeedId;
         record.FeedQuantityKg = dto.FeedQuantityKg;
         record.WaterQuantityLiters = dto.WaterQuantityLiters;
+        record.BirdIdentifier = dto.BirdIdentifier;
+        record.Medicine = dto.Medicine;
+        record.Comments = dto.Comments;
 
         await _context.SaveChangesAsync();
         return NoContent();

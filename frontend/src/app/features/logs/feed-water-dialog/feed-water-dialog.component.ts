@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { TextareaModule } from 'primeng/textarea';
 import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel, Feed } from '../../../core/models/master-data.models';
 import { FeedWaterRecord } from '../../../core/models/logs.models';
@@ -23,6 +24,7 @@ import { FeedsService } from '../../../core/services/feeds.service';
     ButtonModule,
     SelectModule,
     DatePickerModule,
+    TextareaModule,
     TranslateModule,
   ],
   templateUrl: './feed-water-dialog.component.html',
@@ -45,7 +47,6 @@ export class FeedWaterDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    // Changed to use Translation Keys from LOGS_FEED_WATER
     this.title = this.data ? 'LOGS_FEED_WATER.DIALOG_TITLE_EDIT' : 'LOGS_FEED_WATER.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({
@@ -55,6 +56,10 @@ export class FeedWaterDialogComponent implements OnInit {
       feedId: [null],
       feedQuantityKg: [0, [Validators.required, Validators.min(0)]],
       waterQuantityLiters: [0, [Validators.required, Validators.min(0)]],
+      // New
+      birdIdentifier: [''],
+      medicine: [''],
+      comments: [''],
     });
   }
 
@@ -71,6 +76,9 @@ export class FeedWaterDialogComponent implements OnInit {
         feedId: this.data.feedId,
         feedQuantityKg: this.data.feedQuantityKg,
         waterQuantityLiters: this.data.waterQuantityLiters,
+        birdIdentifier: this.data.birdIdentifier,
+        medicine: this.data.medicine,
+        comments: this.data.comments,
       });
     }
   }

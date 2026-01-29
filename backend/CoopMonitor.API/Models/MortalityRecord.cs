@@ -15,9 +15,6 @@ public class MortalityRecord
     [ForeignKey(nameof(HouseId))]
     public House? House { get; set; }
 
-    /// <summary>
-    /// Ответственный сотрудник (из справочника Personnel)
-    /// </summary>
     public int? PersonnelId { get; set; }
 
     [ForeignKey(nameof(PersonnelId))]
@@ -26,18 +23,23 @@ public class MortalityRecord
     [Required]
     public DateTime Date { get; set; }
 
-    /// <summary>
-    /// Количество павших голов
-    /// </summary>
     [Required]
     public int Quantity { get; set; }
 
     [MaxLength(200)]
     public string? Reason { get; set; }
 
-    /// <summary>
-    /// Ссылка на фото тушки/доказательства (путь в MinIO: user-uploads/...)
-    /// </summary>
+    // --- New Fields from CSV ---
+    [MaxLength(50)]
+    public string? BirdIdentifier { get; set; } // № птицы
+
+    [MaxLength(500)]
+    public string? Circumstances { get; set; } // Обстоятельства
+
+    [MaxLength(500)]
+    public string? VetComment { get; set; } // Комментарий ветеринара
+    // ---------------------------
+
     [MaxLength(500)]
     public string? AttachmentUrl { get; set; }
 

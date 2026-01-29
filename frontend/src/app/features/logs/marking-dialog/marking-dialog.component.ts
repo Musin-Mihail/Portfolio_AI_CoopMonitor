@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { TextareaModule } from 'primeng/textarea';
 import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { MarkingRecord } from '../../../core/models/logs.models';
@@ -22,6 +23,7 @@ import { PersonnelService } from '../../../core/services/personnel.service';
     ButtonModule,
     SelectModule,
     DatePickerModule,
+    TextareaModule,
     TranslateModule,
   ],
   templateUrl: './marking-dialog.component.html',
@@ -55,6 +57,7 @@ export class MarkingDialogComponent implements OnInit {
       birdIdentifier: [''],
       color: [''],
       ringNumber: [''],
+      notes: [''],
     });
   }
 
@@ -71,8 +74,8 @@ export class MarkingDialogComponent implements OnInit {
         birdIdentifier: this.data.birdIdentifier,
         color: this.data.color,
         ringNumber: this.data.ringNumber,
+        notes: this.data.notes,
       });
-      // Update age logic on init
       this.onAgeChange();
     }
   }
@@ -98,7 +101,6 @@ export class MarkingDialogComponent implements OnInit {
         ...this.form.value,
         markingType: markingType,
         photoFile: this.selectedFile,
-        // Ensure date is ISO
         date: this.form.value.date instanceof Date ? this.form.value.date.toISOString() : this.form.value.date,
       };
       this.ref.close(result);

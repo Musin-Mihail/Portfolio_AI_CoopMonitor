@@ -42,6 +42,7 @@ export class MarkingService {
     formData.append('markingType', dto.markingType);
     if (dto.color) formData.append('color', dto.color);
     if (dto.ringNumber) formData.append('ringNumber', dto.ringNumber);
+    if (dto.notes) formData.append('notes', dto.notes);
 
     if (dto.photoFile) {
       formData.append('photoFile', dto.photoFile);

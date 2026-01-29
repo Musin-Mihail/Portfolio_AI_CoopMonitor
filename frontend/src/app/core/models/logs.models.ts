@@ -7,6 +7,11 @@ export interface MortalityRecord {
   date: string;
   quantity: number;
   reason?: string;
+  // New
+  birdIdentifier?: string;
+  circumstances?: string;
+  vetComment?: string;
+  // ---
   attachmentUrl?: string;
   createdAt: string;
 }
@@ -17,6 +22,11 @@ export interface CreateMortalityDto {
   date: string;
   quantity: number;
   reason?: string;
+  // New
+  birdIdentifier?: string;
+  circumstances?: string;
+  vetComment?: string;
+  // ---
   attachmentUrl?: string;
 }
 
@@ -31,6 +41,11 @@ export interface FeedWaterRecord {
   feedName?: string;
   feedQuantityKg: number;
   waterQuantityLiters: number;
+  // New
+  birdIdentifier?: string;
+  medicine?: string;
+  comments?: string;
+  // ---
   createdAt: string;
 }
 
@@ -41,6 +56,10 @@ export interface CreateFeedWaterDto {
   feedId?: number;
   feedQuantityKg: number;
   waterQuantityLiters: number;
+  // New
+  birdIdentifier?: string;
+  medicine?: string;
+  comments?: string;
 }
 
 export interface DiseaseRecord {
@@ -85,6 +104,15 @@ export interface WeighingRecord {
   weightGrams: number;
   isMusicPlayed: boolean;
   videoUrl: string;
+  // New
+  birdIdentifier?: string;
+  temperature?: number;
+  updateMarking: boolean;
+  symptoms?: string;
+  actions?: string;
+  vetPrescriptions?: string;
+  notes?: string;
+  // ---
   createdAt: string;
 }
 
@@ -94,6 +122,15 @@ export interface CreateWeighingDto {
   date: string;
   weightGrams: number;
   isMusicPlayed: boolean;
+  // New
+  birdIdentifier?: string;
+  temperature?: number;
+  updateMarking: boolean;
+  symptoms?: string;
+  actions?: string;
+  vetPrescriptions?: string;
+  notes?: string;
+  // ---
   videoFile: File;
 }
 
@@ -111,6 +148,7 @@ export interface MarkingRecord {
   markingType: string;
   color?: string;
   ringNumber?: string;
+  notes?: string; // New
   attachmentUrl?: string;
   createdAt: string;
 }
@@ -124,5 +162,6 @@ export interface CreateMarkingDto {
   markingType: string;
   color?: string;
   ringNumber?: string;
+  notes?: string; // New
   photoFile?: File;
 }

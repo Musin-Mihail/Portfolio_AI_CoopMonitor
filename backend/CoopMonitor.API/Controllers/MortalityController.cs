@@ -47,6 +47,9 @@ public class MortalityController : ControllerBase
             m.Date,
             m.Quantity,
             m.Reason,
+            m.BirdIdentifier,
+            m.Circumstances,
+            m.VetComment,
             m.AttachmentUrl,
             m.CreatedAt
         )));
@@ -71,6 +74,9 @@ public class MortalityController : ControllerBase
             m.Date,
             m.Quantity,
             m.Reason,
+            m.BirdIdentifier,
+            m.Circumstances,
+            m.VetComment,
             m.AttachmentUrl,
             m.CreatedAt
         );
@@ -86,13 +92,15 @@ public class MortalityController : ControllerBase
             Date = dto.Date,
             Quantity = dto.Quantity,
             Reason = dto.Reason,
+            BirdIdentifier = dto.BirdIdentifier,
+            Circumstances = dto.Circumstances,
+            VetComment = dto.VetComment,
             AttachmentUrl = dto.AttachmentUrl
         };
 
         _context.MortalityRecords.Add(record);
         await _context.SaveChangesAsync();
 
-        // Подгружаем навигационные свойства для ответа
         await _context.Entry(record).Reference(r => r.House).LoadAsync();
         await _context.Entry(record).Reference(r => r.Personnel).LoadAsync();
 
@@ -105,6 +113,9 @@ public class MortalityController : ControllerBase
             record.Date,
             record.Quantity,
             record.Reason,
+            record.BirdIdentifier,
+            record.Circumstances,
+            record.VetComment,
             record.AttachmentUrl,
             record.CreatedAt
         ));
@@ -121,6 +132,9 @@ public class MortalityController : ControllerBase
         record.Date = dto.Date;
         record.Quantity = dto.Quantity;
         record.Reason = dto.Reason;
+        record.BirdIdentifier = dto.BirdIdentifier;
+        record.Circumstances = dto.Circumstances;
+        record.VetComment = dto.VetComment;
         record.AttachmentUrl = dto.AttachmentUrl;
 
         await _context.SaveChangesAsync();

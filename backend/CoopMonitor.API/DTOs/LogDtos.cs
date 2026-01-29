@@ -13,6 +13,9 @@ public record MortalityRecordDto(
     DateTime Date,
     int Quantity,
     string? Reason,
+    string? BirdIdentifier,
+    string? Circumstances,
+    string? VetComment,
     string? AttachmentUrl,
     DateTime CreatedAt
 );
@@ -23,6 +26,9 @@ public record CreateMortalityDto(
     [Required] DateTime Date,
     [Required] int Quantity,
     string? Reason,
+    string? BirdIdentifier,
+    string? Circumstances,
+    string? VetComment,
     string? AttachmentUrl
 );
 
@@ -32,6 +38,9 @@ public record UpdateMortalityDto(
     [Required] DateTime Date,
     [Required] int Quantity,
     string? Reason,
+    string? BirdIdentifier,
+    string? Circumstances,
+    string? VetComment,
     string? AttachmentUrl
 );
 
@@ -48,6 +57,9 @@ public record FeedWaterRecordDto(
     string? FeedName,
     double FeedQuantityKg,
     double WaterQuantityLiters,
+    string? BirdIdentifier,
+    string? Medicine,
+    string? Comments,
     DateTime CreatedAt
 );
 
@@ -57,7 +69,10 @@ public record CreateFeedWaterDto(
     [Required] DateTime Date,
     int? FeedId,
     double FeedQuantityKg,
-    double WaterQuantityLiters
+    double WaterQuantityLiters,
+    string? BirdIdentifier,
+    string? Medicine,
+    string? Comments
 );
 
 public record UpdateFeedWaterDto(
@@ -66,10 +81,14 @@ public record UpdateFeedWaterDto(
     [Required] DateTime Date,
     int? FeedId,
     double FeedQuantityKg,
-    double WaterQuantityLiters
+    double WaterQuantityLiters,
+    string? BirdIdentifier,
+    string? Medicine,
+    string? Comments
 );
 
-// --- Disease ---
+// --- Disease (Unchanged based on CSV instructions, assuming logic moved to FeedWater or Weighing, 
+// but keeping this distinct for backward compat or specialized logs) ---
 
 public record DiseaseRecordDto(
     int Id,

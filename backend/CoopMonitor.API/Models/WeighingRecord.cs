@@ -23,23 +23,35 @@ public class WeighingRecord
     [Required]
     public DateTime Date { get; set; }
 
-    /// <summary>
-    /// Средний вес (граммы) или вес конкретной выборки
-    /// </summary>
     [Required]
     public double WeightGrams { get; set; }
 
-    /// <summary>
-    /// Отметка о включении музыки для снижения стресса (согласно протоколу)
-    /// </summary>
     public bool IsMusicPlayed { get; set; }
 
-    /// <summary>
-    /// Ссылка на видео процесса взвешивания (Обязательно)
-    /// </summary>
     [Required]
     [MaxLength(500)]
     public required string VideoUrl { get; set; }
+
+    // --- New Fields from CSV ---
+    [MaxLength(50)]
+    public string? BirdIdentifier { get; set; } // № птицы
+
+    public double? Temperature { get; set; } // Температура
+
+    public bool UpdateMarking { get; set; } // Обновление маркировки (да/нет)
+
+    [MaxLength(200)]
+    public string? Symptoms { get; set; } // Симптомы заболевания
+
+    [MaxLength(500)]
+    public string? Actions { get; set; } // Действия
+
+    [MaxLength(500)]
+    public string? VetPrescriptions { get; set; } // Назначения ветеринара
+
+    [MaxLength(500)]
+    public string? Notes { get; set; } // Примечание
+    // ---------------------------
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

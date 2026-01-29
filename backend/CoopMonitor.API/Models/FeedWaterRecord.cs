@@ -23,23 +23,25 @@ public class FeedWaterRecord
     [Required]
     public DateTime Date { get; set; }
 
-    /// <summary>
-    /// Тип корма (ссылка на справочник)
-    /// </summary>
     public int? FeedId { get; set; }
 
     [ForeignKey(nameof(FeedId))]
     public Feed? Feed { get; set; }
 
-    /// <summary>
-    /// Выдано корма (кг)
-    /// </summary>
     public double FeedQuantityKg { get; set; }
 
-    /// <summary>
-    /// Потреблено воды (литры)
-    /// </summary>
     public double WaterQuantityLiters { get; set; }
+
+    // --- New Fields from CSV ---
+    [MaxLength(50)]
+    public string? BirdIdentifier { get; set; } // № птицы (для индивидуального кормления)
+
+    [MaxLength(200)]
+    public string? Medicine { get; set; } // Медицинские препараты
+
+    [MaxLength(500)]
+    public string? Comments { get; set; } // Замечания
+    // ---------------------------
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

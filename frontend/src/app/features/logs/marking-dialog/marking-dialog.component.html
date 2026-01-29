@@ -1,7 +1,7 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col p-6">
+  class="flex flex-col p-6 h-full">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
@@ -12,7 +12,7 @@
     </button>
   </div>
 
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-5 overflow-y-auto max-h-[70vh] pr-2">
     <div class="flex flex-row gap-4">
       <div class="flex-1 flex flex-col gap-2">
         <label
@@ -134,13 +134,27 @@
       <label
         for="birdIdentifier"
         class="font-medium text-slate-700">
-        {{ "LOGS_MARKING.IDENTIFIER" | translate }}
+        {{ "LOGS_MARKING.IDENTIFIER" | translate }} (№)
       </label>
       <input
         pInputText
         id="birdIdentifier"
         formControlName="birdIdentifier"
         class="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="notes"
+        class="font-medium text-slate-700">
+        Notes (Примечания)
+      </label>
+      <textarea
+        pTextarea
+        id="notes"
+        formControlName="notes"
+        rows="2"
+        class="w-full"></textarea>
     </div>
 
     <div class="flex flex-col gap-2">
@@ -166,7 +180,7 @@
     </div>
   </div>
 
-  <div class="flex justify-end gap-2 pt-8">
+  <div class="flex justify-end gap-2 pt-8 mt-auto border-t border-slate-50">
     <p-button
       [label]="'COMMON.CANCEL' | translate"
       severity="secondary"

@@ -14,14 +14,17 @@ public record WeighingRecordDto(
     double WeightGrams,
     bool IsMusicPlayed,
     string VideoUrl,
+    // New Fields
+    string? BirdIdentifier,
+    double? Temperature,
+    bool UpdateMarking,
+    string? Symptoms,
+    string? Actions,
+    string? VetPrescriptions,
+    string? Notes,
     DateTime CreatedAt
 );
 
-/// <summary>
-/// DTO для создания записи взвешивания.
-/// Используется с multipart/form-data, поэтому файл передается отдельно в контроллере,
-/// но поля описываются здесь.
-/// </summary>
 public record CreateWeighingDto
 {
     [Required] public int HouseId { get; init; }
@@ -30,7 +33,16 @@ public record CreateWeighingDto
     [Required] public double WeightGrams { get; init; }
     [Required] public bool IsMusicPlayed { get; init; }
 
-    // VideoFile передается через IFormFile в методе контроллера
+    // New Fields
+    public string? BirdIdentifier { get; init; }
+    public double? Temperature { get; init; }
+    public bool UpdateMarking { get; init; }
+    public string? Symptoms { get; init; }
+    public string? Actions { get; init; }
+    public string? VetPrescriptions { get; init; }
+    public string? Notes { get; init; }
+
+    // VideoFile passed via form-data
 }
 
 // --- Marking ---
@@ -47,6 +59,7 @@ public record MarkingRecordDto(
     string MarkingType,
     string? Color,
     string? RingNumber,
+    string? Notes, // New Field
     string? AttachmentUrl,
     DateTime CreatedAt
 );
@@ -58,14 +71,10 @@ public record CreateMarkingDto
     [Required] public DateTime Date { get; init; }
     [Required] public int BirdAgeDays { get; init; }
     public string? BirdIdentifier { get; init; }
-
-    /// <summary>
-    /// Ожидаемые значения: "PaintRing" или "TapeNumber"
-    /// </summary>
     [Required] public string MarkingType { get; init; } = string.Empty;
-
     public string? Color { get; init; }
     public string? RingNumber { get; init; }
+    public string? Notes { get; init; } // New Field
 
-    // PhotoFile передается через IFormFile
+    // PhotoFile passed via form-data
 }

@@ -1,7 +1,7 @@
 <form
   [formGroup]="form"
   (ngSubmit)="onSubmit()"
-  class="flex flex-col p-6">
+  class="flex flex-col p-6 h-full">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
     <button
@@ -11,7 +11,9 @@
       <i class="pi pi-times text-lg"></i>
     </button>
   </div>
-  <div class="flex flex-col gap-5">
+
+  <div class="flex flex-col gap-5 overflow-y-auto max-h-[70vh] pr-2">
+    <!-- Row 1 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-slate-700">{{ "COMMON.HOUSE" | translate }}</label>
@@ -35,6 +37,7 @@
       </div>
     </div>
 
+    <!-- Row 2 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-slate-700">{{ "COMMON.DATE" | translate }}</label>
@@ -46,28 +49,99 @@
           styleClass="w-full" />
       </div>
       <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Bird No (№ птицы)</label>
+        <input
+          pInputText
+          formControlName="birdIdentifier"
+          class="w-full" />
+      </div>
+    </div>
+
+    <!-- Row 3 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-slate-700">{{ "LOGS_WEIGHING.WEIGHT_G" | translate }}</label>
         <p-inputnumber
           formControlName="weightGrams"
           suffix=" g"
           styleClass="w-full" />
       </div>
-    </div>
-
-    <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-center gap-3">
-      <p-checkbox
-        formControlName="isMusicPlayed"
-        [binary]="true"
-        inputId="music" />
-      <div
-        class="flex flex-col cursor-pointer"
-        (click)="form.get('isMusicPlayed')?.setValue(!form.get('isMusicPlayed')?.value)">
-        <span class="text-sm font-bold text-slate-800">{{ "LOGS_WEIGHING.SOOTHING_MUSIC" | translate }}</span>
-        <span class="text-xs text-slate-500">{{ "LOGS_WEIGHING.MUSIC_HINT" | translate }}</span>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Temperature (°C)</label>
+        <p-inputnumber
+          formControlName="temperature"
+          mode="decimal"
+          [minFractionDigits]="1"
+          styleClass="w-full" />
       </div>
-      <i class="pi pi-music text-blue-500 ml-auto text-xl"></i>
     </div>
 
+    <!-- Checkboxes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-center gap-3">
+        <p-checkbox
+          formControlName="isMusicPlayed"
+          [binary]="true"
+          inputId="music" />
+        <div
+          class="flex flex-col cursor-pointer"
+          (click)="toggleCheckbox('isMusicPlayed')">
+          <span class="text-sm font-bold text-slate-800">{{ "LOGS_WEIGHING.SOOTHING_MUSIC" | translate }}</span>
+        </div>
+      </div>
+
+      <div class="bg-purple-50 border border-purple-100 p-3 rounded-xl flex items-center gap-3">
+        <p-checkbox
+          formControlName="updateMarking"
+          [binary]="true"
+          inputId="marking" />
+        <div
+          class="flex flex-col cursor-pointer"
+          (click)="toggleCheckbox('updateMarking')">
+          <span class="text-sm font-bold text-slate-800">Update Marking</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text Fields -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Symptoms</label>
+        <textarea
+          pTextarea
+          formControlName="symptoms"
+          rows="2"
+          class="w-full"></textarea>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">Actions</label>
+        <textarea
+          pTextarea
+          formControlName="actions"
+          rows="2"
+          class="w-full"></textarea>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-semibold text-slate-700">Vet Prescriptions</label>
+      <textarea
+        pTextarea
+        formControlName="vetPrescriptions"
+        rows="2"
+        class="w-full"></textarea>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-semibold text-slate-700">Note</label>
+      <textarea
+        pTextarea
+        formControlName="notes"
+        rows="2"
+        class="w-full"></textarea>
+    </div>
+
+    <!-- Video Upload -->
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-semibold text-slate-700">
         {{ "LOGS_WEIGHING.VIDEO_EVIDENCE" | translate }}
@@ -99,11 +173,6 @@
             }}
           </span>
         </div>
-        <div
-          *ngIf="data?.videoUrl && !selectedFile"
-          class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">
-          {{ "COMMON.MESSAGES.FILE_SAVED" | translate }}
-        </div>
         <input
           #fileInput
           type="file"
@@ -119,7 +188,7 @@
     </div>
   </div>
 
-  <div class="flex justify-end gap-3 pt-8 mt-4">
+  <div class="flex justify-end gap-3 pt-8 mt-auto border-t border-slate-50">
     <p-button
       [label]="'COMMON.CANCEL' | translate"
       severity="secondary"

@@ -40,7 +40,9 @@ public class WeighingController : ControllerBase
 
         return Ok(records.Select(r => new WeighingRecordDto(
             r.Id, r.HouseId, r.House?.Name, r.PersonnelId, r.Personnel?.FullName,
-            r.Date, r.WeightGrams, r.IsMusicPlayed, r.VideoUrl, r.CreatedAt
+            r.Date, r.WeightGrams, r.IsMusicPlayed, r.VideoUrl,
+            r.BirdIdentifier, r.Temperature, r.UpdateMarking, r.Symptoms, r.Actions, r.VetPrescriptions, r.Notes,
+            r.CreatedAt
         )));
     }
 
@@ -52,7 +54,6 @@ public class WeighingController : ControllerBase
             return BadRequest("Video evidence is mandatory.");
 
         string bucket = "user-uploads";
-        // Формируем имя файла: user-uploads/YYYY-MM-DD/weighing_HouseID_TIMESTAMP.ext
         var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
         string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/weighing_House{dto.HouseId}_{timestamp}{Path.GetExtension(videoFile.FileName)}";
 
@@ -68,23 +69,31 @@ public class WeighingController : ControllerBase
             Date = dto.Date,
             WeightGrams = dto.WeightGrams,
             IsMusicPlayed = dto.IsMusicPlayed,
-            VideoUrl = $"{bucket}/{fileName}"
+            VideoUrl = $"{bucket}/{fileName}",
+            // New Fields
+            BirdIdentifier = dto.BirdIdentifier,
+            Temperature = dto.Temperature,
+            UpdateMarking = dto.UpdateMarking,
+            Symptoms = dto.Symptoms,
+            Actions = dto.Actions,
+            VetPrescriptions = dto.VetPrescriptions,
+            Notes = dto.Notes
         };
 
         _context.WeighingRecords.Add(record);
         await _context.SaveChangesAsync();
 
-        // Load references for response
         await _context.Entry(record).Reference(r => r.House).LoadAsync();
         await _context.Entry(record).Reference(r => r.Personnel).LoadAsync();
 
         return Ok(new WeighingRecordDto(
             record.Id, record.HouseId, record.House?.Name, record.PersonnelId, record.Personnel?.FullName,
-            record.Date, record.WeightGrams, record.IsMusicPlayed, record.VideoUrl, record.CreatedAt
+            record.Date, record.WeightGrams, record.IsMusicPlayed, record.VideoUrl,
+            record.BirdIdentifier, record.Temperature, record.UpdateMarking, record.Symptoms, record.Actions, record.VetPrescriptions, record.Notes,
+            record.CreatedAt
         ));
     }
 
-    // НОВЫЙ МЕТОД: Обновление
     [HttpPut("{id}")]
     [DisableRequestSizeLimit]
     public async Task<IActionResult> UpdateRecord(int id, [FromForm] CreateWeighingDto dto, [FromForm] IFormFile? videoFile)
@@ -92,7 +101,6 @@ public class WeighingController : ControllerBase
         var record = await _context.WeighingRecords.FindAsync(id);
         if (record == null) return NotFound();
 
-        // Если передан новый файл, загружаем и обновляем ссылку
         if (videoFile != null && videoFile.Length > 0)
         {
             string bucket = "user-uploads";
@@ -111,6 +119,14 @@ public class WeighingController : ControllerBase
         record.Date = dto.Date;
         record.WeightGrams = dto.WeightGrams;
         record.IsMusicPlayed = dto.IsMusicPlayed;
+        // Update New Fields
+        record.BirdIdentifier = dto.BirdIdentifier;
+        record.Temperature = dto.Temperature;
+        record.UpdateMarking = dto.UpdateMarking;
+        record.Symptoms = dto.Symptoms;
+        record.Actions = dto.Actions;
+        record.VetPrescriptions = dto.VetPrescriptions;
+        record.Notes = dto.Notes;
 
         await _context.SaveChangesAsync();
         return NoContent();

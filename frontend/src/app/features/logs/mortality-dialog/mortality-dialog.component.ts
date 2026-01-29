@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
-import { FileUploadModule } from 'primeng/fileupload';
+import { TextareaModule } from 'primeng/textarea';
 import { TranslateModule } from '@ngx-translate/core';
 import { House, Personnel } from '../../../core/models/master-data.models';
 import { MortalityRecord } from '../../../core/models/logs.models';
@@ -24,7 +24,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
     ButtonModule,
     SelectModule,
     DatePickerModule,
-    FileUploadModule,
+    TextareaModule,
     TranslateModule,
   ],
   templateUrl: './mortality-dialog.component.html',
@@ -56,6 +56,9 @@ export class MortalityDialogComponent implements OnInit {
       date: [new Date(), Validators.required],
       quantity: [null, [Validators.required, Validators.min(1)]],
       reason: [''],
+      birdIdentifier: [''],
+      circumstances: [''],
+      vetComment: [''],
       attachmentUrl: [''],
     });
   }
@@ -71,6 +74,9 @@ export class MortalityDialogComponent implements OnInit {
         date: new Date(this.data.date),
         quantity: this.data.quantity,
         reason: this.data.reason,
+        birdIdentifier: this.data.birdIdentifier,
+        circumstances: this.data.circumstances,
+        vetComment: this.data.vetComment,
         attachmentUrl: this.data.attachmentUrl,
       });
     }
