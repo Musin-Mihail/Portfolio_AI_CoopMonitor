@@ -15,13 +15,14 @@ public record CreateUserDto(
     [Required] string UserName,
     [Required][EmailAddress] string Email,
     [Required] string Password,
-    [Required] string Role
+    [Required] string Role,
+    int? PersonnelId // Опциональная привязка при создании
 );
 
-// Добавлено DTO для обновления
 public record UpdateUserDto(
     [Required] string UserName,
     [Required][EmailAddress] string Email,
-    string? Password, // Опционально: если пустой, пароль не меняем
-    [Required] string Role
+    string? Password,
+    [Required] string Role,
+    int? PersonnelId // Возможность сменить привязку
 );

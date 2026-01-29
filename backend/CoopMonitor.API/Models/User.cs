@@ -4,6 +4,6 @@ namespace CoopMonitor.API.Models;
 
 public class User : IdentityUser
 {
-    // Дополнительные поля можно добавить здесь
-    // Например: public string? FullName { get; set; }
+    // Навигационное свойство для связи с персоналом
+    public virtual Personnel? Personnel { get; set; }
 }

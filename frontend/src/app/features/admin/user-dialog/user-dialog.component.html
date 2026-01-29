@@ -105,6 +105,36 @@
         </ng-template>
       </p-select>
     </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="personnel"
+        class="font-medium text-slate-700">
+        {{ "ADMIN_USERS.LINKED_PERSONNEL" | translate }}
+      </label>
+      <p-select
+        id="personnel"
+        formControlName="personnelId"
+        [options]="personnelOptions"
+        optionLabel="fullName"
+        optionValue="id"
+        [showClear]="true"
+        [placeholder]="'COMMON.SELECT_OPTION' | translate"
+        styleClass="w-full">
+        <ng-template
+          let-item
+          pTemplate="item">
+          <div class="flex justify-between w-full">
+            <span>{{ item.fullName }}</span>
+            <span
+              *ngIf="item.userId"
+              class="text-xs text-slate-400 ml-2">
+              (Linked)
+            </span>
+          </div>
+        </ng-template>
+      </p-select>
+    </div>
   </div>
 
   <div class="flex justify-end gap-2 pt-8">

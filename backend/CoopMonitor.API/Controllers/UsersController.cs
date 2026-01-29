@@ -38,26 +38,28 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
-        var users = await _userManager.Users.ToListAsync();
-        var userDtos = new List<UserDto>();
-
-        var personnels = await _context.Personnels
-            .Where(p => p.UserId != null)
+        // Используем Include для подгрузки связанного персонала
+        // Так как User связан с IdentityDbContext, а Personnel через CoopContext,
+        // но CoopContext наследует IdentityDbContext<User>, мы можем использовать _context.Users
+        var users = await _context.Users
+            .Include(u => u.Personnel)
+            .AsNoTracking()
             .ToListAsync();
+
+        var userDtos = new List<UserDto>();
 
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
             var mainRole = roles.FirstOrDefault() ?? "None";
-            var personnel = personnels.FirstOrDefault(p => p.UserId == user.Id);
 
             userDtos.Add(new UserDto(
                 user.Id,
                 user.UserName!,
                 user.Email,
                 mainRole,
-                personnel?.Id,
-                personnel?.FullName
+                user.Personnel?.Id,
+                user.Personnel?.FullName
             ));
         }
 
@@ -83,14 +85,28 @@ public class UsersController : ControllerBase
 
         await _userManager.AddToRoleAsync(user, dto.Role);
 
+        // Связывание с персоналом
+        string? personnelName = null;
+        if (dto.PersonnelId.HasValue)
+        {
+            var personnel = await _context.Personnels.FindAsync(dto.PersonnelId.Value);
+            if (personnel != null)
+            {
+                // Если у персонала уже был пользователь, нужно решить конфликт.
+                // В данной логике просто перезаписываем.
+                personnel.UserId = user.Id;
+                personnelName = personnel.FullName;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         // Audit
         var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         await _auditService.LogAsync(adminId, User.Identity?.Name, "CreateUser", user.UserName, $"Role: {dto.Role}");
 
-        return Ok(new UserDto(user.Id, user.UserName, user.Email, dto.Role, null, null));
+        return Ok(new UserDto(user.Id, user.UserName, user.Email, dto.Role, dto.PersonnelId, personnelName));
     }
 
-    // НОВЫЙ МЕТОД: Редактирование пользователя
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(string id, UpdateUserDto dto)
     {
@@ -126,6 +142,42 @@ public class UsersController : ControllerBase
             await _userManager.AddToRoleAsync(user, dto.Role);
         }
 
+        // Обновление связи с персоналом
+        // 1. Найти текущую связь и обнулить, если она отличается
+        var currentLinkedPersonnel = await _context.Personnels.FirstOrDefaultAsync(p => p.UserId == user.Id);
+
+        if (dto.PersonnelId.HasValue)
+        {
+            // Если выбран новый персонал (или тот же самый)
+            if (currentLinkedPersonnel?.Id != dto.PersonnelId.Value)
+            {
+                // Обнуляем старого (если был)
+                if (currentLinkedPersonnel != null)
+                {
+                    currentLinkedPersonnel.UserId = null;
+                }
+
+                // Находим нового и привязываем
+                var newPersonnel = await _context.Personnels.FindAsync(dto.PersonnelId.Value);
+                if (newPersonnel != null)
+                {
+                    // Если этот сотрудник был привязан к другому юзеру, можно либо выдать ошибку, либо перезаписать.
+                    // Перезаписываем (отбираем аккаунт).
+                    newPersonnel.UserId = user.Id;
+                }
+            }
+        }
+        else
+        {
+            // Если пришел null, значит отвязываем текущего
+            if (currentLinkedPersonnel != null)
+            {
+                currentLinkedPersonnel.UserId = null;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
         var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         await _auditService.LogAsync(adminId, User.Identity?.Name, "UpdateUser", user.UserName);
 
@@ -141,12 +193,20 @@ public class UsersController : ControllerBase
         if (User.Identity?.Name == user.UserName)
             return BadRequest("Cannot delete your own account.");
 
-        // Отвязываем персонал
+        // Отвязываем персонал (SetNull в БД сделает это, но для надежности можно и явно)
+        // EF Core Foreign Key OnDelete.SetNull обработает это, но мы используем IdentityManager для удаления User,
+        // поэтому лучше явно разорвать связь перед удалением, чтобы избежать конфликтов валидации.
         var personnel = await _context.Personnels.FirstOrDefaultAsync(p => p.UserId == id);
-        if (personnel != null) personnel.UserId = null;
+        if (personnel != null)
+        {
+            personnel.UserId = null;
+            await _context.SaveChangesAsync();
+        }
 
         await _userManager.DeleteAsync(user);
-        await _context.SaveChangesAsync();
+
+        // SaveChanges для Identity не нужен (он внутри Manager), но нужен для обновления Personnels если мы меняли его
+        // (уже вызвали выше).
 
         var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         await _auditService.LogAsync(adminId, User.Identity?.Name, "DeleteUser", user.UserName);

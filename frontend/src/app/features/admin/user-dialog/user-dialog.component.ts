@@ -8,6 +8,8 @@ import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserDto } from '../../../core/models/admin.models';
+import { PersonnelService } from '../../../core/services/personnel.service';
+import { Personnel } from '../../../core/models/master-data.models';
 
 @Component({
   selector: 'app-user-dialog',
@@ -26,16 +28,18 @@ import { UserDto } from '../../../core/models/admin.models';
 })
 export class UserDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
+  private personnelService = inject(PersonnelService);
   public ref = inject(DynamicDialogRef);
   public config = inject(DynamicDialogConfig);
 
   form: FormGroup;
-  // Use translation keys for labels, but keep backend values (Admin, User, Viewer)
   roles = [
     { label: 'ADMIN_USERS.ROLES.ADMIN', value: 'Admin' },
     { label: 'ADMIN_USERS.ROLES.USER', value: 'User' },
     { label: 'ADMIN_USERS.ROLES.VIEWER', value: 'Viewer' },
   ];
+
+  personnelOptions: Personnel[] = [];
   data: UserDto | null = null;
   title: string = '';
 
@@ -50,11 +54,21 @@ export class UserDialogComponent implements OnInit {
       email: [this.data?.email || '', [Validators.required, Validators.email]],
       password: ['', passwordValidators],
       role: [this.data?.role || 'User', Validators.required],
+      personnelId: [this.data?.personnelId || null],
     });
   }
 
   ngOnInit() {
-    // Additional logic if needed
+    this.loadPersonnel();
+  }
+
+  loadPersonnel() {
+    this.personnelService.getPersonnels().subscribe((data) => {
+      // Фильтруем список: показываем только тех сотрудников, которые:
+      // 1. Не имеют привязанного UserId
+      // 2. ИЛИ привязаны к текущему редактируемому пользователю
+      this.personnelOptions = data.filter((p) => !p.userId || (this.data && p.userId === this.data.id));
+    });
   }
 
   onSubmit(): void {

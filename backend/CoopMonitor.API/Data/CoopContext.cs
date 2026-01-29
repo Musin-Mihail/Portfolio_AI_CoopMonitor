@@ -55,6 +55,13 @@ public class CoopContext : IdentityDbContext<User>
             entity.HasKey(e => e.Id);
             entity.Property(e => e.FullName).IsRequired().HasMaxLength(150);
             entity.Property(e => e.UserId).IsRequired(false);
+
+            // Настройка связи One-to-One: Personnel зависит от User
+            entity.HasOne(e => e.User)
+                  .WithOne(u => u.Personnel)
+                  .HasForeignKey<Personnel>(e => e.UserId)
+                  .OnDelete(DeleteBehavior.SetNull); // При удалении пользователя связь обнуляется
+
             entity.HasIndex(e => e.UserId).IsUnique().HasFilter("[UserId] IS NOT NULL");
         });
 
@@ -89,7 +96,6 @@ public class CoopContext : IdentityDbContext<User>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Date).IsRequired();
-
             entity.HasOne(e => e.House)
                   .WithMany()
                   .HasForeignKey(e => e.HouseId)
@@ -132,14 +138,14 @@ public class CoopContext : IdentityDbContext<User>
             entity.Property(e => e.VideoUrl).IsRequired().HasMaxLength(500);
 
             entity.HasOne(e => e.House)
-                .WithMany()
-                .HasForeignKey(e => e.HouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                  .WithMany()
+                  .HasForeignKey(e => e.HouseId)
+                  .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Personnel)
-                .WithMany()
-                .HasForeignKey(e => e.PersonnelId)
-                .OnDelete(DeleteBehavior.SetNull);
+                  .WithMany()
+                  .HasForeignKey(e => e.PersonnelId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // MarkingRecord Configuration
@@ -150,14 +156,14 @@ public class CoopContext : IdentityDbContext<User>
             entity.Property(e => e.BirdAgeDays).IsRequired();
 
             entity.HasOne(e => e.House)
-                .WithMany()
-                .HasForeignKey(e => e.HouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                  .WithMany()
+                  .HasForeignKey(e => e.HouseId)
+                  .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Personnel)
-                .WithMany()
-                .HasForeignKey(e => e.PersonnelId)
-                .OnDelete(DeleteBehavior.SetNull);
+                  .WithMany()
+                  .HasForeignKey(e => e.PersonnelId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // SensorReading Configuration
@@ -168,9 +174,9 @@ public class CoopContext : IdentityDbContext<User>
             entity.HasIndex(e => new { e.HouseId, e.Date });
 
             entity.HasOne(e => e.House)
-                .WithMany()
-                .HasForeignKey(e => e.HouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                  .WithMany()
+                  .HasForeignKey(e => e.HouseId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         // AudioEvent Configuration
@@ -181,9 +187,9 @@ public class CoopContext : IdentityDbContext<User>
             entity.HasIndex(e => new { e.HouseId, e.Timestamp });
 
             entity.HasOne(e => e.House)
-                .WithMany()
-                .HasForeignKey(e => e.HouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                  .WithMany()
+                  .HasForeignKey(e => e.HouseId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         // ReportMetadata Configuration
@@ -194,9 +200,9 @@ public class CoopContext : IdentityDbContext<User>
             entity.Property(e => e.FilePath).IsRequired();
 
             entity.HasOne(e => e.House)
-                .WithMany()
-                .HasForeignKey(e => e.HouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                  .WithMany()
+                  .HasForeignKey(e => e.HouseId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         // AuditLog Configuration
@@ -204,7 +210,7 @@ public class CoopContext : IdentityDbContext<User>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Action).IsRequired().HasMaxLength(50);
-            entity.HasIndex(e => e.Timestamp); // Индекс для сортировки по времени
+            entity.HasIndex(e => e.Timestamp);
         });
 
         // SyncUsage Configuration
@@ -212,7 +218,7 @@ public class CoopContext : IdentityDbContext<User>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Date).IsRequired();
-            entity.HasIndex(e => e.Date).IsUnique(); // Одна запись на день
+            entity.HasIndex(e => e.Date).IsUnique();
         });
     }
 }

@@ -12,6 +12,7 @@ export interface CreateUserDto {
   email: string;
   password: string;
   role: string;
+  personnelId?: number;
 }
 
 export interface UpdateUserDto {
@@ -19,6 +20,7 @@ export interface UpdateUserDto {
   email: string;
   password?: string; // Optional on update
   role: string;
+  personnelId?: number;
 }
 
 export interface AuditLogDto {
