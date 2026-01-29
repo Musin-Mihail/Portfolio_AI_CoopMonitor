@@ -1,4 +1,4 @@
-<div class="flex flex-col xl:flex-row gap-10 pb-8">
+<div class="flex flex-col xl:flex-row gap-10 pb-8 bg-[#F5F6F8] min-h-screen p-6">
   <div class="flex-1 flex flex-col gap-8 min-w-0">
     <div class="flex justify-between items-center">
       <h1 class="text-[32px] font-bold text-[#1A1C21] tracking-tight m-0 font-serif">
@@ -20,53 +20,84 @@
     <div
       *ngIf="!selectedHouseId"
       class="flex flex-col gap-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <div
           *ngFor="let summary of allSummaries"
-          class="bg-[#F8F9FB] rounded-[24px] p-6 border border-transparent hover:border-slate-300 cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md"
+          class="flex flex-col gap-3 cursor-pointer group"
           (click)="selectedHouseId = summary.houseId; onHouseChange()">
-          <div class="flex justify-between items-center mb-6">
-            <div class="font-bold text-lg text-[#1A1C21]">{{ summary.houseName }}</div>
-            <i class="pi pi-arrow-right text-slate-400"></i>
+          <div class="font-semibold text-xl text-[#1A1C21] ml-1 group-hover:text-blue-600 transition-colors">
+            {{ summary.houseName }}
           </div>
 
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <div class="text-[11px] text-slate-400 mb-1.5 font-medium">{{ "DASHBOARD.TEMP" | translate }}</div>
-              <div class="text-[28px] font-bold text-[#4CAF50] leading-none">
-                {{ summary.currentClimate.temperature | number: "1.1-1" }}
-                <span class="text-lg align-top">°C</span>
+          <div
+            class="bg-white rounded-[20px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-transparent group-hover:border-blue-200 group-hover:shadow-md transition-all duration-300">
+            <div class="grid grid-cols-4 gap-2 mb-4">
+              <div class="flex flex-col">
+                <span class="text-sm text-gray-400 font-medium mb-1">T</span>
+                <div class="text-[22px] font-bold text-[#22C55E] whitespace-nowrap">
+                  {{ summary.currentClimate.temperature | number: "1.1-1" }}
+                  <span class="text-lg">°C</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col">
+                <span class="text-sm text-gray-400 font-medium mb-1">CO₂</span>
+                <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
+                  {{ summary.currentClimate.co2 ? (summary.currentClimate.co2 | number: "1.0-0") : "-/-" }}
+                  <span class="text-sm font-normal text-gray-500">ppm</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col">
+                <span class="text-sm text-gray-400 font-medium mb-1">NH₃</span>
+                <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
+                  {{ summary.currentClimate.nh3 | number: "1.0-0" }}
+                  <span class="text-sm font-normal text-gray-500">ppm</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col">
+                <span class="text-sm text-gray-400 font-medium mb-1">H %</span>
+                <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
+                  {{ summary.currentClimate.humidity | number: "1.0-0" }}
+                  <span class="text-lg font-normal">%</span>
+                </div>
               </div>
             </div>
-            <div>
-              <div class="text-[11px] text-slate-400 mb-1.5 font-medium">Humidity</div>
-              <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
-                {{ summary.currentClimate.humidity | number: "1.0-0" }}
-                <span class="text-sm font-normal text-slate-400 align-middle ml-0.5">%</span>
+
+            <div class="h-px bg-slate-100 w-full mb-4"></div>
+
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-500">Time in range</span>
+                <span class="text-lg font-medium text-[#1A1C21]">{{ summary.currentClimate.timeInRangePercent }}%</span>
+              </div>
+              <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-[#3B82F6] rounded-full"
+                  [style.width.%]="summary.currentClimate.timeInRangePercent"></div>
               </div>
             </div>
-          </div>
 
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="text-[11px] text-slate-400 mb-1 font-medium">CO²</div>
-              <div class="text-lg font-bold text-slate-700">{{ summary.currentClimate.co2 | number: "1.0-0" }} ppm</div>
-            </div>
-            <div>
-              <div class="text-[11px] text-slate-400 mb-1 font-medium">NH3</div>
-              <div class="text-lg font-bold text-slate-700">{{ summary.currentClimate.nh3 | number: "1.1-1" }} ppm</div>
-            </div>
-          </div>
-
-          <div class="mt-4 pt-4 border-t border-slate-100">
-            <div class="text-[10px] text-slate-400">
-              Last Update: {{ summary.currentClimate.lastUpdate | date: "mediumTime" }}
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <div class="text-[11px] text-gray-400 mb-1">Загрузка партии</div>
+                <div class="text-sm font-medium text-[#1A1C21]">12.01.2026</div>
+              </div>
+              <div>
+                <div class="text-[11px] text-gray-400 mb-1">Количество голов</div>
+                <div class="text-sm font-medium text-[#1A1C21]">203 шт</div>
+              </div>
+              <div>
+                <div class="text-[11px] text-gray-400 mb-1">Отгрузка партии</div>
+                <div class="text-sm font-medium text-[#1A1C21]">14.02.2026</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-[24px] p-6 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+      <div class="bg-white rounded-[24px] p-6 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] mt-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div class="flex items-center gap-2">
             <i class="pi pi-chart-line text-blue-500"></i>
@@ -74,13 +105,11 @@
           </div>
 
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-100">
-            <i class="pi pi-calendar text-slate-400 text-xs"></i>
             <button
               (click)="setTimeRange('day')"
               [class.text-blue-600]="selectedTimeRange === 'day'"
               [class.font-bold]="selectedTimeRange === 'day'"
-              [class.text-slate-500]="selectedTimeRange !== 'day'"
-              class="text-xs transition-colors">
+              class="text-xs transition-colors px-2">
               24 Hours
             </button>
             <span class="text-slate-300">|</span>
@@ -88,8 +117,7 @@
               (click)="setTimeRange('week')"
               [class.text-blue-600]="selectedTimeRange === 'week'"
               [class.font-bold]="selectedTimeRange === 'week'"
-              [class.text-slate-500]="selectedTimeRange !== 'week'"
-              class="text-xs transition-colors">
+              class="text-xs transition-colors px-2">
               7 Days
             </button>
           </div>
@@ -102,9 +130,8 @@
             [class.shadow-sm]="selectedSensorType === 'temperature'"
             [class.text-slate-800]="selectedSensorType === 'temperature'"
             [class.font-bold]="selectedSensorType === 'temperature'"
-            [class.text-slate-400]="selectedSensorType !== 'temperature'"
-            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all">
-            Temperature (°C)
+            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
+            Temperature
           </button>
           <button
             (click)="setSensorType('humidity')"
@@ -112,9 +139,8 @@
             [class.shadow-sm]="selectedSensorType === 'humidity'"
             [class.text-slate-800]="selectedSensorType === 'humidity'"
             [class.font-bold]="selectedSensorType === 'humidity'"
-            [class.text-slate-400]="selectedSensorType !== 'humidity'"
-            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all">
-            Humidity (%)
+            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
+            Humidity
           </button>
           <button
             (click)="setSensorType('co2')"
@@ -122,9 +148,8 @@
             [class.shadow-sm]="selectedSensorType === 'co2'"
             [class.text-slate-800]="selectedSensorType === 'co2'"
             [class.font-bold]="selectedSensorType === 'co2'"
-            [class.text-slate-400]="selectedSensorType !== 'co2'"
-            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all">
-            CO² (ppm)
+            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
+            CO²
           </button>
           <button
             (click)="setSensorType('nh3')"
@@ -132,9 +157,8 @@
             [class.shadow-sm]="selectedSensorType === 'nh3'"
             [class.text-slate-800]="selectedSensorType === 'nh3'"
             [class.font-bold]="selectedSensorType === 'nh3'"
-            [class.text-slate-400]="selectedSensorType !== 'nh3'"
-            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all">
-            NH³ (ppm)
+            class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
+            NH³
           </button>
         </div>
 
@@ -147,13 +171,13 @@
     <div
       class="flex flex-col gap-6"
       *ngIf="selectedHouseId && currentSummary">
-      <div class="bg-[#F8F9FB] rounded-[24px] p-6 border border-slate-200">
+      <div class="bg-white rounded-[24px] p-6 border border-slate-200 shadow-sm">
         <div class="font-bold text-lg text-[#1A1C21] mb-6">{{ currentSummary.houseName }} - Current Status</div>
 
         <div class="flex justify-between items-start mb-8 px-4">
           <div class="text-center">
-            <div class="text-sm text-slate-400 mb-2 font-medium">{{ "DASHBOARD.TEMP" | translate }}</div>
-            <div class="text-4xl font-bold text-[#4CAF50]">
+            <div class="text-sm text-slate-400 mb-2 font-medium">T</div>
+            <div class="text-4xl font-bold text-[#22C55E]">
               {{ currentSummary.currentClimate.temperature | number: "1.1-1" }}°C
             </div>
           </div>
@@ -167,12 +191,14 @@
             <div class="text-sm text-slate-400 mb-2 font-medium">CO²</div>
             <div class="text-4xl font-bold text-[#1A1C21]">
               {{ currentSummary.currentClimate.co2 | number: "1.0-0" }}
+              <span class="text-lg text-gray-400 font-normal">ppm</span>
             </div>
           </div>
           <div class="text-center">
             <div class="text-sm text-slate-400 mb-2 font-medium">NH3</div>
             <div class="text-4xl font-bold text-[#1A1C21]">
               {{ currentSummary.currentClimate.nh3 | number: "1.1-1" }}
+              <span class="text-lg text-gray-400 font-normal">ppm</span>
             </div>
           </div>
         </div>
@@ -182,7 +208,7 @@
             <span>Climate Stability (24h)</span>
             <span class="text-slate-800 font-bold">{{ currentSummary.currentClimate.timeInRangePercent }}%</span>
           </div>
-          <div class="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+          <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
             <div
               class="h-full bg-[#3B82F6] rounded-full"
               [style.width.%]="currentSummary.currentClimate.timeInRangePercent"></div>
