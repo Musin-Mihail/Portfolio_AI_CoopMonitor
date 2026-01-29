@@ -14,34 +14,27 @@ public class CoopContext : IdentityDbContext<User>
     public DbSet<Personnel> Personnels { get; set; }
     public DbSet<Feed> Feeds { get; set; }
 
-    // Журналы (Logs)
     public DbSet<MortalityRecord> MortalityRecords { get; set; }
     public DbSet<FeedWaterRecord> FeedWaterRecords { get; set; }
     public DbSet<DiseaseRecord> DiseaseRecords { get; set; }
-    public DbSet<BatchInfoRecord> BatchInfoRecords { get; set; } // NEW
+    public DbSet<BatchInfoRecord> BatchInfoRecords { get; set; }
 
-    // Сложные журналы
     public DbSet<WeighingRecord> WeighingRecords { get; set; }
     public DbSet<MarkingRecord> MarkingRecords { get; set; }
 
-    // Телеметрия и События
     public DbSet<SensorReading> SensorReadings { get; set; }
     public DbSet<AudioEvent> AudioEvents { get; set; }
 
-    // Отчеты
     public DbSet<ReportMetadata> Reports { get; set; }
 
-    // Аудит
     public DbSet<AuditLog> AuditLogs { get; set; }
 
-    // Синхронизация
     public DbSet<SyncUsage> SyncUsages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // House Configuration
         modelBuilder.Entity<House>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -50,23 +43,20 @@ public class CoopContext : IdentityDbContext<User>
             entity.Property(e => e.Capacity).IsRequired();
         });
 
-        // Personnel Configuration
         modelBuilder.Entity<Personnel>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.FullName).IsRequired().HasMaxLength(150);
             entity.Property(e => e.UserId).IsRequired(false);
 
-            // Настройка связи One-to-One: Personnel зависит от User
             entity.HasOne(e => e.User)
                   .WithOne(u => u.Personnel)
                   .HasForeignKey<Personnel>(e => e.UserId)
-                  .OnDelete(DeleteBehavior.SetNull); // При удалении пользователя связь обнуляется
+                  .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasIndex(e => e.UserId).IsUnique().HasFilter("[UserId] IS NOT NULL");
         });
 
-        // Feed Configuration
         modelBuilder.Entity<Feed>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -74,7 +64,6 @@ public class CoopContext : IdentityDbContext<User>
             entity.Property(e => e.Type).IsRequired().HasMaxLength(50);
         });
 
-        // MortalityRecord Configuration
         modelBuilder.Entity<MortalityRecord>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -92,7 +81,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // FeedWaterRecord Configuration
         modelBuilder.Entity<FeedWaterRecord>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -113,7 +101,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // DiseaseRecord Configuration
         modelBuilder.Entity<DiseaseRecord>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -131,7 +118,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // WeighingRecord Configuration
         modelBuilder.Entity<WeighingRecord>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -149,7 +135,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // MarkingRecord Configuration
         modelBuilder.Entity<MarkingRecord>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -167,7 +152,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // BatchInfoRecord Configuration (NEW)
         modelBuilder.Entity<BatchInfoRecord>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -186,7 +170,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.SetNull);
         });
 
-        // SensorReading Configuration
         modelBuilder.Entity<SensorReading>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -199,7 +182,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // AudioEvent Configuration
         modelBuilder.Entity<AudioEvent>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -212,7 +194,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // ReportMetadata Configuration
         modelBuilder.Entity<ReportMetadata>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -225,7 +206,6 @@ public class CoopContext : IdentityDbContext<User>
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // AuditLog Configuration
         modelBuilder.Entity<AuditLog>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -233,7 +213,6 @@ public class CoopContext : IdentityDbContext<User>
             entity.HasIndex(e => e.Timestamp);
         });
 
-        // SyncUsage Configuration
         modelBuilder.Entity<SyncUsage>(entity =>
         {
             entity.HasKey(e => e.Id);

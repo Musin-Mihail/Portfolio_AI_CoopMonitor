@@ -29,16 +29,14 @@ public class MortalityRecord
     [MaxLength(200)]
     public string? Reason { get; set; }
 
-    // --- New Fields from CSV ---
     [MaxLength(50)]
-    public string? BirdIdentifier { get; set; } // № птицы
+    public string? BirdIdentifier { get; set; }
 
     [MaxLength(500)]
-    public string? Circumstances { get; set; } // Обстоятельства
+    public string? Circumstances { get; set; }
 
     [MaxLength(500)]
-    public string? VetComment { get; set; } // Комментарий ветеринара
-    // ---------------------------
+    public string? VetComment { get; set; }
 
     [MaxLength(500)]
     public string? AttachmentUrl { get; set; }

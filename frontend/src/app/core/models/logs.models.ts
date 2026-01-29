@@ -7,11 +7,9 @@ export interface MortalityRecord {
   date: string;
   quantity: number;
   reason?: string;
-  // New
   birdIdentifier?: string;
   circumstances?: string;
   vetComment?: string;
-  // ---
   attachmentUrl?: string;
   createdAt: string;
 }
@@ -22,11 +20,9 @@ export interface CreateMortalityDto {
   date: string;
   quantity: number;
   reason?: string;
-  // New
   birdIdentifier?: string;
   circumstances?: string;
   vetComment?: string;
-  // ---
   attachmentUrl?: string;
 }
 
@@ -41,11 +37,9 @@ export interface FeedWaterRecord {
   feedName?: string;
   feedQuantityKg: number;
   waterQuantityLiters: number;
-  // New
   birdIdentifier?: string;
   medicine?: string;
   comments?: string;
-  // ---
   createdAt: string;
 }
 
@@ -56,7 +50,6 @@ export interface CreateFeedWaterDto {
   feedId?: number;
   feedQuantityKg: number;
   waterQuantityLiters: number;
-  // New
   birdIdentifier?: string;
   medicine?: string;
   comments?: string;
@@ -92,8 +85,6 @@ export interface FileUploadResponse {
   size: number;
 }
 
-// --- Weighing ---
-
 export interface WeighingRecord {
   id: number;
   houseId: number;
@@ -104,7 +95,6 @@ export interface WeighingRecord {
   weightGrams: number;
   isMusicPlayed: boolean;
   videoUrl: string;
-  // New
   birdIdentifier?: string;
   temperature?: number;
   updateMarking: boolean;
@@ -112,7 +102,6 @@ export interface WeighingRecord {
   actions?: string;
   vetPrescriptions?: string;
   notes?: string;
-  // ---
   createdAt: string;
 }
 
@@ -122,7 +111,6 @@ export interface CreateWeighingDto {
   date: string;
   weightGrams: number;
   isMusicPlayed: boolean;
-  // New
   birdIdentifier?: string;
   temperature?: number;
   updateMarking: boolean;
@@ -130,11 +118,8 @@ export interface CreateWeighingDto {
   actions?: string;
   vetPrescriptions?: string;
   notes?: string;
-  // ---
   videoFile: File;
 }
-
-// --- Marking ---
 
 export interface MarkingRecord {
   id: number;
@@ -148,7 +133,7 @@ export interface MarkingRecord {
   markingType: string;
   color?: string;
   ringNumber?: string;
-  notes?: string; // New
+  notes?: string;
   attachmentUrl?: string;
   createdAt: string;
 }
@@ -162,11 +147,9 @@ export interface CreateMarkingDto {
   markingType: string;
   color?: string;
   ringNumber?: string;
-  notes?: string; // New
+  notes?: string;
   photoFile?: File;
 }
-
-// --- Batch Info (New) ---
 
 export interface BatchInfoRecord {
   id: number;

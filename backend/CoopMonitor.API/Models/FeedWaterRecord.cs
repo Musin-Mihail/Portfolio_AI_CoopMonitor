@@ -32,16 +32,14 @@ public class FeedWaterRecord
 
     public double WaterQuantityLiters { get; set; }
 
-    // --- New Fields from CSV ---
     [MaxLength(50)]
-    public string? BirdIdentifier { get; set; } // № птицы (для индивидуального кормления)
+    public string? BirdIdentifier { get; set; }
 
     [MaxLength(200)]
-    public string? Medicine { get; set; } // Медицинские препараты
+    public string? Medicine { get; set; }
 
     [MaxLength(500)]
-    public string? Comments { get; set; } // Замечания
-    // ---------------------------
+    public string? Comments { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

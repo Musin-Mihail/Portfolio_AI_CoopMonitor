@@ -5,13 +5,9 @@ import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
 import { VideoArchiveComponent } from './features/video-wall/video-archive/video-archive.component';
-
-// Layouts
 import { AdminLayoutComponent } from './features/layout/admin-layout/admin-layout.component';
 import { LogsLayoutComponent } from './features/layout/logs-layout/logs-layout.component';
 import { MasterDataLayoutComponent } from './features/layout/master-data-layout/master-data-layout.component';
-
-// Features
 import { HouseListComponent } from './features/houses/house-list/house-list.component';
 import { PersonnelListComponent } from './features/personnel/personnel-list/personnel-list.component';
 import { FeedListComponent } from './features/feeds/feed-list/feed-list.component';
@@ -20,7 +16,7 @@ import { FeedWaterListComponent } from './features/logs/feed-water-list/feed-wat
 import { DiseaseListComponent } from './features/logs/disease-list/disease-list.component';
 import { WeighingListComponent } from './features/logs/weighing-list/weighing-list.component';
 import { MarkingListComponent } from './features/logs/marking-list/marking-list.component';
-import { BatchInfoListComponent } from './features/logs/batch-info-list/batch-info-list.component'; // NEW
+import { BatchInfoListComponent } from './features/logs/batch-info-list/batch-info-list.component';
 import { UserListComponent } from './features/admin/user-list/user-list.component';
 import { AuditListComponent } from './features/admin/audit-list/audit-list.component';
 import { SystemStatusComponent } from './features/settings/system-status/system-status.component';
@@ -30,13 +26,11 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    // На логине хлебные крошки обычно не нужны
   },
   {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
-    // Корневой лейбл "Главная"
     data: { breadcrumb: 'MENU.HOME' },
     children: [
       {
@@ -59,14 +53,13 @@ export const routes: Routes = [
         component: ReportsListComponent,
         data: { breadcrumb: 'MENU.REPORTS' },
       },
-      // Группа Журналы (Logs)
       {
         path: 'logs',
         component: LogsLayoutComponent,
         data: { breadcrumb: 'MENU.LOGS' },
         children: [
           { path: '', redirectTo: 'batch-info', pathMatch: 'full' },
-          { path: 'batch-info', component: BatchInfoListComponent, data: { breadcrumb: 'MENU.LOGS_BATCH_INFO' } }, // NEW
+          { path: 'batch-info', component: BatchInfoListComponent, data: { breadcrumb: 'MENU.LOGS_BATCH_INFO' } },
           { path: 'mortality', component: MortalityListComponent, data: { breadcrumb: 'MENU.LOGS_MORTALITY' } },
           { path: 'feed-water', component: FeedWaterListComponent, data: { breadcrumb: 'MENU.LOGS_FEED_WATER' } },
           { path: 'disease', component: DiseaseListComponent, data: { breadcrumb: 'MENU.LOGS_DISEASE' } },
@@ -74,7 +67,6 @@ export const routes: Routes = [
           { path: 'marking', component: MarkingListComponent, data: { breadcrumb: 'MENU.LOGS_MARKING' } },
         ],
       },
-      // Группа Справочники (Master Data)
       {
         path: 'master-data',
         component: MasterDataLayoutComponent,
@@ -86,7 +78,6 @@ export const routes: Routes = [
           { path: 'feeds', component: FeedListComponent, data: { breadcrumb: 'MENU.MD_FEEDS' } },
         ],
       },
-      // Группа Администрирование (Admin)
       {
         path: 'admin',
         component: AdminLayoutComponent,

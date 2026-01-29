@@ -32,26 +32,24 @@ public class WeighingRecord
     [MaxLength(500)]
     public required string VideoUrl { get; set; }
 
-    // --- New Fields from CSV ---
     [MaxLength(50)]
-    public string? BirdIdentifier { get; set; } // № птицы
+    public string? BirdIdentifier { get; set; }
 
-    public double? Temperature { get; set; } // Температура
+    public double? Temperature { get; set; }
 
-    public bool UpdateMarking { get; set; } // Обновление маркировки (да/нет)
+    public bool UpdateMarking { get; set; }
 
     [MaxLength(200)]
-    public string? Symptoms { get; set; } // Симптомы заболевания
+    public string? Symptoms { get; set; }
 
     [MaxLength(500)]
-    public string? Actions { get; set; } // Действия
+    public string? Actions { get; set; }
 
     [MaxLength(500)]
-    public string? VetPrescriptions { get; set; } // Назначения ветеринара
+    public string? VetPrescriptions { get; set; }
 
     [MaxLength(500)]
-    public string? Notes { get; set; } // Примечание
-    // ---------------------------
+    public string? Notes { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

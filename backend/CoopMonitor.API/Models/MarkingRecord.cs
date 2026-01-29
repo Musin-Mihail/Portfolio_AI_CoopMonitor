@@ -27,7 +27,7 @@ public class MarkingRecord
     public int BirdAgeDays { get; set; }
 
     [MaxLength(50)]
-    public string? BirdIdentifier { get; set; } // № (Первичная маркировка)
+    public string? BirdIdentifier { get; set; }
 
     [Required]
     [MaxLength(50)]
@@ -39,10 +39,8 @@ public class MarkingRecord
     [MaxLength(50)]
     public string? RingNumber { get; set; }
 
-    // --- New Field from CSV ---
     [MaxLength(500)]
-    public string? Notes { get; set; } // Примечания
-    // --------------------------
+    public string? Notes { get; set; }
 
     [MaxLength(500)]
     public string? AttachmentUrl { get; set; }

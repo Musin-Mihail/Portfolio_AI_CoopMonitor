@@ -26,8 +26,7 @@ public class AudioController : ControllerBase
     }
 
     /// <summary>
-    /// Принимает результат аудио-анализа от AI сервиса.
-    /// Для MVP разрешаем анонимный доступ (в проде нужен Service Token).
+    /// Accepts audio analysis result from AI service.
     /// </summary>
     [HttpPost("ingest")]
     [AllowAnonymous]
@@ -48,7 +47,6 @@ public class AudioController : ControllerBase
         _context.AudioEvents.Add(audioEvent);
         await _context.SaveChangesAsync();
 
-        // Проверяем на алерты (Unhealthy/Panic)
         await _alertService.CheckAudioIngestionAsync(dto.HouseId, audioEvent);
 
         return Ok(new { id = audioEvent.Id });

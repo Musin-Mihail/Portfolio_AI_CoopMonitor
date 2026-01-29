@@ -23,21 +23,18 @@ class VisionPipeline:
     def process_job(self, job_id: str, bucket: str, file_path: str):
         """
         Background task to process video.
-        Since we don't have real weights in this environment, we simulate detection
-        using OpenCV and random generators, but keeping the pipeline architecture real.
+        Simulates detection using OpenCV and random generators.
         """
         logger.info(f"[{job_id}] Starting processing for {bucket}/{file_path}")
 
         local_video_path = os.path.join(self.temp_dir, f"{job_id}_input.mp4")
 
         try:
-            # 1. Download
             logger.info(f"[{job_id}] Downloading file...")
             if not minio_client.download_file(bucket, file_path, local_video_path):
                 logger.error(f"[{job_id}] Download failed.")
                 return
 
-            # 2. Open Video
             cap = cv2.VideoCapture(local_video_path)
             if not cap.isOpened():
                 logger.error(f"[{job_id}] Failed to open video file.")
@@ -55,7 +52,6 @@ class VisionPipeline:
             frame_results = []
             detection_counts = {"bird": 0, "person": 0, "dead_bird": 0}
 
-            # 3. Process Loop (Simulate processing every 30th frame to save time)
             process_step = 30
             current_frame = 0
 
@@ -68,20 +64,13 @@ class VisionPipeline:
                     break
 
                 if current_frame % process_step == 0:
-                    # --- MOCK INFERENCE START ---
-                    # In a real scenario, here we would pass 'frame' to YOLO/PyTorch model
-                    # detections = model(frame)
-
                     detections = self._mock_inference(width, height)
-                    # --- MOCK INFERENCE END ---
 
-                    # Update stats
                     for d in detections:
                         detection_counts[d.class_name] = (
                             detection_counts.get(d.class_name, 0) + 1
                         )
 
-                    # Save result
                     frame_results.append(
                         FrameResult(
                             frame_id=current_frame,
@@ -90,7 +79,6 @@ class VisionPipeline:
                         )
                     )
 
-                    # Generate Thumbnail with boxes (take the first processed frame)
                     if not thumbnail_saved:
                         self._draw_boxes(frame, detections)
                         cv2.imwrite(thumbnail_path, frame)
@@ -100,7 +88,6 @@ class VisionPipeline:
 
             cap.release()
 
-            # 4. Upload Thumbnail
             if thumbnail_saved:
                 thumb_object = f"{job_id}/thumbnail.jpg"
                 minio_client.upload_file(
@@ -111,7 +98,6 @@ class VisionPipeline:
                 )
                 logger.info(f"[{job_id}] Thumbnail uploaded: {thumb_object}")
 
-            # 5. Create & Upload Report
             result = AnalysisResult(
                 job_id=job_id,
                 file_path=f"{bucket}/{file_path}",
@@ -140,7 +126,6 @@ class VisionPipeline:
         except Exception as e:
             logger.error(f"[{job_id}] Processing error: {e}")
         finally:
-            # Cleanup
             self._cleanup(
                 [
                     local_video_path,
@@ -150,13 +135,8 @@ class VisionPipeline:
             )
 
     def _mock_inference(self, width, height) -> List[DetectionBox]:
-        """
-        Simulates Neural Network output.
-        """
         detections = []
-        # Randomly decide if we detect something
         if random.random() > 0.3:
-            # Simulate Birds
             num_birds = random.randint(1, 5)
             for _ in range(num_birds):
                 detections.append(
@@ -170,7 +150,6 @@ class VisionPipeline:
                     )
                 )
 
-            # Simulate Person (rare)
             if random.random() > 0.95:
                 detections.append(
                     DetectionBox(

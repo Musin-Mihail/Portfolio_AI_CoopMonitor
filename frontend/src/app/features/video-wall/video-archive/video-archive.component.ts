@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// PrimeNG Imports
 import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -22,7 +21,6 @@ interface VideoStreamMock {
   alertCount: number;
   imageUrl?: string;
 
-  // Archive specific properties
   date?: string;
   eventTag?: {
     labelKey: string;
@@ -48,10 +46,8 @@ export class VideoArchiveComponent implements OnInit {
   private videoService = inject(VideoService);
   private dialogService = inject(DialogService);
 
-  // State
   activeTab = signal<'live' | 'archive'>('live');
 
-  // Mocks based on "Трансляция"
   liveStreams = signal<VideoStreamMock[]>([
     {
       id: 1,
@@ -85,7 +81,6 @@ export class VideoArchiveComponent implements OnInit {
     },
   ]);
 
-  // Mocks based on "Архив"
   archiveStreams = signal<VideoStreamMock[]>([
     {
       id: 101,
@@ -125,7 +120,6 @@ export class VideoArchiveComponent implements OnInit {
     },
   ]);
 
-  // Sidebar Events Mock
   aiEvents = signal<AiEventMock[]>([
     { time: '10:25', titleKey: 'DASHBOARD.EVENTS.ANOMALY', location: 'House 1 - Cam 1', type: 'danger' },
     { time: '08:30', titleKey: 'DASHBOARD.EVENTS.OBJECT_DETECTED', location: 'House 3 - Cam 1', type: 'primary' },
@@ -133,9 +127,7 @@ export class VideoArchiveComponent implements OnInit {
     { time: '08:30', titleKey: 'DASHBOARD.EVENTS.MOTION', location: 'House 3 - Cam 1', type: 'info' },
   ]);
 
-  ngOnInit(): void {
-    // Initial data load if needed
-  }
+  ngOnInit(): void {}
 
   setTab(tab: 'live' | 'archive') {
     this.activeTab.set(tab);
