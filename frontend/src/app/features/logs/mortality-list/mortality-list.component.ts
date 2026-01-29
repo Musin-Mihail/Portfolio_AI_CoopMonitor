@@ -10,7 +10,7 @@ import { MortalityService } from '../../../core/services/mortality.service';
 import { MortalityRecord } from '../../../core/models/logs.models';
 import { MortalityDialogComponent } from '../mortality-dialog/mortality-dialog.component';
 import { FileUploadService } from '../../../core/services/file-upload.service';
-import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
+import { LogFilterService } from '../services/log-filter.service';
 
 @Component({
   selector: 'app-mortality-list',

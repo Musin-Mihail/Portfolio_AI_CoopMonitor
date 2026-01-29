@@ -10,7 +10,7 @@ import { DiseaseService } from '../../../core/services/disease.service';
 import { FileUploadService } from '../../../core/services/file-upload.service';
 import { DiseaseRecord } from '../../../core/models/logs.models';
 import { DiseaseDialogComponent } from '../disease-dialog/disease-dialog.component';
-import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
+import { LogFilterService } from '../services/log-filter.service';
 
 @Component({
   selector: 'app-disease-list',

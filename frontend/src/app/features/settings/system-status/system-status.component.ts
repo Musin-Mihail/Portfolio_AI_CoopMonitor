@@ -39,19 +39,16 @@ export class SystemStatusComponent implements OnInit {
 
   loadStatus(): void {
     this.isLoading.set(true);
-    // Имитация задержки для демонстрации спиннера (можно убрать в проде)
-    setTimeout(() => {
-      this.service.getSystemStatus().subscribe({
-        next: (data) => {
-          this.status.set(data);
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.showError(this.translate.instant('COMMON.LOAD_ERROR'));
-          this.isLoading.set(false);
-        },
-      });
-    }, 500);
+    this.service.getSystemStatus().subscribe({
+      next: (data) => {
+        this.status.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.showError(this.translate.instant('COMMON.LOAD_ERROR'));
+        this.isLoading.set(false);
+      },
+    });
   }
 
   formatBytes(bytes: number): string {

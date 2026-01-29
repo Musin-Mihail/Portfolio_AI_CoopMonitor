@@ -11,7 +11,7 @@ import { VideoService } from '../../../core/services/video.service';
 import { WeighingRecord } from '../../../core/models/logs.models';
 import { WeighingDialogComponent } from '../weighing-dialog/weighing-dialog.component';
 import { VideoPlayerDialogComponent } from '../../video-wall/video-player-dialog/video-player-dialog.component';
-import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
+import { LogFilterService } from '../services/log-filter.service';
 
 @Component({
   selector: 'app-weighing-list',

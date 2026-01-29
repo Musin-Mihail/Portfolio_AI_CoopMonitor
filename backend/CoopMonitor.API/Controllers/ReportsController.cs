@@ -85,13 +85,9 @@ public class ReportsController : ControllerBase
 
         var scheduler = await _schedulerFactory.GetScheduler();
 
-        // Передаем параметры в Job
         var jobData = new JobDataMap();
         jobData.Put("Date", request.Date);
-        // В данном случае мы запускаем Job для ВСЕХ птичников (как настроено в логике Job), 
-        // но в будущем Job можно научить фильтровать по HouseId из JobData.
 
-        // Триггерим Job немедленно
         await scheduler.TriggerJob(new JobKey("DailyReportJob"), jobData);
 
         return Ok(new { message = "Report generation triggered successfully." });

@@ -2,13 +2,13 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
-import { TranslateModule } from '@ngx-translate/core'; // Import
+import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, TabsModule, TranslateModule], // Add Module
+  imports: [CommonModule, RouterOutlet, TabsModule, TranslateModule],
   templateUrl: './admin-layout.component.html',
 })
 export class AdminLayoutComponent implements OnInit {

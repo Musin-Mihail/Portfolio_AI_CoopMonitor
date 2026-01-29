@@ -87,8 +87,7 @@ public record UpdateFeedWaterDto(
     string? Comments
 );
 
-// --- Disease (Unchanged based on CSV instructions, assuming logic moved to FeedWater or Weighing, 
-// but keeping this distinct for backward compat or specialized logs) ---
+// --- Disease ---
 
 public record DiseaseRecordDto(
     int Id,
@@ -124,7 +123,7 @@ public record UpdateDiseaseDto(
     string? AttachmentUrl
 );
 
-// --- Batch Info (New) ---
+// --- Batch Info ---
 
 public record BatchInfoRecordDto(
     int Id,

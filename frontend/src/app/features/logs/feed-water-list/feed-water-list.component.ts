@@ -8,7 +8,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FeedWaterService } from '../../../core/services/feed-water.service';
 import { FeedWaterRecord } from '../../../core/models/logs.models';
 import { FeedWaterDialogComponent } from '../feed-water-dialog/feed-water-dialog.component';
-import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
+import { LogFilterService } from '../services/log-filter.service';
 
 @Component({
   selector: 'app-feed-water-list',

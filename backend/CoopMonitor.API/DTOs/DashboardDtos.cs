@@ -52,7 +52,6 @@ public record ClimateHistoryPoint(
     double Nh3
 );
 
-// New DTO for Comparison Chart (All Houses)
 public record ComparisonHistoryDto(
     int HouseId,
     string HouseName,

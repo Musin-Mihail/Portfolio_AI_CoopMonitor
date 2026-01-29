@@ -25,7 +25,6 @@ export class HouseListComponent implements OnInit {
 
   dataSource = signal<House[]>([]);
 
-  // Для загрузки файла
   @ViewChild('fileInput') fileInput!: ElementRef;
   selectedHouseId: number | null = null;
 
@@ -45,10 +44,9 @@ export class HouseListComponent implements OnInit {
     });
   }
 
-  // --- Import Logic ---
   triggerUpload(houseId: number) {
     this.selectedHouseId = houseId;
-    this.fileInput.nativeElement.value = ''; // Reset input
+    this.fileInput.nativeElement.value = '';
     this.fileInput.nativeElement.click();
   }
 
@@ -75,7 +73,6 @@ export class HouseListComponent implements OnInit {
       });
     }
   }
-  // --------------------
 
   openDialog(house?: House) {
     const ref = this.dialogService.open(HouseDialogComponent, {

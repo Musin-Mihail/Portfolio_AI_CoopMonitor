@@ -10,7 +10,7 @@ import { MarkingService } from '../../../core/services/marking.service';
 import { FileUploadService } from '../../../core/services/file-upload.service';
 import { MarkingRecord } from '../../../core/models/logs.models';
 import { MarkingDialogComponent } from '../marking-dialog/marking-dialog.component';
-import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
+import { LogFilterService } from '../services/log-filter.service';
 
 @Component({
   selector: 'app-marking-list',

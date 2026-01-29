@@ -10,7 +10,6 @@ export class DashboardService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api/Dashboard';
 
-  // Получить список всех
   getAllSummaries(): Observable<DashboardSummary[]> {
     return this.http.get<DashboardSummary[]>(`${this.API_URL}/summary`);
   }
@@ -25,7 +24,6 @@ export class DashboardService {
     return this.http.get<ClimateHistoryPoint[]>(`${this.API_URL}/history/${houseId}`, { params });
   }
 
-  // НОВЫЙ МЕТОД: Получение данных для сравнения
   getComparisonHistory(
     type: 'temperature' | 'humidity' | 'co2' | 'nh3',
     hours: number = 24,
