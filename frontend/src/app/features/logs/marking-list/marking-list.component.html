@@ -28,11 +28,19 @@
         {{ "LOGS_MARKING.BIRD_AGE" | translate }}
         <p-sortIcon field="birdAgeDays" />
       </th>
+
+      <th pSortableColumn="birdIdentifier">
+        Bird No
+        <p-sortIcon field="birdIdentifier" />
+      </th>
+
       <th pSortableColumn="markingType">
         {{ "LOGS_MARKING.MARKING_TYPE" | translate }}
         <p-sortIcon field="markingType" />
       </th>
       <th>{{ "LOGS_MARKING.DETAILS" | translate }}</th>
+      <th>Notes</th>
+
       <th style="width: 8rem">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
@@ -43,6 +51,9 @@
       <td>{{ element.date | date: "shortDate" }}</td>
       <td>{{ element.houseName }}</td>
       <td>{{ element.birdAgeDays }} days</td>
+
+      <td class="font-mono text-slate-700">{{ element.birdIdentifier || "—" }}</td>
+
       <td>
         <span
           class="px-2 py-1 rounded text-xs font-semibold"
@@ -63,6 +74,13 @@
           {{ element.ringNumber }}
         </div>
       </td>
+
+      <td
+        class="text-sm text-slate-500 italic max-w-[150px] truncate"
+        [pTooltip]="element.notes">
+        {{ element.notes || "-" }}
+      </td>
+
       <td>
         <div class="flex gap-2">
           <p-button

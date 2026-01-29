@@ -10,7 +10,7 @@
 
 <p-table
   [value]="dataSource()"
-  [tableStyle]="{ 'min-width': '50rem' }"
+  [tableStyle]="{ 'min-width': '60rem' }"
   [paginator]="true"
   [rows]="10"
   stripedRows>
@@ -24,6 +24,10 @@
         {{ "COMMON.HOUSE" | translate }}
         <p-sortIcon field="houseName" />
       </th>
+      <th pSortableColumn="birdIdentifier">
+        Bird No
+        <p-sortIcon field="birdIdentifier" />
+      </th>
       <th pSortableColumn="feedName">
         {{ "LOGS_FEED_WATER.FEED_TYPE" | translate }}
         <p-sortIcon field="feedName" />
@@ -36,6 +40,7 @@
         {{ "LOGS_FEED_WATER.WATER_L" | translate }}
         <p-sortIcon field="waterQuantityLiters" />
       </th>
+      <th>Meds / Comments</th>
       <th style="width: 8rem">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
@@ -45,9 +50,31 @@
     <tr>
       <td>{{ element.date | date: "shortDate" }}</td>
       <td>{{ element.houseName }}</td>
+      <td class="font-mono text-slate-700">{{ element.birdIdentifier || "—" }}</td>
+
       <td>{{ element.feedName || "-" }}</td>
       <td class="font-medium text-amber-700">{{ element.feedQuantityKg }}</td>
       <td class="font-medium text-blue-600">{{ element.waterQuantityLiters }}</td>
+
+      <td class="text-sm">
+        <div
+          *ngIf="element.medicine"
+          class="flex items-center gap-1 text-purple-600 font-medium">
+          <i class="pi pi-shield text-xs"></i>
+          {{ element.medicine }}
+        </div>
+        <div
+          *ngIf="element.comments"
+          class="text-slate-500 text-xs mt-1">
+          {{ element.comments }}
+        </div>
+        <span
+          *ngIf="!element.medicine && !element.comments"
+          class="text-slate-300">
+          -
+        </span>
+      </td>
+
       <td>
         <div class="flex gap-2">
           <p-button

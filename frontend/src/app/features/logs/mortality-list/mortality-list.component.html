@@ -27,11 +27,16 @@
         {{ "LOGS_MORTALITY.HOUSE" | translate }}
         <p-sortIcon field="houseName" />
       </th>
+      <th pSortableColumn="birdIdentifier">
+        Bird No
+        <p-sortIcon field="birdIdentifier" />
+      </th>
       <th pSortableColumn="quantity">
         {{ "LOGS_MORTALITY.QTY" | translate }}
         <p-sortIcon field="quantity" />
       </th>
       <th>{{ "LOGS_MORTALITY.REASON" | translate }}</th>
+      <th>Details</th>
       <th>{{ "LOGS_MORTALITY.PHOTO" | translate }}</th>
       <th style="width: 8rem"></th>
     </tr>
@@ -43,10 +48,32 @@
       <td><p-tableCheckbox [value]="element" /></td>
       <td class="font-medium text-[#1A1C21]">{{ element.date | date: "shortDate" }}</td>
       <td class="text-sm text-slate-600">{{ element.houseName }}</td>
+
+      <td class="text-sm font-mono text-slate-700">
+        {{ element.birdIdentifier || "—" }}
+      </td>
+
       <td>
         <span class="font-bold text-red-600 bg-red-50 px-2 py-1 rounded text-xs">-{{ element.quantity }}</span>
       </td>
       <td class="text-sm text-slate-500">{{ element.reason || "—" }}</td>
+
+      <td
+        class="text-sm text-slate-500 max-w-[200px] truncate"
+        [pTooltip]="element.circumstances + (element.vetComment ? ' | ' + element.vetComment : '')">
+        <div
+          *ngIf="element.circumstances"
+          class="truncate">
+          {{ element.circumstances }}
+        </div>
+        <div
+          *ngIf="element.vetComment"
+          class="text-xs text-blue-600 italic truncate">
+          {{ element.vetComment }}
+        </div>
+        <span *ngIf="!element.circumstances && !element.vetComment">—</span>
+      </td>
+
       <td>
         <p-button
           *ngIf="element.attachmentUrl"

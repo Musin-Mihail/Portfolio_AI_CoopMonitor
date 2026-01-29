@@ -10,7 +10,7 @@
 
 <p-table
   [value]="dataSource()"
-  [tableStyle]="{ 'min-width': '50rem' }"
+  [tableStyle]="{ 'min-width': '65rem' }"
   [paginator]="true"
   [rows]="10"
   stripedRows>
@@ -24,12 +24,22 @@
         {{ "COMMON.HOUSE" | translate }}
         <p-sortIcon field="houseName" />
       </th>
+      <th pSortableColumn="birdIdentifier">
+        Bird No
+        <p-sortIcon field="birdIdentifier" />
+      </th>
       <th pSortableColumn="weightGrams">
         {{ "LOGS_WEIGHING.WEIGHT_G" | translate }}
         <p-sortIcon field="weightGrams" />
       </th>
+      <th pSortableColumn="temperature">
+        Temp
+        <p-sortIcon field="temperature" />
+      </th>
+
       <th>{{ "LOGS_WEIGHING.MUSIC" | translate }}</th>
-      <th>{{ "COMMON.RESPONSIBLE" | translate }}</th>
+      <th>Health & Notes</th>
+
       <th>{{ "COMMON.VIDEO" | translate }}</th>
       <th style="width: 8rem">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
@@ -40,7 +50,25 @@
     <tr>
       <td>{{ element.date | date: "shortDate" }}</td>
       <td>{{ element.houseName }}</td>
-      <td class="font-bold">{{ element.weightGrams }}</td>
+
+      <td class="font-mono text-slate-700">{{ element.birdIdentifier || "—" }}</td>
+
+      <td class="font-bold text-slate-800">{{ element.weightGrams }}</td>
+
+      <td>
+        <span
+          *ngIf="element.temperature"
+          [class.text-red-500]="element.temperature > 40"
+          [class.text-green-600]="element.temperature <= 40">
+          {{ element.temperature }}°C
+        </span>
+        <span
+          *ngIf="!element.temperature"
+          class="text-slate-300">
+          -
+        </span>
+      </td>
+
       <td>
         <i
           *ngIf="element.isMusicPlayed"
@@ -51,7 +79,32 @@
           -
         </span>
       </td>
-      <td>{{ element.personnelName || "-" }}</td>
+
+      <td class="text-sm">
+        <div class="flex flex-col gap-0.5 max-w-[200px]">
+          <span
+            *ngIf="element.symptoms"
+            class="text-red-600 font-medium text-xs">
+            Sym: {{ element.symptoms }}
+          </span>
+          <span
+            *ngIf="element.vetPrescriptions"
+            class="text-blue-600 text-xs">
+            Rx: {{ element.vetPrescriptions }}
+          </span>
+          <span
+            *ngIf="element.notes"
+            class="text-slate-500 text-xs italic">
+            {{ element.notes }}
+          </span>
+          <span
+            *ngIf="!element.symptoms && !element.vetPrescriptions && !element.notes"
+            class="text-slate-300">
+            -
+          </span>
+        </div>
+      </td>
+
       <td>
         <p-button
           *ngIf="element.videoUrl"
