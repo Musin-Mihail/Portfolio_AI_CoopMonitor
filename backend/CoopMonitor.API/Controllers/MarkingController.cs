@@ -55,7 +55,10 @@ public class MarkingController : ControllerBase
         if (photoFile != null && photoFile.Length > 0)
         {
             string bucket = "user-uploads";
-            string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/marking_{Guid.NewGuid()}{Path.GetExtension(photoFile.FileName)}";
+            // Формируем имя файла: user-uploads/YYYY-MM-DD/marking_HouseID_TIMESTAMP.ext
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+            string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/marking_House{dto.HouseId}_{timestamp}{Path.GetExtension(photoFile.FileName)}";
+
             using var stream = photoFile.OpenReadStream();
             await _fileStorage.UploadFileAsync(bucket, fileName, stream, photoFile.ContentType);
             attachmentUrl = $"{bucket}/{fileName}";
@@ -100,7 +103,9 @@ public class MarkingController : ControllerBase
         if (photoFile != null && photoFile.Length > 0)
         {
             string bucket = "user-uploads";
-            string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/marking_{Guid.NewGuid()}{Path.GetExtension(photoFile.FileName)}";
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+            string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/marking_House{dto.HouseId}_{timestamp}{Path.GetExtension(photoFile.FileName)}";
+
             using var stream = photoFile.OpenReadStream();
             await _fileStorage.UploadFileAsync(bucket, fileName, stream, photoFile.ContentType);
             record.AttachmentUrl = $"{bucket}/{fileName}";

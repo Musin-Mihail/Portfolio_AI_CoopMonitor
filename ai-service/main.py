@@ -1,6 +1,7 @@
 import uvicorn
 import logging
 import uuid
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from app.settings import settings
 from app.models import (
@@ -36,8 +37,9 @@ async def analyze_media(request: AnalysisRequest, background_tasks: BackgroundTa
         logger.warning(f"File not found: {request.bucket}/{request.file_path}")
         raise HTTPException(status_code=404, detail="Source file not found in storage")
 
-    # 2. Create Job ID
-    job_id = str(uuid.uuid4())
+    # 2. Create Job ID based on HouseId and Timestamp
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    job_id = f"House{request.house_id}_{timestamp}_vision"
 
     # 3. Trigger Background Processing
     background_tasks.add_task(
@@ -61,7 +63,9 @@ async def analyze_audio(
     if not minio_client.check_file_exists(request.bucket, request.file_path):
         raise HTTPException(status_code=404, detail="Audio file not found")
 
-    job_id = str(uuid.uuid4())
+    # 2. Create Job ID based on HouseId and Timestamp
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    job_id = f"House{request.house_id}_{timestamp}_audio"
 
     # 2. Trigger Audio Pipeline
     background_tasks.add_task(

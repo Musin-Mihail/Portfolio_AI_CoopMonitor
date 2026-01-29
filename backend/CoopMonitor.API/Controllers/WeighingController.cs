@@ -52,7 +52,9 @@ public class WeighingController : ControllerBase
             return BadRequest("Video evidence is mandatory.");
 
         string bucket = "user-uploads";
-        string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/weighing_{Guid.NewGuid()}{Path.GetExtension(videoFile.FileName)}";
+        // Формируем имя файла: user-uploads/YYYY-MM-DD/weighing_HouseID_TIMESTAMP.ext
+        var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+        string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/weighing_House{dto.HouseId}_{timestamp}{Path.GetExtension(videoFile.FileName)}";
 
         using (var stream = videoFile.OpenReadStream())
         {
@@ -94,7 +96,9 @@ public class WeighingController : ControllerBase
         if (videoFile != null && videoFile.Length > 0)
         {
             string bucket = "user-uploads";
-            string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/weighing_{Guid.NewGuid()}{Path.GetExtension(videoFile.FileName)}";
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+            string fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/weighing_House{dto.HouseId}_{timestamp}{Path.GetExtension(videoFile.FileName)}";
+
             using (var stream = videoFile.OpenReadStream())
             {
                 await _fileStorage.UploadFileAsync(bucket, fileName, stream, videoFile.ContentType);

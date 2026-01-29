@@ -31,7 +31,10 @@ public class FilesController : ControllerBase
 
     [HttpPost("upload")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] string bucket)
+    public async Task<IActionResult> UploadFile(
+        [FromForm] IFormFile file,
+        [FromForm] string bucket,
+        [FromForm] int? houseId)
     {
         if (file == null || file.Length == 0) return BadRequest("File is empty.");
         if (!AllowedBuckets.Contains(bucket)) return BadRequest($"Access to bucket '{bucket}' is denied.");
@@ -41,7 +44,10 @@ public class FilesController : ControllerBase
             var fileName = file.FileName;
             if (bucket == "user-uploads")
             {
-                fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/{Guid.NewGuid()}_{file.FileName}";
+                var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
+                var prefix = houseId.HasValue ? $"House{houseId.Value}" : "General";
+                // Пример: 2026-01-29/House1_20260129_185500_MyFile.jpg
+                fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/{prefix}_{timestamp}_{file.FileName}";
             }
 
             using var stream = file.OpenReadStream();
