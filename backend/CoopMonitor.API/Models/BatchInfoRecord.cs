@@ -15,27 +15,15 @@ public class BatchInfoRecord
     [ForeignKey(nameof(HouseId))]
     public House? House { get; set; }
 
-    /// <summary>
-    /// Дата поступления партии
-    /// </summary>
     [Required]
     public DateTime Date { get; set; }
 
-    /// <summary>
-    /// Количество голов (контрольная группа)
-    /// </summary>
     [Required]
     public int Quantity { get; set; }
 
-    /// <summary>
-    /// Возраст (0 дней — суточные)
-    /// </summary>
     [Required]
     public int BirdAgeDays { get; set; }
 
-    /// <summary>
-    /// Ответственный ветеринар / сотрудник
-    /// </summary>
     public int? PersonnelId { get; set; }
 
     [ForeignKey(nameof(PersonnelId))]
