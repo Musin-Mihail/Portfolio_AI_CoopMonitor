@@ -1,11 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CardModule } from 'primeng/card';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { DividerModule } from 'primeng/divider';
 import { TooltipModule } from 'primeng/tooltip';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SettingsService } from '../../../core/services/settings.service';
@@ -16,15 +15,15 @@ import { SystemStatus } from '../../../core/models/settings.models';
   standalone: true,
   imports: [
     CommonModule,
-    CardModule,
     ProgressBarModule,
     ButtonModule,
     TagModule,
-    DividerModule,
     TooltipModule,
+    ProgressSpinnerModule,
     TranslateModule,
   ],
   templateUrl: './system-status.component.html',
+  styleUrl: './system-status.component.scss',
 })
 export class SystemStatusComponent implements OnInit {
   private service = inject(SettingsService);
@@ -40,16 +39,19 @@ export class SystemStatusComponent implements OnInit {
 
   loadStatus(): void {
     this.isLoading.set(true);
-    this.service.getSystemStatus().subscribe({
-      next: (data) => {
-        this.status.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.showError(this.translate.instant('COMMON.LOAD_ERROR'));
-        this.isLoading.set(false);
-      },
-    });
+    // Имитация задержки для демонстрации спиннера (можно убрать в проде)
+    setTimeout(() => {
+      this.service.getSystemStatus().subscribe({
+        next: (data) => {
+          this.status.set(data);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.showError(this.translate.instant('COMMON.LOAD_ERROR'));
+          this.isLoading.set(false);
+        },
+      });
+    }, 500);
   }
 
   formatBytes(bytes: number): string {

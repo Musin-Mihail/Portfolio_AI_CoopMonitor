@@ -1,131 +1,190 @@
-<div class="flex justify-end mb-4">
-  <p-button
-    icon="pi pi-refresh"
-    (onClick)="loadStatus()"
-    [loading]="isLoading()"
-    [rounded]="true"
-    [text]="true"
-    severity="secondary"
-    [pTooltip]="'SYSTEM_STATUS.REFRESH' | translate" />
-</div>
+<div class="flex flex-col h-full gap-6">
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-xl font-bold text-slate-800 m-0 font-serif">
+        {{ "ADMIN_LAYOUT.TABS.SYSTEM" | translate }}
+      </h2>
+      <p class="text-sm text-slate-400 mt-1">
+        {{ "SYSTEM_STATUS.SERVER_TIME" | translate }}:
+        <span class="font-mono text-slate-600 font-medium">
+          {{ (status()?.serverTimeUtc | date: "medium") || "Loading..." }}
+        </span>
+      </p>
+    </div>
 
-<div
-  class="mb-4"
-  *ngIf="isLoading()">
-  <p-progressbar
-    mode="indeterminate"
-    [style]="{ height: '4px' }" />
-</div>
+    <button
+      (click)="loadStatus()"
+      [disabled]="isLoading()"
+      class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-50 hover:text-slate-800 transition-all shadow-sm">
+      <i
+        class="pi"
+        [class.pi-refresh]="!isLoading()"
+        [class.pi-spin]="isLoading()"
+        [class.pi-spinner]="isLoading()"></i>
+      <span>{{ "SYSTEM_STATUS.REFRESH" | translate }}</span>
+    </button>
+  </div>
 
-<div
-  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-  *ngIf="status() as data">
-  <p-card styleClass="h-full shadow-sm">
-    <ng-template pTemplate="header">
-      <div class="flex items-center gap-3 px-4 pt-4 pb-0">
-        <div
-          class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-          <i class="pi pi-cloud-upload text-xl"></i>
-        </div>
-        <div>
-          <div class="font-semibold text-lg">{{ "SYSTEM_STATUS.SAAS_SYNC" | translate }}</div>
-          <div class="text-sm text-slate-500">
-            <span
-              [class.text-green-600]="data.saaS.isConnected"
-              [class.text-red-500]="!data.saaS.isConnected"
-              class="font-medium">
-              {{ (data.saaS.isConnected ? "SYSTEM_STATUS.CONNECTED" : "SYSTEM_STATUS.OFFLINE") | translate }}
-            </span>
+  <div
+    *ngIf="isLoading() && !status()"
+    class="flex-1 flex items-center justify-center min-h-[200px]">
+    <p-progressSpinner
+      styleClass="w-12 h-12"
+      strokeWidth="4" />
+  </div>
+
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+    *ngIf="status() as data">
+    <div
+      class="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col h-full">
+      <div class="flex items-start justify-between mb-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+            <i class="pi pi-cloud-upload text-xl"></i>
+          </div>
+          <div>
+            <div class="font-bold text-lg text-slate-800 leading-tight mb-1">
+              {{ "SYSTEM_STATUS.SAAS_SYNC" | translate }}
+            </div>
+            <div class="flex items-center gap-2">
+              <span
+                class="w-2 h-2 rounded-full"
+                [class.bg-green-500]="data.saaS.isConnected"
+                [class.bg-red-500]="!data.saaS.isConnected"></span>
+              <span
+                class="text-sm font-medium"
+                [class.text-green-600]="data.saaS.isConnected"
+                [class.text-red-500]="!data.saaS.isConnected">
+                {{ (data.saaS.isConnected ? "SYSTEM_STATUS.CONNECTED" : "SYSTEM_STATUS.OFFLINE") | translate }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </ng-template>
 
-    <div class="mt-4">
-      <div class="flex justify-between text-sm text-slate-600 mb-2">
-        <span>{{ "SYSTEM_STATUS.DAILY_USAGE" | translate }}</span>
-        <span class="font-medium">{{ data.saaS.usagePercent }}%</span>
-      </div>
-      <p-progressbar
-        [value]="data.saaS.usagePercent"
-        [showValue]="false"
-        [style]="{ height: '10px' }"
-        [color]="data.saaS.usagePercent > 90 ? 'var(--p-red-500)' : 'var(--p-primary-color)'" />
-      <div class="text-xs text-slate-500 text-right mt-1">
-        {{ formatBytes(data.saaS.dailyUsageBytes) }} / {{ formatBytes(data.saaS.dailyLimitBytes) }}
-      </div>
-
-      <p-divider />
-
-      <div class="flex justify-between items-center text-sm">
-        <span class="text-slate-500">{{ "SYSTEM_STATUS.LAST_SYNC" | translate }}:</span>
-        <span class="font-mono">{{ (data.saaS.lastSync | date: "medium") || "-" }}</span>
-      </div>
-    </div>
-  </p-card>
-
-  <p-card styleClass="h-full shadow-sm">
-    <ng-template pTemplate="header">
-      <div class="flex items-center gap-3 px-4 pt-4 pb-0">
-        <div
-          class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
-          <i class="pi pi-bell text-xl"></i>
-        </div>
+      <div class="mt-auto space-y-6">
         <div>
-          <div class="font-semibold text-lg">{{ "SYSTEM_STATUS.NOTIFICATIONS" | translate }}</div>
-          <div class="text-sm text-slate-500">{{ "SYSTEM_STATUS.CHANNEL" | translate }}: Telegram</div>
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-slate-500 font-medium">{{ "SYSTEM_STATUS.DAILY_USAGE" | translate }}</span>
+            <span class="text-slate-800 font-bold">{{ data.saaS.usagePercent }}%</span>
+          </div>
+          <p-progressbar
+            [value]="data.saaS.usagePercent"
+            [showValue]="false"
+            [style]="{ height: '8px', 'border-radius': '6px', 'background-color': '#F1F5F9' }"
+            [color]="data.saaS.usagePercent > 90 ? '#EF4444' : '#3B82F6'" />
+          <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
+            <span>{{ formatBytes(data.saaS.dailyUsageBytes) }} used</span>
+            <span>{{ formatBytes(data.saaS.dailyLimitBytes) }} limit</span>
+          </div>
         </div>
-      </div>
-    </ng-template>
 
-    <div class="mt-4 flex flex-col gap-4">
-      <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
-        <span class="text-slate-600">{{ "MD_PERSONNEL.STATUS" | translate }}</span>
-        <p-tag
-          [value]="
-            (data.notifications.telegramEnabled ? 'SYSTEM_STATUS.ENABLED' : 'SYSTEM_STATUS.DISABLED') | translate
-          "
-          [severity]="data.notifications.telegramEnabled ? 'success' : 'secondary'"
-          [rounded]="true" />
-      </div>
-      <div class="flex justify-between items-center py-2">
-        <span class="text-slate-600">{{ "SYSTEM_STATUS.ADMIN_CHAT_ID" | translate }}</span>
-        <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-sm">
-          {{ data.notifications.adminChatId || ("SYSTEM_STATUS.NOT_CONFIGURED" | translate) }}
-        </span>
-      </div>
-      <p class="text-xs text-slate-400 italic text-center mt-2">
-        {{ "SYSTEM_STATUS.CONFIG_HINT" | translate }}
-      </p>
-    </div>
-  </p-card>
-
-  <p-card styleClass="h-full shadow-sm">
-    <ng-template pTemplate="header">
-      <div class="flex items-center gap-3 px-4 pt-4 pb-0">
-        <div
-          class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
-          <i class="pi pi-info-circle text-xl"></i>
+        <div class="pt-4 border-t border-slate-50 flex justify-between items-center">
+          <span class="text-sm text-slate-500">{{ "SYSTEM_STATUS.LAST_SYNC" | translate }}</span>
+          <span class="text-sm font-semibold text-slate-700 font-mono">
+            {{ (data.saaS.lastSync | date: "mediumTime") || "-" }}
+          </span>
         </div>
-        <div>
-          <div class="font-semibold text-lg">{{ "SYSTEM_STATUS.APP_INFO" | translate }}</div>
-        </div>
-      </div>
-    </ng-template>
-
-    <div class="mt-4 flex flex-col gap-3">
-      <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
-        <span class="text-slate-600">{{ "SYSTEM_STATUS.VERSION" | translate }}</span>
-        <span class="font-semibold">{{ data.appVersion }}</span>
-      </div>
-      <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
-        <span class="text-slate-600">{{ "SYSTEM_STATUS.ENV" | translate }}</span>
-        <span class="font-semibold">{{ data.environment }}</span>
-      </div>
-      <div class="flex justify-between items-center py-2">
-        <span class="text-slate-600">{{ "SYSTEM_STATUS.SERVER_TIME" | translate }}</span>
-        <span class="font-mono text-sm">{{ data.serverTimeUtc | date: "medium" }}</span>
       </div>
     </div>
-  </p-card>
+
+    <div
+      class="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col h-full">
+      <div class="flex items-start justify-between mb-6">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 flex-shrink-0">
+            <i class="pi pi-bell text-xl"></i>
+          </div>
+          <div>
+            <div class="font-bold text-lg text-slate-800 leading-tight mb-1">
+              {{ "SYSTEM_STATUS.NOTIFICATIONS" | translate }}
+            </div>
+            <div class="text-sm text-slate-400">
+              {{ "SYSTEM_STATUS.CHANNEL" | translate }}:
+              <span class="text-slate-600 font-semibold">Telegram</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="flex justify-between items-center py-3 border-b border-dashed border-slate-100">
+          <span class="text-sm text-slate-600 font-medium">{{ "MD_PERSONNEL.STATUS" | translate }}</span>
+          <p-tag
+            [value]="
+              (data.notifications.telegramEnabled ? 'SYSTEM_STATUS.ENABLED' : 'SYSTEM_STATUS.DISABLED') | translate
+            "
+            [severity]="data.notifications.telegramEnabled ? 'success' : 'secondary'"
+            [rounded]="true"
+            styleClass="px-3" />
+        </div>
+
+        <div class="flex flex-col gap-2 py-2">
+          <span class="text-sm text-slate-600 font-medium">{{ "SYSTEM_STATUS.ADMIN_CHAT_ID" | translate }}</span>
+          <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 flex items-center justify-between">
+            <span class="font-mono text-sm text-slate-700 truncate max-w-[200px]">
+              {{ data.notifications.adminChatId || ("SYSTEM_STATUS.NOT_CONFIGURED" | translate) }}
+            </span>
+            <i
+              class="pi pi-copy text-xs text-slate-400 hover:text-blue-500 cursor-pointer transition-colors"
+              [pTooltip]="'Copy'"
+              tooltipPosition="top"></i>
+          </div>
+        </div>
+
+        <div class="mt-2 p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+          <p class="text-xs text-slate-500 italic leading-relaxed text-center">
+            <i class="pi pi-info-circle text-[10px] mr-1"></i>
+            {{ "SYSTEM_STATUS.CONFIG_HINT" | translate }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-white border border-slate-100 rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col h-full">
+      <div class="flex items-start justify-between mb-6">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0">
+            <i class="pi pi-box text-xl"></i>
+          </div>
+          <div>
+            <div class="font-bold text-lg text-slate-800 leading-tight mb-1">
+              {{ "SYSTEM_STATUS.APP_INFO" | translate }}
+            </div>
+            <div class="text-sm text-slate-400">System Information</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <div class="flex justify-between items-center py-4 border-b border-slate-50">
+          <span class="text-sm text-slate-500 font-medium">{{ "SYSTEM_STATUS.VERSION" | translate }}</span>
+          <span class="font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded text-xs">v{{ data.appVersion }}</span>
+        </div>
+
+        <div class="flex justify-between items-center py-4 border-b border-slate-50">
+          <span class="text-sm text-slate-500 font-medium">{{ "SYSTEM_STATUS.ENV" | translate }}</span>
+          <span class="font-semibold text-slate-700 flex items-center gap-2">
+            <i class="pi pi-desktop text-xs text-slate-400"></i>
+            {{ data.environment }}
+          </span>
+        </div>
+
+        <div class="flex justify-between items-center py-4">
+          <span class="text-sm text-slate-500 font-medium">Timezone</span>
+          <span class="text-sm font-semibold text-slate-700">UTC</span>
+        </div>
+      </div>
+
+      <div class="mt-auto pt-4 text-center">
+        <button class="text-xs text-slate-400 hover:text-slate-600 underline transition-colors">
+          Check for updates
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
