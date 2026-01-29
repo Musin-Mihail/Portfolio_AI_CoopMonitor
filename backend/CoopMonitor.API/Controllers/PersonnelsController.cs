@@ -49,7 +49,7 @@ public class PersonnelsController : ControllerBase
             JobTitle = dto.JobTitle,
             PhoneNumber = dto.PhoneNumber,
             Email = dto.Email,
-            UserId = dto.UserId // Связь с IdentityUser (может быть null)
+            UserId = dto.UserId
         };
 
         _context.Personnels.Add(personnel);

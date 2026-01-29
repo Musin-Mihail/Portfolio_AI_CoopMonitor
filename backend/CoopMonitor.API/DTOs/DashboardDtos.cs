@@ -28,7 +28,7 @@ public record CurrentClimateDto(
 );
 
 public record AudioStatusDto(
-    string Status, // "Healthy", "Warning", "Unknown"
+    string Status,
     string LastClassification,
     DateTime LastUpdate
 );
@@ -41,8 +41,6 @@ public record SensorReadingDto(
     double Co2,
     double Nh3
 );
-
-// --- History DTOs ---
 
 public record ClimateHistoryPoint(
     DateTime Timestamp,
@@ -63,8 +61,6 @@ public record HistoryPointDto(
     double Value
 );
 
-// --- Production Metrics DTO ---
-
 public record ProductionMetricsDto(
     double FeedConsumedKg,
     double WaterConsumedLiters,
@@ -72,6 +68,6 @@ public record ProductionMetricsDto(
     double MortalityRatePercent,
     double StartWeightGrams,
     double EndWeightGrams,
-    double FCR, // Feed Conversion Ratio
-    double StockingDensityKgM2 // Плотность посадки
+    double FCR,
+    double StockingDensityKgM2
 );

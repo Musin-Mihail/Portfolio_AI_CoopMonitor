@@ -16,7 +16,7 @@ public record CreateUserDto(
     [Required][EmailAddress] string Email,
     [Required] string Password,
     [Required] string Role,
-    int? PersonnelId // Опциональная привязка при создании
+    int? PersonnelId
 );
 
 public record UpdateUserDto(
@@ -24,5 +24,5 @@ public record UpdateUserDto(
     [Required][EmailAddress] string Email,
     string? Password,
     [Required] string Role,
-    int? PersonnelId // Возможность сменить привязку
+    int? PersonnelId
 );

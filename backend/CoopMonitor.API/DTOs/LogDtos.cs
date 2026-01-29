@@ -2,8 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CoopMonitor.API.DTOs;
 
-// --- Mortality ---
-
 public record MortalityRecordDto(
     int Id,
     int HouseId,
@@ -43,8 +41,6 @@ public record UpdateMortalityDto(
     string? VetComment,
     string? AttachmentUrl
 );
-
-// --- Feed & Water ---
 
 public record FeedWaterRecordDto(
     int Id,
@@ -87,8 +83,6 @@ public record UpdateFeedWaterDto(
     string? Comments
 );
 
-// --- Disease ---
-
 public record DiseaseRecordDto(
     int Id,
     int HouseId,
@@ -122,8 +116,6 @@ public record UpdateDiseaseDto(
     string? Dosage,
     string? AttachmentUrl
 );
-
-// --- Batch Info ---
 
 public record BatchInfoRecordDto(
     int Id,
