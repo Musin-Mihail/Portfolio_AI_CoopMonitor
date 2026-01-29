@@ -23,7 +23,6 @@
   --p-content-border-radius: 16px;
 }
 
-/* Custom Table Styles for "Clean" look */
 .clean-table .p-datatable-header {
   background: transparent;
   border: none;
@@ -49,7 +48,6 @@
   border-bottom: none;
 }
 
-/* Checkbox alignment */
 .p-checkbox {
   width: 20px;
   height: 20px;
@@ -59,22 +57,19 @@
   border-radius: 6px;
 }
 
-/* Убираем стандартные границы и добавляем тень для диалогов */
 .p-dynamic-dialog .p-dialog {
   border: none;
   box-shadow:
     0 20px 25px -5px rgb(0 0 0 / 0.1),
     0 8px 10px -6px rgb(0 0 0 / 0.1);
-  border-radius: 24px !important; /* Увеличил радиус для соответствия дизайну */
+  border-radius: 24px !important;
   overflow: hidden;
 }
 
-/* Удалены специфичные стили для header и content, так как мы теперь используем utility classes внутри шаблонов */
 .p-dynamic-dialog .p-dialog-content {
-  padding: 0 !important; /* Сбрасываем паддинг контента, так как контролируем его внутри */
+  padding: 0 !important;
 }
 
-/* Единый стиль для инпутов, чтобы они были на всю ширину внутри контейнеров */
 .p-inputtext,
 .p-select,
 .p-datepicker,
@@ -83,7 +78,6 @@
   width: 100%;
 }
 
-/* Стили для File Upload зоны */
 .file-upload-box {
   border: 1px dashed #cbd5e1;
   background-color: #f8fafc;
@@ -100,7 +94,6 @@
   background-color: #f1f5f9;
 }
 
-/* Стили для ConfirmDialog (Окна удаления) */
 .p-confirmdialog .p-dialog {
   border: none;
   box-shadow:
@@ -111,20 +104,17 @@
   background-color: #ffffff;
 }
 
-/* 1. ОТСТУПЫ ДЛЯ ЗАГОЛОВКА (Новое) */
 .p-confirmdialog .p-dialog-header {
   padding: 24px 24px 0 24px !important;
   border-bottom: none;
   background-color: #ffffff;
   color: #1a1c21;
-  /* Добавляем эти две строки, чтобы вернуть скругления: */
   border-top-left-radius: 24px !important;
   border-top-right-radius: 24px !important;
 }
 
-/* 2. ОТСТУПЫ ДЛЯ КОНТЕНТА */
 .p-confirmdialog .p-dialog-content {
-  padding: 12px 24px 24px 24px !important; /* Чуть уменьшил верхний отступ, так как у хедера он уже есть */
+  padding: 12px 24px 24px 24px !important;
   color: #1a1c21;
 }
 
@@ -133,7 +123,6 @@
   margin-right: 1rem;
 }
 
-/* 3. ОТСТУПЫ ДЛЯ ФУТЕРА */
 .p-confirmdialog .p-dialog-footer {
   padding: 0 24px 24px 24px !important;
   display: flex;

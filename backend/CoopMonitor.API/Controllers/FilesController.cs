@@ -46,14 +46,12 @@ public class FilesController : ControllerBase
             {
                 var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
                 var prefix = houseId.HasValue ? $"House{houseId.Value}" : "General";
-                // Пример: 2026-01-29/House1_20260129_185500_MyFile.jpg
                 fileName = $"{DateTime.UtcNow:yyyy-MM-dd}/{prefix}_{timestamp}_{file.FileName}";
             }
 
             using var stream = file.OpenReadStream();
             await _fileStorage.UploadFileAsync(bucket, fileName, stream, file.ContentType);
 
-            // Audit
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userName = User.Identity?.Name;
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
@@ -73,14 +71,9 @@ public class FilesController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> DownloadFile(string bucket, string filePath, [FromQuery] string? access_token)
     {
-        // Ручная проверка авторизации для query token
         if (User.Identity?.IsAuthenticated != true)
         {
             if (string.IsNullOrEmpty(access_token)) return Unauthorized("Missing access token.");
-            // В идеале токен валидируется Middleware, если передан.
-            // Если мы здесь и User не Authenticated, значит токен не сработал или Middleware не настроен на чтение из query без [Authorize].
-            // Но мы настроили OnMessageReceived в Program.cs, так что User должен быть заполнен, если токен валиден.
-            // Если нет - Unauthorized.
         }
 
         if (!AllowedBuckets.Contains(bucket)) return BadRequest($"Access to bucket '{bucket}' is denied.");
@@ -89,11 +82,10 @@ public class FilesController : ControllerBase
         {
             var (stream, contentType, fileName) = await _fileStorage.GetFileStreamAsync(bucket, filePath);
 
-            // Audit
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userName = User.Identity?.Name ?? "Anonymous";
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
-            // Log fire-and-forget to not delay download stream start too much
+
             _ = _auditService.LogAsync(userId, userName, "Download", $"{bucket}/{filePath}", null, ip);
 
             return File(stream, contentType, fileName, enableRangeProcessing: true);

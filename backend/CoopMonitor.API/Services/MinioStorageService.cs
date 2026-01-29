@@ -118,7 +118,6 @@ public class MinioStorageService : IFileStorageService
     {
         var result = new List<FileMetadataDto>();
 
-        // Проверяем существование бакета, чтобы не падать с ошибкой
         if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName)))
         {
             return result;
@@ -137,11 +136,8 @@ public class MinioStorageService : IFileStorageService
 
         await foreach (var item in fileList)
         {
-            // Исключаем директории (если MinIO их возвращает как объекты)
             if (!item.IsDir)
             {
-                // Попытка определить ContentType по расширению (упрощенно), 
-                // так как ListObjects не всегда возвращает metadata
                 string contentType = "application/octet-stream";
                 var ext = Path.GetExtension(item.Key).ToLower();
                 if (ext == ".mp4") contentType = "video/mp4";

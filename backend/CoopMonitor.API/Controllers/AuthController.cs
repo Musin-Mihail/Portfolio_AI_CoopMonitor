@@ -61,7 +61,6 @@ public class AuthController : ControllerBase
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
 
-            // Audit Success
             await _auditService.LogAsync(user.Id, user.UserName, "Login", "Auth", "Success", ip);
 
             return Ok(new
@@ -71,7 +70,6 @@ public class AuthController : ControllerBase
             });
         }
 
-        // Audit Failure
         await _auditService.LogAsync(null, model.Username, "Login", "Auth", "Failed", ip);
 
         return Unauthorized();

@@ -24,20 +24,8 @@ export class VideoService {
    */
   getStreamUrl(bucket: string, fileName: string): string {
     const token = this.authService.getToken();
-    // Encode filename twice? No, Angular/Browser handles basic URI encoding,
-    // but we must be careful with slashes in filename (nested folders).
-    // MinIO objects like "folder/file.mp4" are just strings.
-    // However, in URL path it must be encoded properly.
+    const encodedPath = encodeURIComponent(fileName).replace(/%2F/g, '/');
 
-    // We used {*filePath} in backend which catches slashes.
-    // Simply appending it should work if we let browser handle encoding or encode URI component.
-    // Backend API: /api/Files/download/{bucket}/{filePath}?access_token=...
-
-    const encodedPath = encodeURIComponent(fileName).replace(/%2F/g, '/'); // Allow slashes for folder structure visually if backend supports it
-    // Actually, encodeURIComponent encodes '/' to %2F.
-    // .NET route {*filePath} decodes %2F back to /.
-    // So encodeURIComponent(fileName) is safer.
-
-    return `${this.API_URL}/download/${bucket}/${fileName}?access_token=${token}`;
+    return `${this.API_URL}/download/${bucket}/${encodedPath}?access_token=${token}`;
   }
 }
