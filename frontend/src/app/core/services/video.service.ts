@@ -19,9 +19,6 @@ export class VideoService {
     return this.http.get<FileMetadata[]>(`${this.API_URL}/list/${bucket}`, { params });
   }
 
-  /**
-   * Generates a streaming URL with auth token for HTML5 video player
-   */
   getStreamUrl(bucket: string, fileName: string): string {
     const token = this.authService.getToken();
     const encodedPath = encodeURIComponent(fileName).replace(/%2F/g, '/');

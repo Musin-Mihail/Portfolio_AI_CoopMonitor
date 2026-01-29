@@ -8,10 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoopMonitor.API.Services.Notifications;
 
-/// <summary>
-/// Сервис для работы с Telegram: реализует отправку уведомлений и обработку входящих команд.
-/// Работает как BackgroundService для поллинга обновлений.
-/// </summary>
 public class TelegramBotService : BackgroundService, INotificationService
 {
     private readonly ILogger<TelegramBotService> _logger;
@@ -20,7 +16,6 @@ public class TelegramBotService : BackgroundService, INotificationService
     private readonly string _adminChatId;
     private readonly bool _isEnabled;
 
-    // Исправлено: IConfiguration внедряется напрямую, без IOptions
     public TelegramBotService(
         IConfiguration config,
         IServiceProvider serviceProvider,
@@ -43,8 +38,6 @@ public class TelegramBotService : BackgroundService, INotificationService
             _logger.LogWarning("Telegram Bot is disabled or token is missing.");
         }
     }
-
-    // --- INotificationService Implementation ---
 
     public async Task SendMessageAsync(string message)
     {
@@ -74,8 +67,6 @@ public class TelegramBotService : BackgroundService, INotificationService
             _logger.LogError(ex, "Failed to send Telegram alert.");
         }
     }
-
-    // --- Background Service Logic (Polling) ---
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -111,7 +102,6 @@ public class TelegramBotService : BackgroundService, INotificationService
         var chatId = message.Chat.Id;
         _logger.LogInformation("Received message '{Text}' from {ChatId}", messageText, chatId);
 
-        // Команды
         string response = "";
         switch (messageText.Split(' ')[0].ToLower())
         {
@@ -147,8 +137,6 @@ public class TelegramBotService : BackgroundService, INotificationService
         _logger.LogError(exception, "Telegram Bot Error");
         return Task.CompletedTask;
     }
-
-    // --- Logic for Commands ---
 
     private async Task<string> GetFarmStatusAsync()
     {
@@ -189,7 +177,6 @@ public class TelegramBotService : BackgroundService, INotificationService
     {
         using var scope = _serviceProvider.CreateScope();
         var alertService = scope.ServiceProvider.GetRequiredService<IAlertService>();
-        // Для простоты берем алерты для всех птичников
         var context = scope.ServiceProvider.GetRequiredService<CoopContext>();
         var houses = await context.Houses.Select(h => h.Id).ToListAsync();
 

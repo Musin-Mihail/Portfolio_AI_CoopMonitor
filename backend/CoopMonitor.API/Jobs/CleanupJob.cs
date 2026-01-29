@@ -20,7 +20,6 @@ public class CleanupJob : IJob
     {
         _logger.LogInformation("Starting CleanupJob...");
 
-        // 1. MinIO: Raw Video (> 90 дней)
         try
         {
             var deletedCount = await _fileStorage.CleanupOldFilesAsync("raw-video", TimeSpan.FromDays(90));
@@ -31,7 +30,6 @@ public class CleanupJob : IJob
             _logger.LogError(ex, "Error cleaning bucket 'raw-video'");
         }
 
-        // 2. MinIO: Reports (> 365 дней)
         try
         {
             var deletedCount = await _fileStorage.CleanupOldFilesAsync("reports", TimeSpan.FromDays(365));
@@ -42,8 +40,6 @@ public class CleanupJob : IJob
             _logger.LogError(ex, "Error cleaning bucket 'reports'");
         }
 
-        // 3. MinIO: System/Audit Logs (если хранятся там) - пока нет
-        // 4. Local: Serilog Files (> 90 дней)
         try
         {
             if (Directory.Exists(LogsFolder))

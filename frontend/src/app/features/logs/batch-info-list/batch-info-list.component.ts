@@ -9,7 +9,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BatchInfoService } from '../../../core/services/batch-info.service';
 import { BatchInfoRecord } from '../../../core/models/logs.models';
 import { BatchInfoDialogComponent } from '../batch-info-dialog/batch-info-dialog.component';
-import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
+import { LogFilterService } from '../services/log-filter.service';
 
 @Component({
   selector: 'app-batch-info-list',
@@ -29,7 +29,6 @@ export class BatchInfoListComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      // Signals tracking
       this.filterService.houseId();
       this.filterService.startDate();
       this.filterService.endDate();

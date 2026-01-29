@@ -33,7 +33,6 @@ public class SensorsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> PostReading([FromBody] SensorReadingDto dto)
     {
-        // Time Sync Check
         var serverTime = DateTime.UtcNow;
         var timeDiff = Math.Abs((serverTime - dto.Timestamp).TotalSeconds);
 
@@ -42,7 +41,6 @@ public class SensorsController : ControllerBase
             _logger.LogWarning("Time sync mismatch. Client: {Client}, Server: {Server}. Diff: {Diff}s", dto.Timestamp, serverTime, timeDiff);
         }
 
-        // Validation
         bool isValid = _calculationService.ValidateSensorData(dto.Temperature, dto.Humidity, dto.Co2, dto.Nh3);
 
         var reading = new SensorReading
@@ -59,8 +57,6 @@ public class SensorsController : ControllerBase
         _context.SensorReadings.Add(reading);
         await _context.SaveChangesAsync();
 
-        // Trigger Alert Checks asynchronously (Fire-and-forget logic for API response speed, 
-        // or await if we want to guarantee notification logic executed)
         try
         {
             await _alertService.CheckSensorIngestionAsync(dto.HouseId, reading);

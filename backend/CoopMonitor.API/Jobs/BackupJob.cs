@@ -22,13 +22,11 @@ public class BackupJob : IJob
     {
         _logger.LogInformation("Starting BackupJob...");
 
-        // 1. Создание папки бэкапов
         if (!Directory.Exists(BackupFolder))
         {
             Directory.CreateDirectory(BackupFolder);
         }
 
-        // 2. Генерация имени файла
         var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
         var backupFileName = Path.Combine(BackupFolder, $"coop_monitor_{timestamp}.db");
 
@@ -37,8 +35,6 @@ public class BackupJob : IJob
             using var scope = _serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<CoopContext>();
 
-            // 3. Выполнение HOT Backup через VACUUM INTO
-            // Это работает корректно даже при включенном WAL режиме
             var sql = $"VACUUM INTO '{backupFileName}'";
             await dbContext.Database.ExecuteSqlRawAsync(sql);
 
@@ -47,10 +43,8 @@ public class BackupJob : IJob
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to create database backup.");
-            // Не прерываем job, пробуем очистить старые
         }
 
-        // 4. Очистка старых бэкапов (Ротация)
         try
         {
             var directory = new DirectoryInfo(BackupFolder);

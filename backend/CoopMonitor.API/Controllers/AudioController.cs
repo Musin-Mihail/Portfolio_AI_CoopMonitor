@@ -25,9 +25,6 @@ public class AudioController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// Accepts audio analysis result from AI service.
-    /// </summary>
     [HttpPost("ingest")]
     [AllowAnonymous]
     public async Task<IActionResult> Ingest([FromBody] CreateAudioEventDto dto)

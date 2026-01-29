@@ -9,7 +9,7 @@ namespace CoopMonitor.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")] // Только админы могут смотреть логи
+[Authorize(Roles = "Admin")]
 public class AuditController : ControllerBase
 {
     private readonly CoopContext _context;
@@ -22,7 +22,6 @@ public class AuditController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AuditLogDto>>> GetLogs([FromQuery] int limit = 100)
     {
-        // Ограничиваем выборку
         var logs = await _context.AuditLogs
             .AsNoTracking()
             .OrderByDescending(l => l.Timestamp)

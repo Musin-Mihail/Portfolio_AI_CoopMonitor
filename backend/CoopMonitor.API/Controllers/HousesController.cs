@@ -9,7 +9,7 @@ namespace CoopMonitor.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize] // Требует JWT токен для доступа
+[Authorize]
 public class HousesController : ControllerBase
 {
     private readonly CoopContext _context;

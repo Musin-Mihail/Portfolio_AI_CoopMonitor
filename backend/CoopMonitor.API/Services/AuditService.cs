@@ -18,8 +18,6 @@ public class AuditService : IAuditService
     {
         try
         {
-            // Создаем новый scope, так как сервис может вызываться из разных контекстов
-            // или "fire-and-forget", хотя DbContext не потокобезопасен, поэтому лучше создать свой.
             using var scope = _serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<CoopContext>();
 
@@ -39,7 +37,6 @@ public class AuditService : IAuditService
         }
         catch (Exception ex)
         {
-            // Аудит не должен ломать основной флоу, но должен логироваться в файл
             _logger.LogError(ex, "Failed to write Audit Log: {Action} by {User}", action, userName);
         }
     }

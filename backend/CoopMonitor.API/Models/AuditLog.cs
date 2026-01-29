@@ -14,22 +14,13 @@ public class AuditLog
     [MaxLength(100)]
     public string? UserName { get; set; }
 
-    /// <summary>
-    /// Тип действия: "Login", "Download", "Upload", "Create", "Delete"
-    /// </summary>
     [Required]
     [MaxLength(50)]
     public required string Action { get; set; }
 
-    /// <summary>
-    /// Ресурс, над которым производится действие (например, имя файла или сущность)
-    /// </summary>
     [MaxLength(200)]
     public string? Resource { get; set; }
 
-    /// <summary>
-    /// Детали или параметры запроса
-    /// </summary>
     [MaxLength(500)]
     public string? Details { get; set; }
 

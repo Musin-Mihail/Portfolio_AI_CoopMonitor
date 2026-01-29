@@ -18,21 +18,12 @@ public class AudioEvent
     [Required]
     public DateTime Timestamp { get; set; }
 
-    /// <summary>
-    /// Classification: "Healthy", "Unhealthy" (e.g. coughing), "Panic", "Noise"
-    /// </summary>
     [Required]
     [MaxLength(50)]
     public required string Classification { get; set; }
 
-    /// <summary>
-    /// Confidence score (0.0 - 1.0)
-    /// </summary>
     public double Confidence { get; set; }
 
-    /// <summary>
-    /// Link to the audio clip in Storage if saved
-    /// </summary>
     [MaxLength(500)]
     public string? ClipUrl { get; set; }
 

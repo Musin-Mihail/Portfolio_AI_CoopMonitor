@@ -19,9 +19,6 @@ class StorageService:
 
     def _ensure_connection(self):
         try:
-            # Simple check by listing buckets
-            # Note: This might fail if the service starts before MinIO is fully ready,
-            # but standard retry mechanisms or docker depends_on usually help.
             self.client.list_buckets()
             logger.info(f"Connected to MinIO at {settings.MINIO_ENDPOINT}")
         except Exception as e:

@@ -29,7 +29,6 @@ public class AlertService : IAlertService
         var alerts = new List<string>();
         var today = DateTime.UtcNow.Date;
 
-        // 1. Климат
         var lastReading = await context.SensorReadings
             .Where(r => r.HouseId == houseId)
             .OrderByDescending(r => r.Date)
@@ -53,7 +52,6 @@ public class AlertService : IAlertService
             alerts.Add("No Sensor Data");
         }
 
-        // 2. Падеж
         var deadToday = await context.MortalityRecords
             .Where(m => m.HouseId == houseId && m.Date.Date == today)
             .SumAsync(m => m.Quantity);
@@ -63,7 +61,6 @@ public class AlertService : IAlertService
             alerts.Add($"High Mortality Alert ({deadToday} birds today)");
         }
 
-        // 3. Аудио
         var lastAudio = await context.AudioEvents
             .Where(a => a.HouseId == houseId)
             .OrderByDescending(a => a.Timestamp)
@@ -85,15 +82,12 @@ public class AlertService : IAlertService
         var criticalAlerts = new List<string>();
         var warningAlerts = new List<string>();
 
-        // Critical Rules
         if (reading.Temperature > 35.0) criticalAlerts.Add($"🔥 CRITICAL High Temp: {reading.Temperature:F1}°C");
         if (reading.Temperature < 15.0) criticalAlerts.Add($"❄️ CRITICAL Low Temp: {reading.Temperature:F1}°C");
         if (reading.Nh3 > 25.0) criticalAlerts.Add($"☣️ CRITICAL Ammonia: {reading.Nh3:F1} ppm");
 
-        // Warning Rules (пример)
         if (reading.Co2 > 2500 && reading.Co2 < 3000) warningAlerts.Add($"⚠️ High CO2: {reading.Co2:F0} ppm");
 
-        // Send Critical
         if (criticalAlerts.Count > 0)
         {
             string details = string.Join("\n", criticalAlerts);
@@ -101,7 +95,6 @@ public class AlertService : IAlertService
             _logger.LogWarning("Critical sensor alert routed for House {HouseId}", houseId);
         }
 
-        // Send Warnings
         if (warningAlerts.Count > 0)
         {
             string details = string.Join("\n", warningAlerts);

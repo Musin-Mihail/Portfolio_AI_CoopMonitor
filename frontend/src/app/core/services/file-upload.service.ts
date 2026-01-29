@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 })
 export class FileUploadService {
   private http = inject(HttpClient);
-  private authService = inject(AuthService); // Inject AuthService
+  private authService = inject(AuthService);
   private readonly API_URL = '/api/Files/upload';
   private readonly DOWNLOAD_API_URL = '/api/Files/download';
 
@@ -21,15 +21,9 @@ export class FileUploadService {
     return this.http.post<FileUploadResponse>(this.API_URL, formData);
   }
 
-  /**
-   * Generates a URL for viewing/downloading that includes the Auth Token.
-   * Required for <a> tags, window.open(), and <video> src attributes.
-   */
   getDownloadUrl(bucket: string, filePath: string): string {
     const token = this.authService.getToken();
-    // Encode path components to handle spaces/special chars safely
     const encodedBucket = encodeURIComponent(bucket);
-    // filePath might contain slashes (folders), we want to preserve them but encode segments
     const encodedPath = filePath
       .split('/')
       .map((segment) => encodeURIComponent(segment))

@@ -10,7 +10,6 @@ import { LoginResponse } from '../models/auth.models';
 export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
 
-  // Сигнал для реактивного отслеживания состояния авторизации
   isAuthenticated = signal<boolean>(this.hasToken());
 
   constructor(

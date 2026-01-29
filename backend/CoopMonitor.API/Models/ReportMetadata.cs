@@ -15,42 +15,22 @@ public class ReportMetadata
     [ForeignKey(nameof(HouseId))]
     public House? House { get; set; }
 
-    /// <summary>
-    /// Тип отчета: "Daily", "Weekly", "Monthly", "Final"
-    /// </summary>
     [Required]
     [MaxLength(50)]
     public required string ReportType { get; set; }
 
-    /// <summary>
-    /// Дата, за которую сформирован отчет (или начало периода)
-    /// </summary>
     [Required]
     public DateTime ReportDate { get; set; }
 
-    /// <summary>
-    /// Дата генерации
-    /// </summary>
     public DateTime GeneratedAt { get; set; } = DateTime.UtcNow;
 
-    /// <summary>
-    /// Путь к файлу в бакете 'reports'
-    /// </summary>
     [Required]
     [MaxLength(500)]
     public required string FilePath { get; set; }
 
-    /// <summary>
-    /// Статус генерации (Success, Failed)
-    /// </summary>
     [MaxLength(20)]
     public string Status { get; set; } = "Success";
 
-    // --- SaaS Sync Fields ---
-
-    /// <summary>
-    /// Флаг успешной отправки в Облако
-    /// </summary>
     public bool IsSynced { get; set; } = false;
 
     public DateTime? SyncedAt { get; set; }
