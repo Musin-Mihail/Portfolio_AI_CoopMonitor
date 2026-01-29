@@ -29,25 +29,21 @@ export class DashboardComponent implements OnInit {
   chart: Chart | null = null;
   comparisonChart: Chart | null = null;
 
-  // Список для селектора
   houseOptions: any[] = [];
   selectedHouseId: number | null = null;
 
-  // Данные
   allSummaries: DashboardSummary[] = [];
   currentSummary: DashboardSummary | null = null;
 
-  // Настройки для графика одного курятника
   selectedAggregation = 0;
   aggregationOptions: { label: string; value: number }[] = [];
 
-  // Настройки для общего графика (Comparison)
   selectedSensorType: 'temperature' | 'humidity' | 'co2' | 'nh3' = 'temperature';
   selectedTimeRange: 'day' | 'week' = 'day';
 
   constructor() {
     this.translate.onLangChange.subscribe(() => {
-      this.initOptions(); // Update options on lang change
+      this.initOptions();
       this.refreshCharts();
     });
   }
@@ -85,7 +81,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // Переключатели для общего графика
   setSensorType(type: 'temperature' | 'humidity' | 'co2' | 'nh3') {
     this.selectedSensorType = type;
     this.loadComparisonHistory();
@@ -98,7 +93,6 @@ export class DashboardComponent implements OnInit {
 
   loadData() {
     if (this.selectedHouseId === null) {
-      // Режим "ALL"
       this.dashboardService.getAllSummaries().subscribe((res) => {
         this.allSummaries = res;
         this.currentSummary = null;
@@ -106,11 +100,9 @@ export class DashboardComponent implements OnInit {
           this.chart.destroy();
           this.chart = null;
         }
-        // Загружаем общий график
         this.loadComparisonHistory();
       });
     } else {
-      // Режим "Specific"
       this.dashboardService.getSummary(this.selectedHouseId).subscribe((res) => {
         this.currentSummary = res;
         this.allSummaries = [];
@@ -123,7 +115,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // График для одного курятника (мульти-осевой: T, H, Gas)
   loadSingleHistory() {
     if (!this.selectedHouseId) return;
     this.dashboardService.getHistory(this.selectedHouseId, 24, this.selectedAggregation).subscribe((data) => {
@@ -131,11 +122,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // Общий график сравнения (один параметр для всех домов)
   loadComparisonHistory() {
     const hours = this.selectedTimeRange === 'week' ? 168 : 24;
-    // Для недели интервал больше, для дня меньше
-    const interval = this.selectedTimeRange === 'week' ? 240 : 30; // 4 часа или 30 мин
+    const interval = this.selectedTimeRange === 'week' ? 240 : 30;
 
     this.dashboardService.getComparisonHistory(this.selectedSensorType, hours, interval).subscribe((data) => {
       setTimeout(() => this.updateComparisonChart(data), 0);
@@ -199,7 +188,7 @@ export class DashboardComponent implements OnInit {
             tension: 0.4,
             borderWidth: 2,
             pointRadius: 0,
-            yAxisID: 'y1', // Отдельная ось для газов
+            yAxisID: 'y1',
           },
         ],
       },
@@ -224,7 +213,6 @@ export class DashboardComponent implements OnInit {
 
     if (this.comparisonChart) this.comparisonChart.destroy();
 
-    // Собираем все уникальные метки времени и сортируем
     const allTimestamps = new Set<string>();
     data.forEach((house) => {
       house.data.forEach((p: any) => allTimestamps.add(p.timestamp));
@@ -240,14 +228,11 @@ export class DashboardComponent implements OnInit {
         : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     });
 
-    // Цвета для разных домов
     const colors = ['#4CAF50', '#3B82F6', '#A855F7', '#F59E0B', '#EF4444'];
 
     const datasets: ChartDataset<'line'>[] = data.map((house, index) => {
-      // ИСПРАВЛЕНИЕ: Явная типизация мапы и данных для TS
       const dataMap = new Map<string, number>(house.data.map((p: any) => [p.timestamp, p.value]));
 
-      // Явно указываем, что массив содержит (number | null)
       const alignedData: (number | null)[] = sortedTimestamps.map((ts) => {
         const val = dataMap.get(ts);
         return val !== undefined ? val : null;

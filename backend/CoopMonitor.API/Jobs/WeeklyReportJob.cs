@@ -29,7 +29,6 @@ public class WeeklyReportJob : IJob
         var fileStorage = scope.ServiceProvider.GetRequiredService<IFileStorageService>();
         var calcService = scope.ServiceProvider.GetRequiredService<ICalculationService>();
 
-        // Определяем период: последние 7 дней, заканчивая вчерашним
         DateTime endDate = DateTime.UtcNow.Date.AddDays(-1);
         DateTime startDate = endDate.AddDays(-6);
 
@@ -59,10 +58,8 @@ public class WeeklyReportJob : IJob
     {
         _logger.LogInformation("Generating Weekly Report for House {HouseId} ({Start} - {End})", house.Id, startDate, endDate);
 
-        // 1. Получение метрик через CalculationService
         var metrics = await calcService.CalculateProductionMetricsAsync(house.Id, startDate, endDate);
 
-        // 2. Климатические средние
         var sensors = await db.SensorReadings
             .Where(s => s.HouseId == house.Id && s.Date >= startDate && s.Date <= endDate.AddDays(1))
             .ToListAsync();
@@ -70,7 +67,6 @@ public class WeeklyReportJob : IJob
         double avgTemp = sensors.Any() ? sensors.Average(s => s.Temperature) : 0;
         double avgHum = sensors.Any() ? sensors.Average(s => s.Humidity) : 0;
 
-        // 3. Формирование модели
         var model = new WeeklyReportModel
         {
             Title = "Weekly Performance Report",
@@ -95,18 +91,15 @@ public class WeeklyReportJob : IJob
             AvgHumidity = avgHum
         };
 
-        // 4. Генерация HTML
         string html = await generator.GenerateReportHtmlAsync("WeeklyReport", model);
         byte[] bytes = Encoding.UTF8.GetBytes(html);
 
-        // 5. Загрузка в MinIO
         string fileName = $"Weekly_House{house.Id}_{endDate:yyyyMMdd}_W{model.WeekNumber}.html";
         using (var stream = new MemoryStream(bytes))
         {
             await storage.UploadFileAsync("reports", fileName, stream, "text/html");
         }
 
-        // 6. Запись метаданных
         var meta = new ReportMetadata
         {
             HouseId = house.Id,

@@ -64,9 +64,6 @@ export class UserDialogComponent implements OnInit {
 
   loadPersonnel() {
     this.personnelService.getPersonnels().subscribe((data) => {
-      // Фильтруем список: показываем только тех сотрудников, которые:
-      // 1. Не имеют привязанного UserId
-      // 2. ИЛИ привязаны к текущему редактируемому пользователю
       this.personnelOptions = data.filter((p) => !p.userId || (this.data && p.userId === this.data.id));
     });
   }

@@ -1,13 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { PrimeNG } from 'primeng/config'; // <-- FIX: Импортируем PrimeNG вместо PrimeNGConfig
+import { PrimeNG } from 'primeng/config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LanguageService {
   private translate = inject(TranslateService);
-  private primeng = inject(PrimeNG); // <-- FIX: Инжектируем сервис PrimeNG
+  private primeng = inject(PrimeNG);
 
   currentLang = signal<string>('ru');
 
@@ -21,7 +21,6 @@ export class LanguageService {
     this.currentLang.set(lang);
     localStorage.setItem('app_lang', lang);
 
-    // FIX: Явно указываем тип (res: any), чтобы избежать ошибки TS2571
     this.translate.get('primeng').subscribe((res: any) => {
       this.primeng.setTranslation(res);
     });

@@ -36,7 +36,6 @@ public class CalculationService : ICalculationService
 
         var today = DateTime.UtcNow.Date;
 
-        // Текущие данные (последние)
         var latestReading = await _context.SensorReadings
             .AsNoTracking()
             .Where(r => r.HouseId == houseId)
@@ -56,10 +55,8 @@ public class CalculationService : ICalculationService
             );
         }
 
-        // Проверка на алерты
         var alerts = await CheckAlerts(houseId, latestReading);
 
-        // Расчет Time In Range за 24 часа
         var yesterday = DateTime.UtcNow.AddHours(-24);
         var readings24h = await _context.SensorReadings
             .AsNoTracking()
@@ -67,14 +64,12 @@ public class CalculationService : ICalculationService
             .Select(r => new { r.Temperature, r.Humidity })
             .ToListAsync();
 
-        // Допустим, норма T: 18-33, H: 40-70 (упрощенно)
         int inRangeCount = readings24h.Count(r =>
             r.Temperature >= 18 && r.Temperature <= 33 &&
             r.Humidity >= 40 && r.Humidity <= 70);
 
         double timeInRange = readings24h.Any() ? (double)inRangeCount / readings24h.Count * 100.0 : 0;
 
-        // Метрики за сегодня
         var mortality = await _context.MortalityRecords
             .AsNoTracking()
             .Where(m => m.HouseId == houseId && m.Date.Date == today)
@@ -90,7 +85,6 @@ public class CalculationService : ICalculationService
             .Where(f => f.HouseId == houseId && f.Date.Date == today)
             .SumAsync(f => f.WaterQuantityLiters);
 
-        // Audio
         var lastAudio = await _context.AudioEvents
             .AsNoTracking()
             .Where(a => a.HouseId == houseId)
@@ -106,7 +100,7 @@ public class CalculationService : ICalculationService
         return new DashboardSummaryDto(
             houseId,
             house.Name,
-            24, // Mock Day of Cycle
+            24,
             new DailyMetricsDto(mortality, 0.5, feed, water, 0.055),
             new CurrentClimateDto(
                 latestReading.Temperature,
@@ -127,7 +121,6 @@ public class CalculationService : ICalculationService
         {
             var fromDate = DateTime.UtcNow.AddHours(-hours);
 
-            // 1. Получаем сырые данные
             var rawData = await _context.SensorReadings
                 .AsNoTracking()
                 .Where(r => r.HouseId == houseId && r.Date >= fromDate)
@@ -142,7 +135,6 @@ public class CalculationService : ICalculationService
                 return rawData.Select(r => new ClimateHistoryPoint(r.Date, r.Temperature, r.Humidity, r.Co2, r.Nh3));
             }
 
-            // 2. Агрегация в памяти
             var aggregated = rawData
                 .GroupBy(r =>
                 {
@@ -170,7 +162,6 @@ public class CalculationService : ICalculationService
         }
     }
 
-    // ИСПРАВЛЕННЫЙ МЕТОД: Убрано switch выражение из LINQ
     public async Task<IEnumerable<ComparisonHistoryDto>> GetComparisonHistoryAsync(string sensorType, int hours, int aggregationMinutes)
     {
         var fromDate = DateTime.UtcNow.AddHours(-hours);
@@ -184,8 +175,6 @@ public class CalculationService : ICalculationService
                 .AsNoTracking()
                 .Where(r => r.HouseId == house.Id && r.Date >= fromDate);
 
-            // Явно выбираем проекцию через if/else, чтобы EF Core мог построить корректный SQL
-            // Используем анонимный тип, совместимый с дальнейшей логикой
             List<(DateTime Date, double Value)> rawData;
 
             if (type == "humidity")
@@ -209,7 +198,7 @@ public class CalculationService : ICalculationService
                     .ToListAsync()
                     .ContinueWith(t => t.Result.Select(x => (x.Date, x.Val)).ToList());
             }
-            else // Default to Temperature
+            else
             {
                 rawData = await baseQuery
                     .Select(r => new { r.Date, Val = r.Temperature })
@@ -249,7 +238,6 @@ public class CalculationService : ICalculationService
 
     public async Task<ProductionMetricsDto> CalculateProductionMetricsAsync(int houseId, DateTime start, DateTime end)
     {
-        // Mock implementation
         return new ProductionMetricsDto(1000, 2000, 5, 0.1, 40, 180, 1.5, 14.5);
     }
 

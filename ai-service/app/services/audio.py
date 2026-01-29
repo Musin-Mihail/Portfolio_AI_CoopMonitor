@@ -13,9 +13,6 @@ class AudioPipeline:
         pass
 
     def process_audio(self, house_id: int, bucket: str, file_path: str):
-        """
-        Simulate audio analysis and notify Backend.
-        """
         logger.info(f"Processing audio for House {house_id} from {bucket}/{file_path}")
 
         time.sleep(1)
@@ -40,7 +37,6 @@ class AudioPipeline:
     def _send_result_to_backend(
         self, house_id: int, classification: str, confidence: float, clip_url: str
     ):
-        # Using a fallback for local dev vs docker
         url = "http://host.docker.internal:5000/api/Audio/ingest"
 
         payload = {

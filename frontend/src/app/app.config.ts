@@ -7,23 +7,19 @@ import Aura from '@primeng/themes/aura';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { Observable } from 'rxjs'; // Необходим для типизации
+import { Observable } from 'rxjs';
 
 import { routes } from './app.routes';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
-// FIX: Создаем свой загрузчик, чтобы избежать ошибки NG0201 (InjectionToken)
-// из-за конфликта версий библиотеки ngx-translate-http-loader
 export class CustomTranslateLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
 
   getTranslation(lang: string): Observable<any> {
-    // Загружаем переводы из папки assets
     return this.http.get(`./assets/i18n/${lang}.json`);
   }
 }
 
-// Фабрика теперь использует наш CustomTranslateLoader
 export function HttpLoaderFactory(http: HttpClient) {
   return new CustomTranslateLoader(http);
 }
@@ -35,7 +31,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([jwtInterceptor])),
     provideAnimationsAsync(),
 
-    // Настройка ngx-translate
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

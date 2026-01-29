@@ -21,10 +21,6 @@ class VisionPipeline:
             os.makedirs(self.temp_dir)
 
     def process_job(self, job_id: str, bucket: str, file_path: str):
-        """
-        Background task to process video.
-        Simulates detection using OpenCV and random generators.
-        """
         logger.info(f"[{job_id}] Starting processing for {bucket}/{file_path}")
 
         local_video_path = os.path.join(self.temp_dir, f"{job_id}_input.mp4")

@@ -38,40 +38,34 @@ public class DataImportController : ControllerBase
             var readings = new List<SensorReading>();
             using (var stream = new StreamReader(file.OpenReadStream()))
             {
-                string? header = await stream.ReadLineAsync(); // Skip header
-                // Header expected: ts,pressure,humidity,nh3,t1,t2,t3
+                string? header = await stream.ReadLineAsync();
 
                 while (!stream.EndOfStream)
                 {
                     var line = await stream.ReadLineAsync();
                     if (string.IsNullOrWhiteSpace(line)) continue;
 
-                    // Regex для сплита по запятой, игнорируя запятые внутри кавычек
                     var parts = Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
-                    if (parts.Length < 7) continue; // Basic validation
+                    if (parts.Length < 7) continue;
 
                     try
                     {
-                        // Парсинг даты
                         if (!DateTime.TryParse(parts[0].Trim('"'), CultureInfo.InvariantCulture, DateTimeStyles.None, out var timestamp))
                             continue;
 
-                        // Парсинг значений (с учетом запятой как разделителя дробной части)
-                        var culture = new CultureInfo("ru-RU"); // В CSV используется запятая
+                        var culture = new CultureInfo("ru-RU");
 
                         double ParseDouble(string val)
                         {
                             val = val.Trim('"').Trim();
                             if (double.TryParse(val, NumberStyles.Any, culture, out var result))
                                 return result;
-                            // Fallback для точки
                             if (double.TryParse(val, NumberStyles.Any, CultureInfo.InvariantCulture, out var resultUs))
                                 return resultUs;
                             return 0;
                         }
 
-                        // double pressure = ParseDouble(parts[1]); // Не используем пока в модели
                         double humidity = ParseDouble(parts[2]);
                         double nh3 = ParseDouble(parts[3]);
 
@@ -79,9 +73,7 @@ public class DataImportController : ControllerBase
                         double t2 = ParseDouble(parts[5]);
                         double t3 = ParseDouble(parts[6]);
 
-                        // Берем среднее по температуре, если датчиков несколько
                         double avgTemp = (t1 + t2 + t3) / 3.0;
-                        // Если 0 (ошибка датчика), пытаемся взять ненулевые
                         if (avgTemp == 0)
                         {
                             var temps = new[] { t1, t2, t3 }.Where(t => t > 0).ToList();
@@ -95,7 +87,7 @@ public class DataImportController : ControllerBase
                             Temperature = avgTemp,
                             Humidity = humidity,
                             Nh3 = nh3,
-                            Co2 = 0, // Нет данных в CSV
+                            Co2 = 0,
                             IsValid = true
                         });
                     }
@@ -108,8 +100,6 @@ public class DataImportController : ControllerBase
 
             if (readings.Any())
             {
-                // Очищаем старые данные за этот период для этого курятника, чтобы избежать дублей (опционально)
-                // Или просто добавляем. Для MVP добавляем.
                 await _context.SensorReadings.AddRangeAsync(readings);
                 await _context.SaveChangesAsync();
             }

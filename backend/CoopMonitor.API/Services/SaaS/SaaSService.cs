@@ -10,7 +10,6 @@ public class SaaSService : ISaaSService
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<SaaSService> _logger;
 
-    // Лимит: 500 МБ в байтах
     private const long DailyLimitBytes = 500 * 1024 * 1024;
 
     public SaaSService(IServiceProvider serviceProvider, ILogger<SaaSService> logger)
@@ -57,13 +56,8 @@ public class SaaSService : ISaaSService
 
     public async Task<bool> UploadReportAsync(string fileName, Stream content)
     {
-        // Mock Implementation
-        // В реальности здесь был бы HttpClient.PostAsync("https://cloud-api.coop/upload", content)
-
-        // Симулируем задержку сети
         await Task.Delay(500);
 
-        // Симулируем случайный сбой сети (5% шанс)
         if (new Random().NextDouble() > 0.95)
         {
             _logger.LogError("Simulated network error during upload of {File}", fileName);
@@ -76,7 +70,6 @@ public class SaaSService : ISaaSService
 
     public async Task CheckForUpdatesAsync()
     {
-        // Mock Implementation
         _logger.LogInformation("Checking for config updates from SaaS...");
         await Task.Delay(300);
         _logger.LogInformation("No updates available (Mock).");
@@ -91,7 +84,6 @@ public class SaaSService : ISaaSService
         var usage = await context.SyncUsages.FirstOrDefaultAsync(u => u.Date == today);
         long used = usage?.BytesSent ?? 0;
 
-        // Mock Last Sync time: take the latest SyncedAt from Reports
         var lastReport = await context.Reports
             .Where(r => r.IsSynced)
             .OrderByDescending(r => r.SyncedAt)
@@ -100,7 +92,7 @@ public class SaaSService : ISaaSService
         double percent = (double)used / DailyLimitBytes * 100.0;
 
         return new SaaSStatusDto(
-            IsConnected: true, // Mock
+            IsConnected: true,
             DailyUsageBytes: used,
             DailyLimitBytes: DailyLimitBytes,
             UsagePercent: Math.Round(percent, 2),

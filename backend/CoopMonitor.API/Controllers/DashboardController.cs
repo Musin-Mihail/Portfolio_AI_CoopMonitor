@@ -48,14 +48,12 @@ public class DashboardController : ControllerBase
         return Ok(history);
     }
 
-    // НОВЫЙ ЭНДПОИНТ: Сравнение всех курятников
     [HttpGet("history/comparison")]
     public async Task<ActionResult<IEnumerable<ComparisonHistoryDto>>> GetComparisonHistory(
         [FromQuery] string type = "temperature",
         [FromQuery] int hours = 24,
         [FromQuery] int interval = 30)
     {
-        // Для сравнения агрегация по умолчанию 30 мин, чтобы не перегружать график
         if (interval == 0) interval = 30;
 
         var history = await _calculationService.GetComparisonHistoryAsync(type, hours, interval);
