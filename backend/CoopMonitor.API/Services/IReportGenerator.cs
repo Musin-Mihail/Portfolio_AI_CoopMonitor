@@ -12,8 +12,6 @@ public interface IReportGenerator
     Task<string> GenerateReportHtmlAsync<TModel>(string templateKey, TModel model);
 }
 
-// Модели для шаблонов отчетов
-
 public class DailyReportModel
 {
     public string Title { get; set; } = string.Empty;
@@ -21,13 +19,11 @@ public class DailyReportModel
     public DateTime Date { get; set; }
     public int DayOfCycle { get; set; }
 
-    // Метрики
     public int MortalityCount { get; set; }
     public int TotalPopulation { get; set; }
     public double FeedConsumedKg { get; set; }
     public double WaterConsumedLiters { get; set; }
 
-    // Климат (средние)
     public double AvgTemp { get; set; }
     public double AvgHumidity { get; set; }
     public double TimeInRangePercent { get; set; }
@@ -43,19 +39,17 @@ public class WeeklyReportModel
     public DateTime EndDate { get; set; }
     public int WeekNumber { get; set; }
 
-    // Производство
     public double StartWeight { get; set; }
     public double EndWeight { get; set; }
-    public double WeightGain { get; set; } // Привес за неделю (г)
+    public double WeightGain { get; set; }
     public double FCR { get; set; }
-    public double StockingDensity { get; set; } // кг/м2
+    public double StockingDensity { get; set; }
 
     public double TotalFeed { get; set; }
     public double TotalWater { get; set; }
     public int TotalMortality { get; set; }
     public double MortalityRate { get; set; }
 
-    // Климат
     public double AvgTemp { get; set; }
     public double AvgHumidity { get; set; }
 }

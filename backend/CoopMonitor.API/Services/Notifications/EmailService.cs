@@ -34,7 +34,6 @@ public class EmailService : INotificationService
 
     public async Task SendMessageAsync(string message)
     {
-        // Для email обычные сообщения (не алерты) отправляем с темой Info
         await SendEmailInternalAsync("CoopMonitor Notification", message);
     }
 
@@ -70,7 +69,6 @@ public class EmailService : INotificationService
             message.Body = new TextPart("html") { Text = htmlBody };
 
             using var client = new SmtpClient();
-            // Для демо отключаем проверку сертификатов (в проде убрать!)
             client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
             await client.ConnectAsync(_host, _port, _useSsl);

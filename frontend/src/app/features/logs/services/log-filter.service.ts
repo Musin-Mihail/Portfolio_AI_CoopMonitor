@@ -14,7 +14,7 @@ export class LogFilterService {
 
     if (range && range.length > 0) {
       this.startDate.set(range[0]);
-      this.endDate.set(range[1] || range[0]); // Handle single date selection
+      this.endDate.set(range[1] || range[0]);
     } else {
       this.startDate.set(null);
       this.endDate.set(null);

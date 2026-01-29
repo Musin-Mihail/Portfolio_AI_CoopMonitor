@@ -22,7 +22,6 @@ public class RazorReportGenerator : IReportGenerator
 
     private string GetTemplateContent(string key)
     {
-        // DAILY REPORT TEMPLATE
         if (key == "DailyReport")
         {
             return @"@using System
@@ -106,7 +105,6 @@ public class RazorReportGenerator : IReportGenerator
 </html>";
         }
 
-        // WEEKLY REPORT TEMPLATE
         if (key == "WeeklyReport")
         {
             return @"@using System

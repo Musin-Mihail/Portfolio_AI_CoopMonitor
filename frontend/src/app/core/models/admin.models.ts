@@ -18,7 +18,7 @@ export interface CreateUserDto {
 export interface UpdateUserDto {
   userName: string;
   email: string;
-  password?: string; // Optional on update
+  password?: string;
   role: string;
   personnelId?: number;
 }
