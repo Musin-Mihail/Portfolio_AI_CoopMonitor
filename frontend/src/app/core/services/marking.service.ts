@@ -10,10 +10,11 @@ export class MarkingService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api/Marking';
 
-  getRecords(houseId?: number, date?: string): Observable<MarkingRecord[]> {
+  getRecords(houseId?: number, startDate?: string, endDate?: string): Observable<MarkingRecord[]> {
     let params = new HttpParams();
     if (houseId) params = params.set('houseId', houseId);
-    if (date) params = params.set('date', date);
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
 
     return this.http.get<MarkingRecord[]>(this.API_URL, { params });
   }

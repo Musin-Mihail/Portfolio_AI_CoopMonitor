@@ -22,7 +22,10 @@ public class DiseaseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<DiseaseRecordDto>>> GetRecords([FromQuery] int? houseId, [FromQuery] DateTime? date)
+    public async Task<ActionResult<IEnumerable<DiseaseRecordDto>>> GetRecords(
+        [FromQuery] int? houseId,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate)
     {
         var query = _context.DiseaseRecords
             .Include(x => x.House)
@@ -33,8 +36,11 @@ public class DiseaseController : ControllerBase
         if (houseId.HasValue)
             query = query.Where(x => x.HouseId == houseId.Value);
 
-        if (date.HasValue)
-            query = query.Where(x => x.Date.Date == date.Value.Date);
+        if (startDate.HasValue)
+            query = query.Where(x => x.Date >= startDate.Value);
+
+        if (endDate.HasValue)
+            query = query.Where(x => x.Date <= endDate.Value);
 
         var records = await query.OrderByDescending(x => x.Date).ToListAsync();
 

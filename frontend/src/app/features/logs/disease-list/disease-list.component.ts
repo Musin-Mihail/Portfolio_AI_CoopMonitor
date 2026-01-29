@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -10,6 +10,7 @@ import { DiseaseService } from '../../../core/services/disease.service';
 import { FileUploadService } from '../../../core/services/file-upload.service';
 import { DiseaseRecord } from '../../../core/models/logs.models';
 import { DiseaseDialogComponent } from '../disease-dialog/disease-dialog.component';
+import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
 
 @Component({
   selector: 'app-disease-list',
@@ -19,6 +20,7 @@ import { DiseaseDialogComponent } from '../disease-dialog/disease-dialog.compone
 })
 export class DiseaseListComponent implements OnInit {
   private service = inject(DiseaseService);
+  private filterService = inject(LogFilterService);
   private fileService = inject(FileUploadService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
@@ -27,12 +29,25 @@ export class DiseaseListComponent implements OnInit {
 
   dataSource = signal<DiseaseRecord[]>([]);
 
+  constructor() {
+    effect(() => {
+      this.filterService.houseId();
+      this.filterService.startDate();
+      this.filterService.endDate();
+      this.loadData();
+    });
+  }
+
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
-    this.service.getRecords().subscribe({
+    const houseId = this.filterService.houseId() || undefined;
+    const startDate = this.filterService.startDate()?.toISOString();
+    const endDate = this.filterService.endDate()?.toISOString();
+
+    this.service.getRecords(houseId, startDate, endDate).subscribe({
       next: (data) => this.dataSource.set(data),
       error: () =>
         this.messageService.add({

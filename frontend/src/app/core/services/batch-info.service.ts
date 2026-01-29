@@ -10,10 +10,11 @@ export class BatchInfoService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api/BatchInfo';
 
-  getRecords(houseId?: number, date?: string): Observable<BatchInfoRecord[]> {
+  getRecords(houseId?: number, startDate?: string, endDate?: string): Observable<BatchInfoRecord[]> {
     let params = new HttpParams();
     if (houseId) params = params.set('houseId', houseId);
-    if (date) params = params.set('date', date);
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
 
     return this.http.get<BatchInfoRecord[]>(this.API_URL, { params });
   }

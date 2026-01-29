@@ -10,10 +10,11 @@ export class DiseaseService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api/Disease';
 
-  getRecords(houseId?: number, date?: string): Observable<DiseaseRecord[]> {
+  getRecords(houseId?: number, startDate?: string, endDate?: string): Observable<DiseaseRecord[]> {
     let params = new HttpParams();
     if (houseId) params = params.set('houseId', houseId);
-    if (date) params = params.set('date', date);
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
 
     return this.http.get<DiseaseRecord[]>(this.API_URL, { params });
   }

@@ -10,24 +10,23 @@ export class WeighingService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api/Weighing';
 
-  getRecords(houseId?: number, date?: string): Observable<WeighingRecord[]> {
+  getRecords(houseId?: number, startDate?: string, endDate?: string): Observable<WeighingRecord[]> {
     let params = new HttpParams();
     if (houseId) params = params.set('houseId', houseId);
-    if (date) params = params.set('date', date);
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
 
     return this.http.get<WeighingRecord[]>(this.API_URL, { params });
   }
 
   createRecord(dto: CreateWeighingDto): Observable<WeighingRecord> {
     const formData = this.createFormData(dto);
-    // Mandatory for create
     formData.append('videoFile', dto.videoFile);
     return this.http.post<WeighingRecord>(this.API_URL, formData);
   }
 
   updateRecord(id: number, dto: Partial<CreateWeighingDto> & { videoFile?: File }): Observable<void> {
     const formData = this.createFormData(dto as CreateWeighingDto);
-    // Optional for update
     if (dto.videoFile) {
       formData.append('videoFile', dto.videoFile);
     }

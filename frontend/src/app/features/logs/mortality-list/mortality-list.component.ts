@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -10,6 +10,7 @@ import { MortalityService } from '../../../core/services/mortality.service';
 import { MortalityRecord } from '../../../core/models/logs.models';
 import { MortalityDialogComponent } from '../mortality-dialog/mortality-dialog.component';
 import { FileUploadService } from '../../../core/services/file-upload.service';
+import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
 
 @Component({
   selector: 'app-mortality-list',
@@ -19,6 +20,7 @@ import { FileUploadService } from '../../../core/services/file-upload.service';
 })
 export class MortalityListComponent implements OnInit {
   private service = inject(MortalityService);
+  private filterService = inject(LogFilterService);
   private fileService = inject(FileUploadService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
@@ -27,12 +29,25 @@ export class MortalityListComponent implements OnInit {
 
   dataSource = signal<MortalityRecord[]>([]);
 
+  constructor() {
+    effect(() => {
+      this.filterService.houseId();
+      this.filterService.startDate();
+      this.filterService.endDate();
+      this.loadData();
+    });
+  }
+
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
-    this.service.getRecords().subscribe({
+    const houseId = this.filterService.houseId() || undefined;
+    const startDate = this.filterService.startDate()?.toISOString();
+    const endDate = this.filterService.endDate()?.toISOString();
+
+    this.service.getRecords(houseId, startDate, endDate).subscribe({
       next: (data) => this.dataSource.set(data),
       error: () =>
         this.messageService.add({

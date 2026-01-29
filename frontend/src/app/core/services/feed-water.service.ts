@@ -10,10 +10,11 @@ export class FeedWaterService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api/FeedWater';
 
-  getRecords(houseId?: number, date?: string): Observable<FeedWaterRecord[]> {
+  getRecords(houseId?: number, startDate?: string, endDate?: string): Observable<FeedWaterRecord[]> {
     let params = new HttpParams();
     if (houseId) params = params.set('houseId', houseId);
-    if (date) params = params.set('date', date);
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
 
     return this.http.get<FeedWaterRecord[]>(this.API_URL, { params });
   }

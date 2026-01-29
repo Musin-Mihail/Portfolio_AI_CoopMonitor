@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -8,6 +8,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FeedWaterService } from '../../../core/services/feed-water.service';
 import { FeedWaterRecord } from '../../../core/models/logs.models';
 import { FeedWaterDialogComponent } from '../feed-water-dialog/feed-water-dialog.component';
+import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
 
 @Component({
   selector: 'app-feed-water-list',
@@ -17,6 +18,7 @@ import { FeedWaterDialogComponent } from '../feed-water-dialog/feed-water-dialog
 })
 export class FeedWaterListComponent implements OnInit {
   private service = inject(FeedWaterService);
+  private filterService = inject(LogFilterService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
@@ -24,12 +26,25 @@ export class FeedWaterListComponent implements OnInit {
 
   dataSource = signal<FeedWaterRecord[]>([]);
 
+  constructor() {
+    effect(() => {
+      this.filterService.houseId();
+      this.filterService.startDate();
+      this.filterService.endDate();
+      this.loadData();
+    });
+  }
+
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
-    this.service.getRecords().subscribe({
+    const houseId = this.filterService.houseId() || undefined;
+    const startDate = this.filterService.startDate()?.toISOString();
+    const endDate = this.filterService.endDate()?.toISOString();
+
+    this.service.getRecords(houseId, startDate, endDate).subscribe({
       next: (data) => this.dataSource.set(data),
       error: () =>
         this.messageService.add({

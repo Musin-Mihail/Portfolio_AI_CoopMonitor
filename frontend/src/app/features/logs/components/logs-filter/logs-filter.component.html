@@ -1,0 +1,61 @@
+<div class="bg-white h-full flex flex-col p-6 border-l border-slate-100">
+  <h2 class="text-xl font-bold text-[#1A1C21] mb-6">{{ "FILTERS.TITLE" | translate }}</h2>
+
+  <div class="flex flex-col gap-6">
+    <!-- House -->
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-semibold text-slate-700">{{ "FILTERS.HOUSE" | translate }}</label>
+      <p-select
+        [options]="houses()"
+        [(ngModel)]="selectedHouseId"
+        optionLabel="name"
+        optionValue="id"
+        [placeholder]="'FILTERS.SELECT_HOUSE' | translate"
+        [showClear]="true"
+        styleClass="w-full bg-[#f8f9fb] border-slate-200"
+        [style]="{ 'border-radius': '12px' }" />
+    </div>
+
+    <!-- Period -->
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-semibold text-slate-700">{{ "FILTERS.PERIOD" | translate }}</label>
+      <p-datepicker
+        [(ngModel)]="selectedRange"
+        selectionMode="range"
+        [readonlyInput]="true"
+        [placeholder]="'FILTERS.SELECT_PERIOD' | translate"
+        [showIcon]="true"
+        dateFormat="dd.mm.yy"
+        styleClass="w-full"
+        inputStyleClass="bg-[#f8f9fb] border-slate-200 rounded-xl" />
+    </div>
+
+    <!-- Status -->
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-semibold text-slate-700">{{ "FILTERS.STATUS" | translate }}</label>
+      <p-select
+        [options]="statusOptions"
+        [(ngModel)]="selectedStatus"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FILTERS.SELECT_STATUS' | translate"
+        [showClear]="true"
+        styleClass="w-full bg-[#f8f9fb] border-slate-200"
+        [style]="{ 'border-radius': '12px' }" />
+    </div>
+  </div>
+
+  <div class="mt-auto flex flex-col gap-3">
+    <button
+      (click)="apply()"
+      class="bg-[#1A1C21] text-white w-full py-3 rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+      {{ "FILTERS.APPLY" | translate }}
+    </button>
+
+    <button
+      (click)="reset()"
+      class="bg-[#F1F5F9] text-slate-600 w-full py-3 rounded-xl font-semibold hover:bg-slate-200 transition-colors">
+      {{ "FILTERS.RESET" | translate }}
+    </button>
+  </div>
+</div>

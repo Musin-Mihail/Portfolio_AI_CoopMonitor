@@ -21,6 +21,17 @@
     "ADMIN_AUDIT": "Audit",
     "ADMIN_STATUS": "System Status"
   },
+  "FILTERS": {
+    "TITLE": "Filters",
+    "HOUSE": "House",
+    "SELECT_HOUSE": "Select House",
+    "PERIOD": "Period",
+    "SELECT_PERIOD": "Select Period",
+    "STATUS": "Status",
+    "SELECT_STATUS": "Select Status",
+    "APPLY": "Apply",
+    "RESET": "Reset Filter"
+  },
   "AUTH": {
     "TITLE": "Sign in to your account",
     "USERNAME": "Username",

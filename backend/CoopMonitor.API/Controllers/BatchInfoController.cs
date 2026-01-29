@@ -22,7 +22,10 @@ public class BatchInfoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BatchInfoRecordDto>>> GetRecords([FromQuery] int? houseId, [FromQuery] DateTime? date)
+    public async Task<ActionResult<IEnumerable<BatchInfoRecordDto>>> GetRecords(
+        [FromQuery] int? houseId,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate)
     {
         var query = _context.BatchInfoRecords
             .Include(m => m.House)
@@ -33,8 +36,11 @@ public class BatchInfoController : ControllerBase
         if (houseId.HasValue)
             query = query.Where(m => m.HouseId == houseId.Value);
 
-        if (date.HasValue)
-            query = query.Where(m => m.Date.Date == date.Value.Date);
+        if (startDate.HasValue)
+            query = query.Where(m => m.Date >= startDate.Value);
+
+        if (endDate.HasValue)
+            query = query.Where(m => m.Date <= endDate.Value);
 
         var records = await query.OrderByDescending(m => m.Date).ToListAsync();
 

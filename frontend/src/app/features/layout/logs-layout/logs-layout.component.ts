@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
-import { TranslateModule } from '@ngx-translate/core'; // Import
+import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs';
+import { LogsFilterComponent } from '../../logs/components/logs-filter/logs-filter.component';
 
 @Component({
   selector: 'app-logs-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SelectModule, FormsModule, TranslateModule], // Add Module
+  imports: [CommonModule, RouterOutlet, SelectModule, FormsModule, TranslateModule, LogsFilterComponent],
   templateUrl: './logs-layout.component.html',
 })
 export class LogsLayoutComponent implements OnInit {
@@ -17,9 +18,8 @@ export class LogsLayoutComponent implements OnInit {
 
   selectedLog = signal<string>('');
 
-  // Используем ключи перевода вместо текста
   logOptions = [
-    { label: 'MENU.LOGS_BATCH_INFO', value: '/logs/batch-info' }, // NEW
+    { label: 'MENU.LOGS_BATCH_INFO', value: '/logs/batch-info' },
     { label: 'MENU.LOGS_MORTALITY', value: '/logs/mortality' },
     { label: 'MENU.LOGS_FEED_WATER', value: '/logs/feed-water' },
     { label: 'MENU.LOGS_DISEASE', value: '/logs/disease' },

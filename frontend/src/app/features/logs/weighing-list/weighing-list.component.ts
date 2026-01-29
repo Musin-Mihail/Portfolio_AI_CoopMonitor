@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,7 @@ import { VideoService } from '../../../core/services/video.service';
 import { WeighingRecord } from '../../../core/models/logs.models';
 import { WeighingDialogComponent } from '../weighing-dialog/weighing-dialog.component';
 import { VideoPlayerDialogComponent } from '../../video-wall/video-player-dialog/video-player-dialog.component';
+import { LogFilterService } from '../services/log-filter.service'; // Fixed Import
 
 @Component({
   selector: 'app-weighing-list',
@@ -20,6 +21,7 @@ import { VideoPlayerDialogComponent } from '../../video-wall/video-player-dialog
 })
 export class WeighingListComponent implements OnInit {
   private service = inject(WeighingService);
+  private filterService = inject(LogFilterService);
   private videoService = inject(VideoService);
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
@@ -28,12 +30,25 @@ export class WeighingListComponent implements OnInit {
 
   dataSource = signal<WeighingRecord[]>([]);
 
+  constructor() {
+    effect(() => {
+      this.filterService.houseId();
+      this.filterService.startDate();
+      this.filterService.endDate();
+      this.loadData();
+    });
+  }
+
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
-    this.service.getRecords().subscribe({
+    const houseId = this.filterService.houseId() || undefined;
+    const startDate = this.filterService.startDate()?.toISOString();
+    const endDate = this.filterService.endDate()?.toISOString();
+
+    this.service.getRecords(houseId, startDate, endDate).subscribe({
       next: (data) => this.dataSource.set(data),
       error: () =>
         this.messageService.add({
