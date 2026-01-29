@@ -9,6 +9,7 @@ import { House, CreateHouseDto } from '../models/master-data.models';
 export class HousesService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api/Houses';
+  private readonly IMPORT_URL = '/api/DataImport';
 
   getHouses(): Observable<House[]> {
     return this.http.get<House[]>(this.API_URL);
@@ -28,5 +29,11 @@ export class HousesService {
 
   deleteHouse(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
+  }
+
+  importData(houseId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.IMPORT_URL}/upload/${houseId}`, formData);
   }
 }

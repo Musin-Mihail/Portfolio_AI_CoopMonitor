@@ -17,6 +17,14 @@ public class DashboardController : ControllerBase
         _calculationService = calculationService;
     }
 
+    // Получить сводку по всем курятникам сразу
+    [HttpGet("summary")]
+    public async Task<ActionResult<IEnumerable<DashboardSummaryDto>>> GetAllSummaries()
+    {
+        var summaries = await _calculationService.GetAllHousesSummaryAsync();
+        return Ok(summaries);
+    }
+
     [HttpGet("summary/{houseId}")]
     public async Task<ActionResult<DashboardSummaryDto>> GetSummary(int houseId)
     {
@@ -32,9 +40,12 @@ public class DashboardController : ControllerBase
     }
 
     [HttpGet("history/{houseId}")]
-    public async Task<ActionResult<IEnumerable<ClimateHistoryPoint>>> GetHistory(int houseId, [FromQuery] int hours = 24)
+    public async Task<ActionResult<IEnumerable<ClimateHistoryPoint>>> GetHistory(
+        int houseId,
+        [FromQuery] int hours = 24,
+        [FromQuery] int interval = 0)
     {
-        var history = await _calculationService.GetHouseHistoryAsync(houseId, hours);
+        var history = await _calculationService.GetHouseHistoryAsync(houseId, hours, interval);
         return Ok(history);
     }
 }

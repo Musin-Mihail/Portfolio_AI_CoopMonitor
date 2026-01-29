@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -25,6 +25,10 @@ export class HouseListComponent implements OnInit {
 
   dataSource = signal<House[]>([]);
 
+  // Для загрузки файла
+  @ViewChild('fileInput') fileInput!: ElementRef;
+  selectedHouseId: number | null = null;
+
   ngOnInit(): void {
     this.load();
   }
@@ -40,6 +44,38 @@ export class HouseListComponent implements OnInit {
         }),
     });
   }
+
+  // --- Import Logic ---
+  triggerUpload(houseId: number) {
+    this.selectedHouseId = houseId;
+    this.fileInput.nativeElement.value = ''; // Reset input
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file && this.selectedHouseId) {
+      this.messageService.add({ severity: 'info', summary: 'Uploading...', detail: 'Importing sensor data.' });
+
+      this.service.importData(this.selectedHouseId, file).subscribe({
+        next: (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: res.message || 'Data imported successfully',
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to import data. Check CSV format.',
+          });
+        },
+      });
+    }
+  }
+  // --------------------
 
   openDialog(house?: House) {
     const ref = this.dialogService.open(HouseDialogComponent, {
