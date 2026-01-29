@@ -20,6 +20,7 @@ import { FeedWaterListComponent } from './features/logs/feed-water-list/feed-wat
 import { DiseaseListComponent } from './features/logs/disease-list/disease-list.component';
 import { WeighingListComponent } from './features/logs/weighing-list/weighing-list.component';
 import { MarkingListComponent } from './features/logs/marking-list/marking-list.component';
+import { BatchInfoListComponent } from './features/logs/batch-info-list/batch-info-list.component'; // NEW
 import { UserListComponent } from './features/admin/user-list/user-list.component';
 import { AuditListComponent } from './features/admin/audit-list/audit-list.component';
 import { SystemStatusComponent } from './features/settings/system-status/system-status.component';
@@ -64,7 +65,8 @@ export const routes: Routes = [
         component: LogsLayoutComponent,
         data: { breadcrumb: 'MENU.LOGS' },
         children: [
-          { path: '', redirectTo: 'mortality', pathMatch: 'full' },
+          { path: '', redirectTo: 'batch-info', pathMatch: 'full' },
+          { path: 'batch-info', component: BatchInfoListComponent, data: { breadcrumb: 'MENU.LOGS_BATCH_INFO' } }, // NEW
           { path: 'mortality', component: MortalityListComponent, data: { breadcrumb: 'MENU.LOGS_MORTALITY' } },
           { path: 'feed-water', component: FeedWaterListComponent, data: { breadcrumb: 'MENU.LOGS_FEED_WATER' } },
           { path: 'disease', component: DiseaseListComponent, data: { breadcrumb: 'MENU.LOGS_DISEASE' } },

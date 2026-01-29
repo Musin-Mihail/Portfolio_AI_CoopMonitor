@@ -1,0 +1,120 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex flex-col p-6 h-full">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-5 overflow-y-auto max-h-[70vh] pr-2">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="houseId"
+          class="text-sm font-semibold text-slate-700">
+          {{ "COMMON.HOUSE" | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-select
+          id="houseId"
+          formControlName="houseId"
+          [options]="houses()"
+          optionLabel="name"
+          optionValue="id"
+          [placeholder]="'COMMON.SELECT_OPTION' | translate"
+          appendTo="body"
+          [style]="{ width: '100%' }" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('houseId')?.hasError('required') && form.get('houseId')?.touched">
+          {{ "COMMON.REQUIRED" | translate }}
+        </small>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="personnelId"
+          class="text-sm font-semibold text-slate-700">
+          {{ "COMMON.RESPONSIBLE" | translate }}
+        </label>
+        <p-select
+          id="personnelId"
+          formControlName="personnelId"
+          [options]="personnel()"
+          optionLabel="fullName"
+          optionValue="id"
+          [placeholder]="'COMMON.SELECT_OPTION' | translate"
+          appendTo="body"
+          [style]="{ width: '100%' }" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label
+        for="date"
+        class="text-sm font-semibold text-slate-700">
+        {{ "LOGS_BATCH_INFO.DATE_ARRIVAL" | translate }}
+        <span class="text-red-500">*</span>
+      </label>
+      <p-datepicker
+        id="date"
+        formControlName="date"
+        dateFormat="yy-mm-dd"
+        appendTo="body"
+        [showIcon]="true"
+        styleClass="w-full" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="quantity"
+          class="text-sm font-semibold text-slate-700">
+          {{ "LOGS_BATCH_INFO.QUANTITY" | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-inputnumber
+          formControlName="quantity"
+          mode="decimal"
+          inputId="quantity"
+          [useGrouping]="false"
+          styleClass="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="birdAgeDays"
+          class="text-sm font-semibold text-slate-700">
+          {{ "LOGS_BATCH_INFO.AGE" | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-inputnumber
+          formControlName="birdAgeDays"
+          mode="decimal"
+          inputId="birdAgeDays"
+          [useGrouping]="false"
+          styleClass="w-full" />
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 pt-8 mt-auto border-t border-slate-50">
+    <p-button
+      [label]="'COMMON.CANCEL' | translate"
+      severity="secondary"
+      [text]="true"
+      (onClick)="onCancel()" />
+    <p-button
+      [label]="'COMMON.SAVE' | translate"
+      type="submit"
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
+  </div>
+</form>

@@ -19,6 +19,7 @@ export class LogsLayoutComponent implements OnInit {
 
   // Используем ключи перевода вместо текста
   logOptions = [
+    { label: 'MENU.LOGS_BATCH_INFO', value: '/logs/batch-info' }, // NEW
     { label: 'MENU.LOGS_MORTALITY', value: '/logs/mortality' },
     { label: 'MENU.LOGS_FEED_WATER', value: '/logs/feed-water' },
     { label: 'MENU.LOGS_DISEASE', value: '/logs/disease' },

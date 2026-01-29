@@ -1,0 +1,82 @@
+<div class="flex justify-between items-center mb-6">
+  <h2 class="text-lg font-medium text-slate-600">
+    {{ "LOGS_BATCH_INFO.TITLE" | translate }}
+  </h2>
+  <button
+    (click)="openDialog()"
+    class="bg-[#1A1C21] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+    <i class="pi pi-plus text-xs"></i>
+    <span>{{ "COMMON.NEW_RECORD" | translate }}</span>
+  </button>
+</div>
+
+<p-table
+  [value]="dataSource()"
+  styleClass="clean-table"
+  [rowHover]="true"
+  [paginator]="true"
+  [rows]="10">
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem"><p-tableHeaderCheckbox /></th>
+      <th pSortableColumn="date">
+        {{ "LOGS_BATCH_INFO.DATE_ARRIVAL" | translate }}
+        <p-sortIcon field="date" />
+      </th>
+      <th pSortableColumn="houseName">
+        {{ "COMMON.HOUSE" | translate }}
+        <p-sortIcon field="houseName" />
+      </th>
+      <th pSortableColumn="quantity">
+        {{ "LOGS_BATCH_INFO.QUANTITY" | translate }}
+        <p-sortIcon field="quantity" />
+      </th>
+      <th pSortableColumn="birdAgeDays">
+        {{ "LOGS_BATCH_INFO.AGE" | translate }}
+        <p-sortIcon field="birdAgeDays" />
+      </th>
+      <th pSortableColumn="personnelName">
+        {{ "COMMON.RESPONSIBLE" | translate }}
+        <p-sortIcon field="personnelName" />
+      </th>
+      <th style="width: 8rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-element>
+    <tr class="hover:bg-slate-50/50 transition-colors">
+      <td><p-tableCheckbox [value]="element" /></td>
+      <td class="font-medium text-[#1A1C21]">{{ element.date | date: "shortDate" }}</td>
+      <td class="text-sm text-slate-600">{{ element.houseName }}</td>
+      <td>
+        <span class="font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded text-xs">{{ element.quantity }}</span>
+      </td>
+      <td class="text-sm text-slate-600">{{ element.birdAgeDays }}</td>
+      <td class="text-sm text-slate-600">{{ element.personnelName || "—" }}</td>
+      <td>
+        <div class="flex items-center justify-end gap-2 text-slate-400">
+          <button
+            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 hover:text-slate-800 transition-colors"
+            (click)="openDialog(element)">
+            <i class="pi pi-pencil text-sm"></i>
+          </button>
+          <button
+            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 hover:text-red-500 transition-colors"
+            (click)="deleteRecord(element.id)">
+            <i class="pi pi-trash text-sm"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td
+        colspan="7"
+        class="text-center p-4">
+        {{ "MD_FEEDS.NO_DATA" | translate }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

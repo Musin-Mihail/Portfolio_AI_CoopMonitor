@@ -123,3 +123,33 @@ public record UpdateDiseaseDto(
     string? Dosage,
     string? AttachmentUrl
 );
+
+// --- Batch Info (New) ---
+
+public record BatchInfoRecordDto(
+    int Id,
+    int HouseId,
+    string? HouseName,
+    int? PersonnelId,
+    string? PersonnelName,
+    DateTime Date,
+    int Quantity,
+    int BirdAgeDays,
+    DateTime CreatedAt
+);
+
+public record CreateBatchInfoDto(
+    [Required] int HouseId,
+    int? PersonnelId,
+    [Required] DateTime Date,
+    [Required] int Quantity,
+    [Required] int BirdAgeDays
+);
+
+public record UpdateBatchInfoDto(
+    [Required] int HouseId,
+    int? PersonnelId,
+    [Required] DateTime Date,
+    [Required] int Quantity,
+    [Required] int BirdAgeDays
+);

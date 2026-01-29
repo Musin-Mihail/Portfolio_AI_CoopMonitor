@@ -13,6 +13,7 @@
     "LOGS_DISEASE": "Болезни",
     "LOGS_WEIGHING": "Взвешивание",
     "LOGS_MARKING": "Маркировка",
+    "LOGS_BATCH_INFO": "Партия птицы",
     "MD_HOUSES": "Птичники",
     "MD_PERSONNEL": "Персонал",
     "MD_FEEDS": "Корма",
@@ -309,6 +310,14 @@
     "DIALOG_TITLE_EDIT": "Редактировать маркировку",
     "COLOR": "Цвет",
     "NUM": "№"
+  },
+  "LOGS_BATCH_INFO": {
+    "TITLE": "Информация о партии",
+    "DATE_ARRIVAL": "Дата поступления",
+    "QUANTITY": "Кол-во голов",
+    "AGE": "Возраст (дней)",
+    "DIALOG_TITLE_ADD": "Добавить информацию о партии",
+    "DIALOG_TITLE_EDIT": "Редактировать информацию о партии"
   },
   "REPORTS_PAGE": {
     "TITLE": "Архив отчетов",

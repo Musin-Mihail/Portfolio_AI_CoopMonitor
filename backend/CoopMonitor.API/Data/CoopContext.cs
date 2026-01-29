@@ -18,6 +18,7 @@ public class CoopContext : IdentityDbContext<User>
     public DbSet<MortalityRecord> MortalityRecords { get; set; }
     public DbSet<FeedWaterRecord> FeedWaterRecords { get; set; }
     public DbSet<DiseaseRecord> DiseaseRecords { get; set; }
+    public DbSet<BatchInfoRecord> BatchInfoRecords { get; set; } // NEW
 
     // Сложные журналы
     public DbSet<WeighingRecord> WeighingRecords { get; set; }
@@ -153,6 +154,25 @@ public class CoopContext : IdentityDbContext<User>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.MarkingType).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.BirdAgeDays).IsRequired();
+
+            entity.HasOne(e => e.House)
+                  .WithMany()
+                  .HasForeignKey(e => e.HouseId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Personnel)
+                  .WithMany()
+                  .HasForeignKey(e => e.PersonnelId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // BatchInfoRecord Configuration (NEW)
+        modelBuilder.Entity<BatchInfoRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Date).IsRequired();
+            entity.Property(e => e.Quantity).IsRequired();
             entity.Property(e => e.BirdAgeDays).IsRequired();
 
             entity.HasOne(e => e.House)

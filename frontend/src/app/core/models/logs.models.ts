@@ -165,3 +165,25 @@ export interface CreateMarkingDto {
   notes?: string; // New
   photoFile?: File;
 }
+
+// --- Batch Info (New) ---
+
+export interface BatchInfoRecord {
+  id: number;
+  houseId: number;
+  houseName?: string;
+  personnelId?: number;
+  personnelName?: string;
+  date: string;
+  quantity: number;
+  birdAgeDays: number;
+  createdAt: string;
+}
+
+export interface CreateBatchInfoDto {
+  houseId: number;
+  personnelId?: number;
+  date: string;
+  quantity: number;
+  birdAgeDays: number;
+}

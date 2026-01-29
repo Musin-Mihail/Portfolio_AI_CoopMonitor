@@ -13,6 +13,7 @@
     "LOGS_DISEASE": "Diseases",
     "LOGS_WEIGHING": "Weighing",
     "LOGS_MARKING": "Marking",
+    "LOGS_BATCH_INFO": "Batch Info",
     "MD_HOUSES": "Houses",
     "MD_PERSONNEL": "Personnel",
     "MD_FEEDS": "Feeds",
@@ -309,6 +310,14 @@
     "DIALOG_TITLE_EDIT": "Edit Marking",
     "COLOR": "Color",
     "NUM": "Num"
+  },
+  "LOGS_BATCH_INFO": {
+    "TITLE": "Batch Information",
+    "DATE_ARRIVAL": "Date of Arrival",
+    "QUANTITY": "Head Count",
+    "AGE": "Age (days)",
+    "DIALOG_TITLE_ADD": "Add Batch Info",
+    "DIALOG_TITLE_EDIT": "Edit Batch Info"
   },
   "REPORTS_PAGE": {
     "TITLE": "Reports Archive",
