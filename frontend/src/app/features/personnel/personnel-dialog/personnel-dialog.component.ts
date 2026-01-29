@@ -26,7 +26,6 @@ export class PersonnelDialogComponent {
 
   constructor() {
     this.data = this.config.data;
-    // Use keys
     this.title = this.data ? 'MD_PERSONNEL.DIALOG_TITLE_EDIT' : 'MD_PERSONNEL.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({

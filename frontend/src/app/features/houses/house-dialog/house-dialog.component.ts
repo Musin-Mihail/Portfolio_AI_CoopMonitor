@@ -26,7 +26,6 @@ export class HouseDialogComponent {
 
   constructor() {
     this.data = this.config.data;
-    // Use Translation Keys
     this.title = this.data ? 'MD_HOUSES.DIALOG_TITLE_EDIT' : 'MD_HOUSES.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({

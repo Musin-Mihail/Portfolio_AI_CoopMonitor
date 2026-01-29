@@ -32,8 +32,6 @@ export class FeedDialogComponent {
   form: FormGroup;
   data: Feed | null = null;
 
-  // Use keys and values. The backend expects the english string 'Starter', etc.
-  // but we want to show localized labels.
   types = [
     { label: 'MD_FEEDS.TYPES.STARTER', value: 'Starter' },
     { label: 'MD_FEEDS.TYPES.GROWER', value: 'Grower' },

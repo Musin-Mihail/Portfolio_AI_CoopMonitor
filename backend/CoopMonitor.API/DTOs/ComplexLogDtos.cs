@@ -2,8 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CoopMonitor.API.DTOs;
 
-// --- Weighing ---
-
 public record WeighingRecordDto(
     int Id,
     int HouseId,
@@ -14,7 +12,6 @@ public record WeighingRecordDto(
     double WeightGrams,
     bool IsMusicPlayed,
     string VideoUrl,
-    // New Fields
     string? BirdIdentifier,
     double? Temperature,
     bool UpdateMarking,
@@ -33,7 +30,6 @@ public record CreateWeighingDto
     [Required] public double WeightGrams { get; init; }
     [Required] public bool IsMusicPlayed { get; init; }
 
-    // New Fields
     public string? BirdIdentifier { get; init; }
     public double? Temperature { get; init; }
     public bool UpdateMarking { get; init; }
@@ -41,11 +37,7 @@ public record CreateWeighingDto
     public string? Actions { get; init; }
     public string? VetPrescriptions { get; init; }
     public string? Notes { get; init; }
-
-    // VideoFile passed via form-data
 }
-
-// --- Marking ---
 
 public record MarkingRecordDto(
     int Id,
@@ -59,7 +51,7 @@ public record MarkingRecordDto(
     string MarkingType,
     string? Color,
     string? RingNumber,
-    string? Notes, // New Field
+    string? Notes,
     string? AttachmentUrl,
     DateTime CreatedAt
 );
@@ -74,7 +66,5 @@ public record CreateMarkingDto
     [Required] public string MarkingType { get; init; } = string.Empty;
     public string? Color { get; init; }
     public string? RingNumber { get; init; }
-    public string? Notes { get; init; } // New Field
-
-    // PhotoFile passed via form-data
+    public string? Notes { get; init; }
 }

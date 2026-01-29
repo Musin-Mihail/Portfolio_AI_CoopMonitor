@@ -33,7 +33,6 @@ export class LogsFilterComponent implements OnInit {
   ngOnInit() {
     this.loadHouses();
 
-    // Restore state from service
     this.selectedHouseId = this.filterService.houseId();
     if (this.filterService.startDate()) {
       this.selectedRange = [this.filterService.startDate()!];

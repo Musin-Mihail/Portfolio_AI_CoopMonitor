@@ -74,7 +74,6 @@ public class WeighingController : ControllerBase
             WeightGrams = dto.WeightGrams,
             IsMusicPlayed = dto.IsMusicPlayed,
             VideoUrl = $"{bucket}/{fileName}",
-            // New Fields
             BirdIdentifier = dto.BirdIdentifier,
             Temperature = dto.Temperature,
             UpdateMarking = dto.UpdateMarking,
@@ -123,7 +122,6 @@ public class WeighingController : ControllerBase
         record.Date = dto.Date;
         record.WeightGrams = dto.WeightGrams;
         record.IsMusicPlayed = dto.IsMusicPlayed;
-        // Update New Fields
         record.BirdIdentifier = dto.BirdIdentifier;
         record.Temperature = dto.Temperature;
         record.UpdateMarking = dto.UpdateMarking;

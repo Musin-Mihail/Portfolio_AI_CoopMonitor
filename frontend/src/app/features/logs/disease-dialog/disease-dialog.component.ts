@@ -46,7 +46,6 @@ export class DiseaseDialogComponent implements OnInit {
 
   constructor() {
     this.data = this.config.data;
-    // Используем ключи перевода
     this.title = this.data ? 'LOGS_DISEASE.DIALOG_TITLE_EDIT' : 'LOGS_DISEASE.DIALOG_TITLE_ADD';
 
     this.form = this.fb.group({

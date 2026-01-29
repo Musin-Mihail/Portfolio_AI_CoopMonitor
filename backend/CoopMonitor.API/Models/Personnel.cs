@@ -19,9 +19,7 @@ public class Personnel
 
     public bool IsActive { get; set; } = true;
 
-    // Внешний ключ на IdentityUser
     public string? UserId { get; set; }
 
-    // Навигационное свойство
     public virtual User? User { get; set; }
 }
