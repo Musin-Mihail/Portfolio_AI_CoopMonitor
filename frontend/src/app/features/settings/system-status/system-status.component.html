@@ -75,8 +75,8 @@
             [style]="{ height: '8px', 'border-radius': '6px', 'background-color': '#F1F5F9' }"
             [color]="data.saaS.usagePercent > 90 ? '#EF4444' : '#3B82F6'" />
           <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
-            <span>{{ formatBytes(data.saaS.dailyUsageBytes) }} used</span>
-            <span>{{ formatBytes(data.saaS.dailyLimitBytes) }} limit</span>
+            <span>{{ formatBytes(data.saaS.dailyUsageBytes) }} {{ "SYSTEM_STATUS.USED" | translate }}</span>
+            <span>{{ formatBytes(data.saaS.dailyLimitBytes) }} {{ "SYSTEM_STATUS.LIMIT" | translate }}</span>
           </div>
         </div>
 
@@ -155,7 +155,7 @@
             <div class="font-bold text-lg text-slate-800 leading-tight mb-1">
               {{ "SYSTEM_STATUS.APP_INFO" | translate }}
             </div>
-            <div class="text-sm text-slate-400">System Information</div>
+            <div class="text-sm text-slate-400">{{ "SYSTEM_STATUS.SYSTEM_INFO" | translate }}</div>
           </div>
         </div>
       </div>
@@ -175,14 +175,14 @@
         </div>
 
         <div class="flex justify-between items-center py-4">
-          <span class="text-sm text-slate-500 font-medium">Timezone</span>
+          <span class="text-sm text-slate-500 font-medium">{{ "SYSTEM_STATUS.TIMEZONE" | translate }}</span>
           <span class="text-sm font-semibold text-slate-700">UTC</span>
         </div>
       </div>
 
       <div class="mt-auto pt-4 text-center">
         <button class="text-xs text-slate-400 hover:text-slate-600 underline transition-colors">
-          Check for updates
+          {{ "SYSTEM_STATUS.CHECK_UPDATES" | translate }}
         </button>
       </div>
     </div>

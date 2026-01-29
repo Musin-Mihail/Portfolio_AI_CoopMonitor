@@ -69,14 +69,14 @@
       <label
         for="birdIdentifier"
         class="font-medium text-slate-700">
-        Bird No (№ птицы)
+        {{ "COMMON.BIRD_NO" | translate }}
       </label>
       <input
         pInputText
         id="birdIdentifier"
         formControlName="birdIdentifier"
         class="w-full"
-        placeholder="Optional for individual feeding" />
+        [placeholder]="'COMMON.OPTIONAL_INDIVIDUAL' | translate" />
     </div>
 
     <div class="flex flex-col gap-2">
@@ -129,7 +129,7 @@
       <label
         for="medicine"
         class="font-medium text-slate-700">
-        Meds (Препараты)
+        {{ "COMMON.MEDS" | translate }}
       </label>
       <input
         pInputText
@@ -142,7 +142,7 @@
       <label
         for="comments"
         class="font-medium text-slate-700">
-        Comments (Замечания)
+        {{ "COMMON.COMMENTS" | translate }}
       </label>
       <textarea
         pTextarea

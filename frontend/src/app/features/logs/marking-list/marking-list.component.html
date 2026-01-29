@@ -30,7 +30,7 @@
       </th>
 
       <th pSortableColumn="birdIdentifier">
-        Bird No
+        {{ "COMMON.BIRD_NO" | translate }}
         <p-sortIcon field="birdIdentifier" />
       </th>
 
@@ -39,7 +39,7 @@
         <p-sortIcon field="markingType" />
       </th>
       <th>{{ "LOGS_MARKING.DETAILS" | translate }}</th>
-      <th>Notes</th>
+      <th>{{ "COMMON.NOTES" | translate }}</th>
 
       <th style="width: 8rem">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
@@ -50,7 +50,7 @@
     <tr>
       <td>{{ element.date | date: "shortDate" }}</td>
       <td>{{ element.houseName }}</td>
-      <td>{{ element.birdAgeDays }} days</td>
+      <td>{{ element.birdAgeDays }} {{ "LOGS_MARKING.DAYS" | translate }}</td>
 
       <td class="font-mono text-slate-700">{{ element.birdIdentifier || "—" }}</td>
 

@@ -12,7 +12,7 @@
           (onChange)="onHouseChange()"
           optionLabel="name"
           optionValue="id"
-          placeholder="Select View"
+          [placeholder]="'DASHBOARD.SELECT_VIEW' | translate"
           styleClass="w-full" />
       </div>
     </div>
@@ -33,7 +33,7 @@
             class="bg-white rounded-[20px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-transparent group-hover:border-blue-200 group-hover:shadow-md transition-all duration-300">
             <div class="grid grid-cols-4 gap-2 mb-4">
               <div class="flex flex-col">
-                <span class="text-sm text-gray-400 font-medium mb-1">T</span>
+                <span class="text-sm text-gray-400 font-medium mb-1">{{ "DASHBOARD.TEMP_SHORT" | translate }}</span>
                 <div class="text-[22px] font-bold text-[#22C55E] whitespace-nowrap">
                   {{ summary.currentClimate.temperature | number: "1.1-1" }}
                   <span class="text-lg">°C</span>
@@ -57,7 +57,9 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-sm text-gray-400 font-medium mb-1">H %</span>
+                <span class="text-sm text-gray-400 font-medium mb-1">
+                  {{ "DASHBOARD.HUMIDITY_SHORT" | translate }} %
+                </span>
                 <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
                   {{ summary.currentClimate.humidity | number: "1.0-0" }}
                   <span class="text-lg font-normal">%</span>
@@ -69,7 +71,7 @@
 
             <div class="mb-6">
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-500">Time in range</span>
+                <span class="text-sm text-gray-500">{{ "DASHBOARD.TIME_IN_RANGE" | translate }}</span>
                 <span class="text-lg font-medium text-[#1A1C21]">{{ summary.currentClimate.timeInRangePercent }}%</span>
               </div>
               <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
@@ -81,15 +83,15 @@
 
             <div class="grid grid-cols-3 gap-2">
               <div>
-                <div class="text-[11px] text-gray-400 mb-1">Загрузка партии</div>
+                <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_START" | translate }}</div>
                 <div class="text-sm font-medium text-[#1A1C21]">12.01.2026</div>
               </div>
               <div>
-                <div class="text-[11px] text-gray-400 mb-1">Количество голов</div>
-                <div class="text-sm font-medium text-[#1A1C21]">203 шт</div>
+                <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.QTY" | translate }}</div>
+                <div class="text-sm font-medium text-[#1A1C21]">203 {{ "COMMON.UNITS.PCS" | translate }}</div>
               </div>
               <div>
-                <div class="text-[11px] text-gray-400 mb-1">Отгрузка партии</div>
+                <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_END" | translate }}</div>
                 <div class="text-sm font-medium text-[#1A1C21]">14.02.2026</div>
               </div>
             </div>
@@ -110,7 +112,7 @@
               [class.text-blue-600]="selectedTimeRange === 'day'"
               [class.font-bold]="selectedTimeRange === 'day'"
               class="text-xs transition-colors px-2">
-              24 Hours
+              {{ "DASHBOARD.RANGES.24H" | translate }}
             </button>
             <span class="text-slate-300">|</span>
             <button
@@ -118,7 +120,7 @@
               [class.text-blue-600]="selectedTimeRange === 'week'"
               [class.font-bold]="selectedTimeRange === 'week'"
               class="text-xs transition-colors px-2">
-              7 Days
+              {{ "DASHBOARD.RANGES.7D" | translate }}
             </button>
           </div>
         </div>
@@ -131,7 +133,7 @@
             [class.text-slate-800]="selectedSensorType === 'temperature'"
             [class.font-bold]="selectedSensorType === 'temperature'"
             class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
-            Temperature
+            {{ "DASHBOARD.SENSORS.TEMP" | translate }}
           </button>
           <button
             (click)="setSensorType('humidity')"
@@ -140,7 +142,7 @@
             [class.text-slate-800]="selectedSensorType === 'humidity'"
             [class.font-bold]="selectedSensorType === 'humidity'"
             class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
-            Humidity
+            {{ "DASHBOARD.SENSORS.HUMIDITY" | translate }}
           </button>
           <button
             (click)="setSensorType('co2')"
@@ -149,7 +151,7 @@
             [class.text-slate-800]="selectedSensorType === 'co2'"
             [class.font-bold]="selectedSensorType === 'co2'"
             class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
-            CO²
+            {{ "DASHBOARD.SENSORS.CO2" | translate }}
           </button>
           <button
             (click)="setSensorType('nh3')"
@@ -158,7 +160,7 @@
             [class.text-slate-800]="selectedSensorType === 'nh3'"
             [class.font-bold]="selectedSensorType === 'nh3'"
             class="flex-1 sm:flex-none px-6 py-1.5 rounded-lg text-xs transition-all text-slate-500">
-            NH³
+            {{ "DASHBOARD.SENSORS.NH3" | translate }}
           </button>
         </div>
 
@@ -172,17 +174,19 @@
       class="flex flex-col gap-6"
       *ngIf="selectedHouseId && currentSummary">
       <div class="bg-white rounded-[24px] p-6 border border-slate-200 shadow-sm">
-        <div class="font-bold text-lg text-[#1A1C21] mb-6">{{ currentSummary.houseName }} - Current Status</div>
+        <div class="font-bold text-lg text-[#1A1C21] mb-6">
+          {{ currentSummary.houseName }} - {{ "DASHBOARD.CURRENT_STATUS" | translate }}
+        </div>
 
         <div class="flex justify-between items-start mb-8 px-4">
           <div class="text-center">
-            <div class="text-sm text-slate-400 mb-2 font-medium">T</div>
+            <div class="text-sm text-slate-400 mb-2 font-medium">{{ "DASHBOARD.TEMP_SHORT" | translate }}</div>
             <div class="text-4xl font-bold text-[#22C55E]">
               {{ currentSummary.currentClimate.temperature | number: "1.1-1" }}°C
             </div>
           </div>
           <div class="text-center">
-            <div class="text-sm text-slate-400 mb-2 font-medium">Humidity</div>
+            <div class="text-sm text-slate-400 mb-2 font-medium">{{ "DASHBOARD.SENSORS.HUMIDITY" | translate }}</div>
             <div class="text-4xl font-bold text-[#1A1C21]">
               {{ currentSummary.currentClimate.humidity | number: "1.0-0" }}%
             </div>
@@ -205,7 +209,7 @@
 
         <div class="mb-2 px-4">
           <div class="flex justify-between text-xs text-slate-500 mb-2 font-medium">
-            <span>Climate Stability (24h)</span>
+            <span>{{ "DASHBOARD.CLIMATE_STABILITY" | translate }}</span>
             <span class="text-slate-800 font-bold">{{ currentSummary.currentClimate.timeInRangePercent }}%</span>
           </div>
           <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">

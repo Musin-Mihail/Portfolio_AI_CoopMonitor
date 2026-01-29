@@ -58,6 +58,16 @@
     "LOAD_ERROR": "Failed to load data",
     "MB": "MB",
     "VIDEO_NOT_SUPPORTED": "Your browser does not support the video tag.",
+    "BIRD_NO": "Bird No",
+    "OPTIONAL_INDIVIDUAL": "Optional for individual feeding",
+    "MEDS": "Meds",
+    "COMMENTS": "Comments",
+    "NOTES": "Notes",
+    "UNITS": {
+      "PCS": "pcs",
+      "KG": "kg",
+      "L": "L"
+    },
     "MESSAGES": {
       "FAILED_CREATE": "Failed to create record",
       "FAILED_UPDATE": "Failed to update record",
@@ -68,8 +78,14 @@
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
+    "SELECT_VIEW": "Select View",
     "TEMP": "Temperature",
+    "TEMP_SHORT": "T",
+    "HUMIDITY": "Humidity",
+    "HUMIDITY_SHORT": "H",
     "TIME_IN_RANGE": "Time in range",
+    "CLIMATE_STABILITY": "Climate Stability (24h)",
+    "CURRENT_STATUS": "Current Status",
     "BATCH_START": "Batch Start",
     "BATCH_END": "Batch End",
     "HEADS": "heads",
@@ -85,6 +101,23 @@
     "HOUSE_1": "House 1",
     "HOUSE_2": "House 2",
     "HOUSE_3": "House 3",
+    "SENSORS": {
+      "TEMP": "Temperature",
+      "HUMIDITY": "Humidity",
+      "CO2": "CO²",
+      "NH3": "NH³"
+    },
+    "AGGREGATION": {
+      "RAW": "Raw Data",
+      "1MIN": "1 Minute Avg",
+      "5MIN": "5 Minutes Avg",
+      "30MIN": "30 Minutes Avg",
+      "1HOUR": "1 Hour Avg"
+    },
+    "RANGES": {
+      "24H": "24 Hours",
+      "7D": "7 Days"
+    },
     "EVENTS": {
       "DISINFECTION": "Disinfection",
       "PEST_DETECTED": "Pest detected",
@@ -214,6 +247,8 @@
     "HOUSE": "House",
     "QTY": "Qty",
     "REASON": "Reason",
+    "CIRCUMSTANCES": "Circumstances",
+    "VET_COMMENT": "Vet Comment",
     "PHOTO": "Photo",
     "PHOTO_EVIDENCE": "Photo Evidence",
     "FILE_EXISTS": "File already uploaded (click to replace)",
@@ -240,6 +275,12 @@
   "LOGS_WEIGHING": {
     "TITLE": "Weighing Log",
     "WEIGHT_G": "Weight (g)",
+    "TEMP": "Temperature",
+    "UPDATE_MARKING": "Update Marking",
+    "SYMPTOMS": "Symptoms",
+    "ACTIONS": "Actions",
+    "VET_PRESCRIPTIONS": "Vet Prescriptions",
+    "HEALTH_NOTES": "Health & Notes",
     "MUSIC": "Music",
     "SOOTHING_MUSIC": "Soothing music",
     "MUSIC_HINT": "Was music played to reduce bird stress?",
@@ -252,6 +293,7 @@
   "LOGS_MARKING": {
     "TITLE": "Marking Log",
     "BIRD_AGE": "Bird Age",
+    "DAYS": "days",
     "MARKING_TYPE": "Marking Type",
     "DETAILS": "Details",
     "IDENTIFIER": "Bird Identifier (Optional)",
@@ -286,10 +328,15 @@
     "OFFLINE": "Offline",
     "DAILY_USAGE": "Daily Traffic Usage",
     "LAST_SYNC": "Last Sync",
+    "USED": "used",
+    "LIMIT": "limit",
     "NOTIFICATIONS": "Notifications",
     "APP_INFO": "Application Info",
+    "SYSTEM_INFO": "System Information",
     "VERSION": "Version",
     "ENV": "Environment",
+    "TIMEZONE": "Timezone",
+    "CHECK_UPDATES": "Check for updates",
     "SERVER_TIME": "Server Time (UTC)",
     "CHANNEL": "Channel",
     "ENABLED": "Enabled",

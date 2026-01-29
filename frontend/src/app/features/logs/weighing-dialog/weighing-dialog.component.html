@@ -13,7 +13,6 @@
   </div>
 
   <div class="flex flex-col gap-5 overflow-y-auto max-h-[70vh] pr-2">
-    <!-- Row 1 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-slate-700">{{ "COMMON.HOUSE" | translate }}</label>
@@ -37,7 +36,6 @@
       </div>
     </div>
 
-    <!-- Row 2 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-slate-700">{{ "COMMON.DATE" | translate }}</label>
@@ -49,7 +47,7 @@
           styleClass="w-full" />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Bird No (№ птицы)</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "COMMON.BIRD_NO" | translate }}</label>
         <input
           pInputText
           formControlName="birdIdentifier"
@@ -57,7 +55,6 @@
       </div>
     </div>
 
-    <!-- Row 3 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-semibold text-slate-700">{{ "LOGS_WEIGHING.WEIGHT_G" | translate }}</label>
@@ -67,7 +64,7 @@
           styleClass="w-full" />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Temperature (°C)</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "LOGS_WEIGHING.TEMP" | translate }} (°C)</label>
         <p-inputnumber
           formControlName="temperature"
           mode="decimal"
@@ -76,7 +73,6 @@
       </div>
     </div>
 
-    <!-- Checkboxes -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-center gap-3">
         <p-checkbox
@@ -98,15 +94,14 @@
         <div
           class="flex flex-col cursor-pointer"
           (click)="toggleCheckbox('updateMarking')">
-          <span class="text-sm font-bold text-slate-800">Update Marking</span>
+          <span class="text-sm font-bold text-slate-800">{{ "LOGS_WEIGHING.UPDATE_MARKING" | translate }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Text Fields -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Symptoms</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "LOGS_WEIGHING.SYMPTOMS" | translate }}</label>
         <textarea
           pTextarea
           formControlName="symptoms"
@@ -114,7 +109,7 @@
           class="w-full"></textarea>
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-slate-700">Actions</label>
+        <label class="text-sm font-semibold text-slate-700">{{ "LOGS_WEIGHING.ACTIONS" | translate }}</label>
         <textarea
           pTextarea
           formControlName="actions"
@@ -124,7 +119,7 @@
     </div>
 
     <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-semibold text-slate-700">Vet Prescriptions</label>
+      <label class="text-sm font-semibold text-slate-700">{{ "LOGS_WEIGHING.VET_PRESCRIPTIONS" | translate }}</label>
       <textarea
         pTextarea
         formControlName="vetPrescriptions"
@@ -133,7 +128,7 @@
     </div>
 
     <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-semibold text-slate-700">Note</label>
+      <label class="text-sm font-semibold text-slate-700">{{ "COMMON.NOTES" | translate }}</label>
       <textarea
         pTextarea
         formControlName="notes"
@@ -141,7 +136,6 @@
         class="w-full"></textarea>
     </div>
 
-    <!-- Video Upload -->
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-semibold text-slate-700">
         {{ "LOGS_WEIGHING.VIDEO_EVIDENCE" | translate }}

@@ -39,13 +39,7 @@ export class DashboardComponent implements OnInit {
 
   // Настройки для графика одного курятника
   selectedAggregation = 0;
-  aggregationOptions = [
-    { label: 'Raw Data', value: 0 },
-    { label: '1 Minute Avg', value: 1 },
-    { label: '5 Minutes Avg', value: 5 },
-    { label: '30 Minutes Avg', value: 30 },
-    { label: '1 Hour Avg', value: 60 },
-  ];
+  aggregationOptions: { label: string; value: number }[] = [];
 
   // Настройки для общего графика (Comparison)
   selectedSensorType: 'temperature' | 'humidity' | 'co2' | 'nh3' = 'temperature';
@@ -53,12 +47,24 @@ export class DashboardComponent implements OnInit {
 
   constructor() {
     this.translate.onLangChange.subscribe(() => {
+      this.initOptions(); // Update options on lang change
       this.refreshCharts();
     });
   }
 
   ngOnInit(): void {
+    this.initOptions();
     this.loadHouses();
+  }
+
+  initOptions() {
+    this.aggregationOptions = [
+      { label: this.translate.instant('DASHBOARD.AGGREGATION.RAW'), value: 0 },
+      { label: this.translate.instant('DASHBOARD.AGGREGATION.1MIN'), value: 1 },
+      { label: this.translate.instant('DASHBOARD.AGGREGATION.5MIN'), value: 5 },
+      { label: this.translate.instant('DASHBOARD.AGGREGATION.30MIN'), value: 30 },
+      { label: this.translate.instant('DASHBOARD.AGGREGATION.1HOUR'), value: 60 },
+    ];
   }
 
   loadHouses() {
@@ -162,7 +168,7 @@ export class DashboardComponent implements OnInit {
         labels: labels,
         datasets: [
           {
-            label: 'Temperature (°C)',
+            label: this.translate.instant('DASHBOARD.SENSORS.TEMP') + ' (°C)',
             data: data.map((d) => d.temperature),
             borderColor: '#4CAF50',
             backgroundColor: gradientGreen,
@@ -174,7 +180,7 @@ export class DashboardComponent implements OnInit {
             yAxisID: 'y',
           },
           {
-            label: 'Humidity (%)',
+            label: this.translate.instant('DASHBOARD.SENSORS.HUMIDITY') + ' (%)',
             data: data.map((d) => d.humidity),
             borderColor: '#3B82F6',
             backgroundColor: 'transparent',

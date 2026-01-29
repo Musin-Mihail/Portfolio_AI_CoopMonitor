@@ -25,7 +25,7 @@
         <p-sortIcon field="houseName" />
       </th>
       <th pSortableColumn="birdIdentifier">
-        Bird No
+        {{ "COMMON.BIRD_NO" | translate }}
         <p-sortIcon field="birdIdentifier" />
       </th>
       <th pSortableColumn="feedName">
@@ -40,7 +40,7 @@
         {{ "LOGS_FEED_WATER.WATER_L" | translate }}
         <p-sortIcon field="waterQuantityLiters" />
       </th>
-      <th>Meds / Comments</th>
+      <th>{{ "COMMON.MEDS" | translate }} / {{ "COMMON.COMMENTS" | translate }}</th>
       <th style="width: 8rem">{{ "COMMON.ACTIONS" | translate }}</th>
     </tr>
   </ng-template>
