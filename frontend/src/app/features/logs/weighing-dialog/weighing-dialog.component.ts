@@ -58,7 +58,6 @@ export class WeighingDialogComponent implements OnInit {
         date: [new Date(), Validators.required],
         weightGrams: [null, [Validators.required, Validators.min(1)]],
         isMusicPlayed: [false],
-        // New
         birdIdentifier: [''],
         temperature: [null],
         updateMarking: [false],
@@ -82,7 +81,6 @@ export class WeighingDialogComponent implements OnInit {
         date: new Date(this.data.date),
         weightGrams: this.data.weightGrams,
         isMusicPlayed: this.data.isMusicPlayed,
-        // New
         birdIdentifier: this.data.birdIdentifier,
         temperature: this.data.temperature,
         updateMarking: this.data.updateMarking,

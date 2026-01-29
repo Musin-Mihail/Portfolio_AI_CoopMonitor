@@ -59,7 +59,6 @@ public class EmailService : INotificationService
             message.To.Add(new MailboxAddress("Manager", _toEmail));
             message.Subject = subject;
 
-            // Простая HTML разметка
             var htmlBody = $@"
                 <div style='font-family: sans-serif; padding: 20px; border: 1px solid #ddd;'>
                     <h2 style='color: #2c3e50;'>{subject}</h2>

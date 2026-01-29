@@ -21,7 +21,6 @@ export class DashboardComponentTest implements OnInit {
   chart: Chart | null = null;
   selectedPeriod = 7;
 
-  // Mock data with translation keys instead of hardcoded names
   mockHouses = [
     {
       nameKey: 'DASHBOARD.HOUSE_1',
@@ -58,7 +57,6 @@ export class DashboardComponentTest implements OnInit {
   calendarDays: string[] = [];
 
   constructor() {
-    // React to language changes to update chart and calendar
     this.translate.onLangChange.subscribe(() => {
       this.initChart();
       this.initCalendar();
@@ -85,7 +83,6 @@ export class DashboardComponentTest implements OnInit {
       this.chart.destroy();
     }
 
-    // Fetch localized labels
     const labelHouse1 = this.translate.instant('DASHBOARD.HOUSE_1');
     const labelHouse2 = this.translate.instant('DASHBOARD.HOUSE_2');
     const labelHouse3 = this.translate.instant('DASHBOARD.HOUSE_3');

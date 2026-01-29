@@ -56,7 +56,6 @@ export class FeedWaterDialogComponent implements OnInit {
       feedId: [null],
       feedQuantityKg: [0, [Validators.required, Validators.min(0)]],
       waterQuantityLiters: [0, [Validators.required, Validators.min(0)]],
-      // New
       birdIdentifier: [''],
       medicine: [''],
       comments: [''],
