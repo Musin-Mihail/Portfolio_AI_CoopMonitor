@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DashboardSummary, ClimateHistoryPoint } from '../models/dashboard.models';
+import { DashboardSummary, ClimateHistoryPoint, ComparisonHistory } from '../models/dashboard.models';
 
 @Injectable({
   providedIn: 'root',
@@ -23,5 +23,16 @@ export class DashboardService {
     let params = new HttpParams().set('hours', hours).set('interval', interval);
 
     return this.http.get<ClimateHistoryPoint[]>(`${this.API_URL}/history/${houseId}`, { params });
+  }
+
+  // НОВЫЙ МЕТОД: Получение данных для сравнения
+  getComparisonHistory(
+    type: 'temperature' | 'humidity' | 'co2' | 'nh3',
+    hours: number = 24,
+    interval: number = 60,
+  ): Observable<ComparisonHistory[]> {
+    let params = new HttpParams().set('type', type).set('hours', hours).set('interval', interval);
+
+    return this.http.get<ComparisonHistory[]>(`${this.API_URL}/history/comparison`, { params });
   }
 }

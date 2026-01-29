@@ -38,3 +38,16 @@ export interface ClimateHistoryPoint {
   co2: number;
   nh3: number;
 }
+
+// --- New Models for Comparison Chart ---
+
+export interface ComparisonHistory {
+  houseId: number;
+  houseName: string;
+  data: HistoryPoint[];
+}
+
+export interface HistoryPoint {
+  timestamp: string;
+  value: number;
+}

@@ -42,7 +42,7 @@ public record SensorReadingDto(
     double Nh3
 );
 
-// --- New History DTOs ---
+// --- History DTOs ---
 
 public record ClimateHistoryPoint(
     DateTime Timestamp,
@@ -50,6 +50,18 @@ public record ClimateHistoryPoint(
     double Humidity,
     double Co2,
     double Nh3
+);
+
+// New DTO for Comparison Chart (All Houses)
+public record ComparisonHistoryDto(
+    int HouseId,
+    string HouseName,
+    List<HistoryPointDto> Data
+);
+
+public record HistoryPointDto(
+    DateTime Timestamp,
+    double Value
 );
 
 // --- Production Metrics DTO ---

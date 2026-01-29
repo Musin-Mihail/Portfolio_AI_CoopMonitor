@@ -74,6 +74,7 @@
     "BATCH_END": "Batch End",
     "HEADS": "heads",
     "QTY": "Quantity",
+    "MICROCLIMATE_COMPARISON": "Microclimate Comparison",
     "MICROCLIMATE_24H": "Microclimate (24h)",
     "LAST_7_DAYS": "last 7 days",
     "TODAY": "Today",
