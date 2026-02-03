@@ -43,7 +43,7 @@
               <div class="flex flex-col">
                 <span class="text-sm text-gray-400 font-medium mb-1">CO₂</span>
                 <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
-                  {{ summary.currentClimate.co2 ? (summary.currentClimate.co2 | number: "1.0-0") : "-/-" }}
+                  {{ summary.currentClimate.co2 | number: "1.0-0" }}
                   <span class="text-sm font-normal text-gray-500">ppm</span>
                 </div>
               </div>
@@ -173,49 +173,75 @@
     <div
       class="flex flex-col gap-6"
       *ngIf="selectedHouseId && currentSummary">
-      <div class="bg-white rounded-[24px] p-6 border border-slate-200 shadow-sm">
-        <div class="font-bold text-lg text-[#1A1C21] mb-6">
-          {{ currentSummary.houseName }} - {{ "DASHBOARD.CURRENT_STATUS" | translate }}
-        </div>
+      <h2 class="text-xl font-bold text-[#1A1C21] m-0">
+        {{ currentSummary.houseName }}
+      </h2>
 
-        <div class="flex justify-between items-start mb-8 px-4">
-          <div class="text-center">
-            <div class="text-sm text-slate-400 mb-2 font-medium">{{ "DASHBOARD.TEMP_SHORT" | translate }}</div>
-            <div class="text-4xl font-bold text-[#22C55E]">
-              {{ currentSummary.currentClimate.temperature | number: "1.1-1" }}°C
+      <div class="bg-white rounded-[20px] p-6 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div class="flex flex-wrap gap-12 mb-8">
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-400 font-medium mb-1">t</span>
+            <div class="text-[28px] font-bold text-[#22C55E] leading-none">
+              {{ currentSummary.currentClimate.temperature | number: "1.1-1" }}
+              <span class="text-lg font-normal">°C</span>
             </div>
           </div>
-          <div class="text-center">
-            <div class="text-sm text-slate-400 mb-2 font-medium">{{ "DASHBOARD.SENSORS.HUMIDITY" | translate }}</div>
-            <div class="text-4xl font-bold text-[#1A1C21]">
-              {{ currentSummary.currentClimate.humidity | number: "1.0-0" }}%
-            </div>
-          </div>
-          <div class="text-center">
-            <div class="text-sm text-slate-400 mb-2 font-medium">CO²</div>
-            <div class="text-4xl font-bold text-[#1A1C21]">
+
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-400 font-medium mb-1">CO²</span>
+            <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
               {{ currentSummary.currentClimate.co2 | number: "1.0-0" }}
-              <span class="text-lg text-gray-400 font-normal">ppm</span>
+              <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
             </div>
           </div>
-          <div class="text-center">
-            <div class="text-sm text-slate-400 mb-2 font-medium">NH3</div>
-            <div class="text-4xl font-bold text-[#1A1C21]">
-              {{ currentSummary.currentClimate.nh3 | number: "1.1-1" }}
-              <span class="text-lg text-gray-400 font-normal">ppm</span>
+
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-400 font-medium mb-1">NH3</span>
+            <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
+              {{ currentSummary.currentClimate.nh3 | number: "1.0-0" }}
+              <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-400 font-medium mb-1">H %</span>
+            <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
+              {{ currentSummary.currentClimate.humidity | number: "1.0-0" }}
+              <span class="text-lg font-normal text-gray-400 ml-1">%</span>
             </div>
           </div>
         </div>
 
-        <div class="mb-2 px-4">
-          <div class="flex justify-between text-xs text-slate-500 mb-2 font-medium">
-            <span>{{ "DASHBOARD.CLIMATE_STABILITY" | translate }}</span>
-            <span class="text-slate-800 font-bold">{{ currentSummary.currentClimate.timeInRangePercent }}%</span>
+        <div class="h-px bg-slate-100 w-full mb-6"></div>
+
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-400">{{ "DASHBOARD.TIME_IN_RANGE" | translate }}</span>
+            <span class="text-lg font-medium text-[#1A1C21]">
+              {{ currentSummary.currentClimate.timeInRangePercent }}%
+            </span>
           </div>
-          <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+          <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
             <div
               class="h-full bg-[#3B82F6] rounded-full"
               [style.width.%]="currentSummary.currentClimate.timeInRangePercent"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <div class="text-left">
+            <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_START" | translate }}</div>
+            <div class="text-sm font-medium text-[#1A1C21] opacity-80">12.01.2026</div>
+          </div>
+
+          <div class="text-left sm:text-center">
+            <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.QTY" | translate }}</div>
+            <div class="text-sm font-medium text-[#1A1C21] opacity-80">203 {{ "COMMON.UNITS.PCS" | translate }}</div>
+          </div>
+
+          <div class="text-left sm:text-right">
+            <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_END" | translate }}</div>
+            <div class="text-sm font-medium text-[#1A1C21] opacity-80">14.02.2026</div>
           </div>
         </div>
       </div>
