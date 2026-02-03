@@ -201,7 +201,24 @@ export class DashboardComponent implements OnInit {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: true }, tooltip: { mode: 'index', intersect: false } },
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              boxWidth: 16,
+              boxHeight: 16,
+              generateLabels: (chart) => {
+                const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                original.forEach((label) => {
+                  label.fillStyle = label.strokeStyle;
+                  label.lineWidth = 0;
+                });
+                return original;
+              },
+            },
+          },
+          tooltip: { mode: 'index', intersect: false },
+        },
         scales: {
           x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } },
           y: { display: true, position: 'left', grid: { display: true, color: '#f1f5f9' } },
