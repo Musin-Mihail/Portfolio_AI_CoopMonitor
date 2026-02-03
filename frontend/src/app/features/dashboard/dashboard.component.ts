@@ -136,6 +136,12 @@ export class DashboardComponent implements OnInit {
     else this.loadComparisonHistory();
   }
 
+  private getColor(index: number): string {
+    const angle = 137.508;
+    const hue = (index * angle) % 360;
+    return `hsl(${hue}, 70%, 50%)`;
+  }
+
   updateSingleChart(data: any[] = []) {
     if (!this.climateChartCanvas) return;
     const ctx = this.climateChartCanvas.nativeElement.getContext('2d');
@@ -228,8 +234,6 @@ export class DashboardComponent implements OnInit {
         : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     });
 
-    const colors = ['#4CAF50', '#3B82F6', '#A855F7', '#F59E0B', '#EF4444'];
-
     const datasets: ChartDataset<'line'>[] = data.map((house, index) => {
       const dataMap = new Map<string, number>(house.data.map((p: any) => [p.timestamp, p.value]));
 
@@ -238,11 +242,13 @@ export class DashboardComponent implements OnInit {
         return val !== undefined ? val : null;
       });
 
+      const color = this.getColor(index);
+
       return {
         label: house.houseName,
         data: alignedData,
-        borderColor: colors[index % colors.length],
-        backgroundColor: 'transparent',
+        borderColor: color,
+        backgroundColor: color,
         fill: false,
         tension: 0.4,
         borderWidth: 2,
@@ -261,7 +267,14 @@ export class DashboardComponent implements OnInit {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: true, position: 'bottom' },
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              boxWidth: 16,
+              boxHeight: 16,
+            },
+          },
           tooltip: {
             mode: 'index',
             intersect: false,
@@ -271,6 +284,17 @@ export class DashboardComponent implements OnInit {
             borderColor: '#F1F5F9',
             borderWidth: 1,
             usePointStyle: true,
+            boxPadding: 4,
+            callbacks: {
+              labelColor: (context) => {
+                return {
+                  borderColor: context.dataset.borderColor as string,
+                  backgroundColor: context.dataset.backgroundColor as string,
+                  borderWidth: 2,
+                  borderRadius: 2,
+                };
+              },
+            },
           },
         },
         scales: {
