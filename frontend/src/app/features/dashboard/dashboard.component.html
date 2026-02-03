@@ -1,4 +1,4 @@
-<div class="flex flex-col xl:flex-row gap-10 pb-8 bg-[#F5F6F8] min-h-screen p-6">
+<div class="flex flex-col xl:flex-row gap-10 pb-8 bg-white min-h-screen p-6">
   <div class="flex-1 flex flex-col gap-8 min-w-0">
     <div class="flex justify-between items-center">
       <h1 class="text-[32px] font-bold text-[#1A1C21] tracking-tight m-0 font-serif">
@@ -23,14 +23,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <div
           *ngFor="let summary of allSummaries"
-          class="flex flex-col gap-3 cursor-pointer group"
+          class="flex flex-col gap-4 cursor-pointer group bg-[#F5F6F8] p-5 rounded-[24px] hover:bg-[#E2E8F0] transition-colors duration-200"
           (click)="selectedHouseId = summary.houseId; onHouseChange()">
           <div class="font-semibold text-xl text-[#1A1C21] ml-1 group-hover:text-blue-600 transition-colors">
             {{ summary.houseName }}
           </div>
 
-          <div
-            class="bg-white rounded-[20px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-transparent group-hover:border-blue-200 group-hover:shadow-md transition-all duration-300">
+          <div class="bg-white rounded-[20px] p-5 shadow-sm border border-transparent transition-all duration-300">
             <div class="grid grid-cols-4 gap-2 mb-4">
               <div class="flex flex-col">
                 <span class="text-sm text-gray-400 font-medium mb-1">{{ "DASHBOARD.TEMP_SHORT" | translate }}</span>
@@ -173,75 +172,77 @@
     <div
       class="flex flex-col gap-6"
       *ngIf="selectedHouseId && currentSummary">
-      <h2 class="text-xl font-bold text-[#1A1C21] m-0">
-        {{ currentSummary.houseName }}
-      </h2>
+      <div class="bg-[#F5F6F8] p-5 rounded-[24px] flex flex-col gap-4">
+        <h2 class="text-xl font-bold text-[#1A1C21] m-0 ml-1">
+          {{ currentSummary.houseName }}
+        </h2>
 
-      <div class="bg-white rounded-[20px] p-6 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
-        <div class="flex flex-wrap gap-12 mb-8">
-          <div class="flex flex-col">
-            <span class="text-xs text-gray-400 font-medium mb-1">t</span>
-            <div class="text-[28px] font-bold text-[#22C55E] leading-none">
-              {{ currentSummary.currentClimate.temperature | number: "1.1-1" }}
-              <span class="text-lg font-normal">°C</span>
+        <div class="bg-white rounded-[20px] p-6 border border-transparent shadow-sm">
+          <div class="flex flex-wrap gap-12 mb-8">
+            <div class="flex flex-col">
+              <span class="text-xs text-gray-400 font-medium mb-1">t</span>
+              <div class="text-[28px] font-bold text-[#22C55E] leading-none">
+                {{ currentSummary.currentClimate.temperature | number: "1.1-1" }}
+                <span class="text-lg font-normal">°C</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-xs text-gray-400 font-medium mb-1">CO²</span>
+              <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
+                {{ currentSummary.currentClimate.co2 | number: "1.0-0" }}
+                <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-xs text-gray-400 font-medium mb-1">NH3</span>
+              <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
+                {{ currentSummary.currentClimate.nh3 | number: "1.0-0" }}
+                <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <span class="text-xs text-gray-400 font-medium mb-1">H %</span>
+              <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
+                {{ currentSummary.currentClimate.humidity | number: "1.0-0" }}
+                <span class="text-lg font-normal text-gray-400 ml-1">%</span>
+              </div>
             </div>
           </div>
 
-          <div class="flex flex-col">
-            <span class="text-xs text-gray-400 font-medium mb-1">CO²</span>
-            <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
-              {{ currentSummary.currentClimate.co2 | number: "1.0-0" }}
-              <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
+          <div class="h-px bg-slate-100 w-full mb-6"></div>
+
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm text-gray-400">{{ "DASHBOARD.TIME_IN_RANGE" | translate }}</span>
+              <span class="text-lg font-medium text-[#1A1C21]">
+                {{ currentSummary.currentClimate.timeInRangePercent }}%
+              </span>
+            </div>
+            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div
+                class="h-full bg-[#3B82F6] rounded-full"
+                [style.width.%]="currentSummary.currentClimate.timeInRangePercent"></div>
             </div>
           </div>
 
-          <div class="flex flex-col">
-            <span class="text-xs text-gray-400 font-medium mb-1">NH3</span>
-            <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
-              {{ currentSummary.currentClimate.nh3 | number: "1.0-0" }}
-              <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div class="text-left">
+              <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_START" | translate }}</div>
+              <div class="text-sm font-medium text-[#1A1C21] opacity-80">12.01.2026</div>
             </div>
-          </div>
 
-          <div class="flex flex-col">
-            <span class="text-xs text-gray-400 font-medium mb-1">H %</span>
-            <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
-              {{ currentSummary.currentClimate.humidity | number: "1.0-0" }}
-              <span class="text-lg font-normal text-gray-400 ml-1">%</span>
+            <div class="text-left sm:text-center">
+              <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.QTY" | translate }}</div>
+              <div class="text-sm font-medium text-[#1A1C21] opacity-80">203 {{ "COMMON.UNITS.PCS" | translate }}</div>
             </div>
-          </div>
-        </div>
 
-        <div class="h-px bg-slate-100 w-full mb-6"></div>
-
-        <div class="mb-6">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-sm text-gray-400">{{ "DASHBOARD.TIME_IN_RANGE" | translate }}</span>
-            <span class="text-lg font-medium text-[#1A1C21]">
-              {{ currentSummary.currentClimate.timeInRangePercent }}%
-            </span>
-          </div>
-          <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-            <div
-              class="h-full bg-[#3B82F6] rounded-full"
-              [style.width.%]="currentSummary.currentClimate.timeInRangePercent"></div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-          <div class="text-left">
-            <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_START" | translate }}</div>
-            <div class="text-sm font-medium text-[#1A1C21] opacity-80">12.01.2026</div>
-          </div>
-
-          <div class="text-left sm:text-center">
-            <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.QTY" | translate }}</div>
-            <div class="text-sm font-medium text-[#1A1C21] opacity-80">203 {{ "COMMON.UNITS.PCS" | translate }}</div>
-          </div>
-
-          <div class="text-left sm:text-right">
-            <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_END" | translate }}</div>
-            <div class="text-sm font-medium text-[#1A1C21] opacity-80">14.02.2026</div>
+            <div class="text-left sm:text-right">
+              <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_END" | translate }}</div>
+              <div class="text-sm font-medium text-[#1A1C21] opacity-80">14.02.2026</div>
+            </div>
           </div>
         </div>
       </div>
