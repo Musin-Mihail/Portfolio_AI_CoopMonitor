@@ -3,6 +3,7 @@
   "MENU": {
     "HOME": "Главная",
     "DASHBOARD": "Дашборд",
+    "FLOCKS": "Мониторинг стада",
     "VIDEO_WALL": "Видеостена",
     "LOGS": "Журналы",
     "REPORTS": "Отчеты",
@@ -151,6 +152,48 @@
     "CALENDAR": {
       "JANUARY": "Январь",
       "DAYS": ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
+    }
+  },
+  "FLOCKS": {
+    "TITLE": "Мониторинг стада",
+    "STATUS_TITLE": "Статус стад",
+    "SEARCH_PLACEHOLDER": "Найти стадо...",
+    "FILTERS": "Фильтры",
+    "ADD_FLOCK": "Добавить стадо",
+    "TABS": {
+      "ALL": "Все",
+      "HEALTHY": "Здоровые",
+      "WARNING": "Внимание",
+      "CRITICAL": "Критично"
+    },
+    "CARD": {
+      "SLAUGHTER_IN": "Забой через",
+      "DAYS": "дн"
+    },
+    "DETAILS": {
+      "TIME_IN_RANGE": "Time in range",
+      "LOAD_DATE": "Загрузка партии",
+      "QTY": "Количество голов",
+      "END_DATE": "Отгрузка партии",
+      "TABS": {
+        "HEALTH": "Здоровье",
+        "ENV": "Окружающая среда",
+        "PROD": "Продуктивность",
+        "PREDICT": "Предикция болезней",
+        "ALERTS": "Алерты"
+      },
+      "METRICS": {
+        "MORTALITY": "Смертность",
+        "AVG_WEIGHT": "Средний вес",
+        "FCR": "FCR",
+        "WATER_FEED": "Вода / Корм",
+        "TARGET": "Цель",
+        "CYCLE_TOTAL": "За цикл",
+        "TODAY": "Сегодня",
+        "UNIFORMITY": "Однородность",
+        "PER_DAY": "Вода за сутки"
+      },
+      "CHART_TITLE": "Динамика роста (14 дней)"
     }
   },
   "VIDEO_WALL": {

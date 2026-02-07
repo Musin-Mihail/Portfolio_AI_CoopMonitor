@@ -39,6 +39,11 @@
       <ng-container
         *ngTemplateOutlet="
           menuItem;
+          context: { link: '/flocks', icon: 'pi-list', label: 'MENU.FLOCKS', exact: true }
+        "></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          menuItem;
           context: { link: '/video-wall', icon: 'pi-video', label: 'MENU.VIDEO_WALL', exact: true }
         "></ng-container>
       <ng-container

@@ -3,6 +3,7 @@
   "MENU": {
     "HOME": "Home",
     "DASHBOARD": "Dashboard",
+    "FLOCKS": "Flock Monitoring",
     "VIDEO_WALL": "Video Wall",
     "LOGS": "Logs",
     "REPORTS": "Reports",
@@ -151,6 +152,48 @@
     "CALENDAR": {
       "JANUARY": "January",
       "DAYS": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    }
+  },
+  "FLOCKS": {
+    "TITLE": "Flock Monitoring",
+    "STATUS_TITLE": "Flocks Status",
+    "SEARCH_PLACEHOLDER": "Search flock...",
+    "FILTERS": "Filters",
+    "ADD_FLOCK": "Add Flock",
+    "TABS": {
+      "ALL": "All",
+      "HEALTHY": "Healthy",
+      "WARNING": "Warning",
+      "CRITICAL": "Critical"
+    },
+    "CARD": {
+      "SLAUGHTER_IN": "Slaughter in",
+      "DAYS": "days"
+    },
+    "DETAILS": {
+      "TIME_IN_RANGE": "Time in range",
+      "LOAD_DATE": "Batch Load",
+      "QTY": "Head Count",
+      "END_DATE": "Batch Shipment",
+      "TABS": {
+        "HEALTH": "Health",
+        "ENV": "Environment",
+        "PROD": "Productivity",
+        "PREDICT": "Disease Prediction",
+        "ALERTS": "Alerts"
+      },
+      "METRICS": {
+        "MORTALITY": "Mortality",
+        "AVG_WEIGHT": "Avg Weight",
+        "FCR": "FCR",
+        "WATER_FEED": "Water / Feed",
+        "TARGET": "Target",
+        "CYCLE_TOTAL": "Cycle Total",
+        "TODAY": "Today",
+        "UNIFORMITY": "Uniformity",
+        "PER_DAY": "Water per day"
+      },
+      "CHART_TITLE": "Growth Dynamics (14 days)"
     }
   },
   "VIDEO_WALL": {
