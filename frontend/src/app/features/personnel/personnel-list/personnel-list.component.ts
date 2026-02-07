@@ -45,7 +45,7 @@ export class PersonnelListComponent implements OnInit {
   openDialog(person?: Personnel): void {
     const ref = this.dialogService.open(PersonnelDialogComponent, {
       showHeader: false,
-      width: '400px',
+      width: 'golden-sm',
       data: person || null,
     });
     ref?.onClose.subscribe((result) => {

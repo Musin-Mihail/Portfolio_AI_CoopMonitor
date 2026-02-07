@@ -61,7 +61,7 @@ export class MortalityListComponent implements OnInit {
   openDialog(record?: MortalityRecord): void {
     const ref = this.dialogService.open(MortalityDialogComponent, {
       showHeader: false,
-      width: '450px',
+      width: 'golden-md',
       modal: true,
       data: record || null,
     });

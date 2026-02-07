@@ -61,7 +61,7 @@ export class DiseaseListComponent implements OnInit {
   openDialog(record?: DiseaseRecord) {
     const ref = this.dialogService.open(DiseaseDialogComponent, {
       showHeader: false,
-      width: '450px',
+      width: 'golden-md',
       modal: true,
       data: record || null,
     });

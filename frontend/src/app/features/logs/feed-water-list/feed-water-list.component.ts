@@ -58,7 +58,7 @@ export class FeedWaterListComponent implements OnInit {
   openDialog(record?: FeedWaterRecord) {
     const ref = this.dialogService.open(FeedWaterDialogComponent, {
       showHeader: false,
-      width: '500px',
+      width: 'golden-md',
       modal: true,
       data: record || null,
     });

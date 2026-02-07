@@ -62,7 +62,7 @@ export class WeighingListComponent implements OnInit {
   openDialog(record?: WeighingRecord) {
     const ref = this.dialogService.open(WeighingDialogComponent, {
       showHeader: false,
-      width: '450px',
+      width: 'golden-lg',
       modal: true,
       data: record || null,
     });

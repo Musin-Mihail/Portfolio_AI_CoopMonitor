@@ -61,7 +61,7 @@ export class MarkingListComponent implements OnInit {
   openDialog(record?: MarkingRecord) {
     const ref = this.dialogService.open(MarkingDialogComponent, {
       showHeader: false,
-      width: '500px',
+      width: 'golden-md',
       modal: true,
       data: record || null,
     });

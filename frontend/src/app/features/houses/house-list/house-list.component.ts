@@ -77,7 +77,7 @@ export class HouseListComponent implements OnInit {
   openDialog(house?: House) {
     const ref = this.dialogService.open(HouseDialogComponent, {
       showHeader: false,
-      width: '400px',
+      width: 'golden-sm',
       data: house || null,
     });
 

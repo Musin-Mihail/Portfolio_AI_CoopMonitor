@@ -44,7 +44,7 @@ export class FeedListComponent implements OnInit {
   openDialog(feed?: Feed): void {
     const ref = this.dialogService.open(FeedDialogComponent, {
       showHeader: false,
-      width: '400px',
+      width: 'golden-sm',
       data: feed || null,
     });
     ref?.onClose.subscribe((result) => {

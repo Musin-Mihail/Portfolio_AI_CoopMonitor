@@ -98,7 +98,7 @@ export class FlocksComponent implements OnInit {
   openAddFlockDialog() {
     const ref = this.dialogService.open(BatchInfoDialogComponent, {
       showHeader: false,
-      width: '450px',
+      width: 'golden-md',
       modal: true,
       data: null,
     });

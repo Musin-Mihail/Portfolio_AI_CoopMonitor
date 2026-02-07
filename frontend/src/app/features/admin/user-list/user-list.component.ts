@@ -44,7 +44,7 @@ export class UserListComponent implements OnInit {
   openDialog(user?: UserDto): void {
     const ref = this.dialogService.open(UserDialogComponent, {
       showHeader: false,
-      width: '400px',
+      width: 'golden-sm',
       data: user || null,
     });
 

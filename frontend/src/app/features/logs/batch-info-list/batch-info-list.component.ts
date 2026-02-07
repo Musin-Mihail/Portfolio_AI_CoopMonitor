@@ -59,7 +59,7 @@ export class BatchInfoListComponent implements OnInit {
   openDialog(record?: BatchInfoRecord): void {
     const ref = this.dialogService.open(BatchInfoDialogComponent, {
       showHeader: false,
-      width: '450px',
+      width: 'golden-md',
       modal: true,
       data: record || null,
     });
