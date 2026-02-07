@@ -1,58 +1,23 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-import { ButtonModule } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
-import { TooltipModule } from 'primeng/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { VideoService } from '../../../core/services/video.service';
+import { DialogService } from 'primeng/dynamicdialog';
 import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
-
-interface VideoStreamMock {
-  id: number;
-  title: string;
-  subTitle?: string;
-  statusKey: string;
-  fps: number;
-  quality: string;
-  time: string;
-  cameraState: 'Normal' | 'Alert' | 'Error';
-  alertCount: number;
-  audioAlertCount?: number;
-  imageUrl?: string;
-  type?: 'rgb' | 'thermal';
-
-  date?: string;
-  eventTag?: {
-    labelKey: string;
-    type: 'danger' | 'warning' | 'info' | 'primary';
-  };
-}
-
-interface AiEventMock {
-  time: string;
-  titleKey: string;
-  location: string;
-  type: 'danger' | 'warning' | 'info' | 'primary';
-}
+import { AiEventMock, VideoStreamMock } from '../models/video.models';
 
 @Component({
-  selector: 'app-video-archive',
+  selector: 'app-video-live',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, TooltipModule, TranslateModule],
-  templateUrl: './video-archive.component.html',
-  styleUrls: ['./video-archive.component.scss'],
+  imports: [CommonModule, FormsModule, TranslateModule],
+  templateUrl: './video-live.component.html',
+  styleUrls: ['./video-live.component.scss'],
 })
-export class VideoArchiveComponent implements OnInit {
-  private videoService = inject(VideoService);
+export class VideoLiveComponent implements OnInit {
   private dialogService = inject(DialogService);
-
-  activeTab = signal<'live' | 'archive'>('live');
 
   searchQuery = signal<string>('');
   cameraFilter = signal<'all' | 'rgb' | 'thermal'>('all');
-
   selectedStream = signal<VideoStreamMock | null>(null);
 
   liveStreams = signal<VideoStreamMock[]>([
@@ -110,45 +75,6 @@ export class VideoArchiveComponent implements OnInit {
     },
   ]);
 
-  archiveStreams = signal<VideoStreamMock[]>([
-    {
-      id: 101,
-      title: 'House 1 - Zone A',
-      date: '14.01.2026',
-      statusKey: 'VIDEO_WALL.ONLINE',
-      fps: 25,
-      quality: '',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 0,
-      eventTag: { labelKey: 'DASHBOARD.EVENTS.MORTALITY_DETECTED', type: 'danger' },
-    },
-    {
-      id: 102,
-      title: 'House 1 - Zone A',
-      date: '14.01.2026',
-      statusKey: 'VIDEO_WALL.ONLINE',
-      fps: 25,
-      quality: '',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 0,
-      eventTag: { labelKey: 'DASHBOARD.EVENTS.STAFF_ACTIVITY', type: 'info' },
-    },
-    {
-      id: 103,
-      title: 'House 1 - Zone A',
-      date: '14.01.2026',
-      statusKey: 'VIDEO_WALL.ONLINE',
-      fps: 25,
-      quality: '',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 0,
-      eventTag: { labelKey: 'DASHBOARD.EVENTS.LOW_ACTIVITY', type: 'info' },
-    },
-  ]);
-
   aiEvents = signal<AiEventMock[]>([
     { time: '10:25', titleKey: 'DASHBOARD.EVENTS.ANOMALY', location: 'House 1 - Cam 1', type: 'danger' },
     { time: '08:30', titleKey: 'DASHBOARD.EVENTS.OBJECT_DETECTED', location: 'House 3 - Cam 1', type: 'primary' },
@@ -180,10 +106,6 @@ export class VideoArchiveComponent implements OnInit {
     if (this.liveStreams().length > 0) {
       this.selectedStream.set(this.liveStreams()[0]);
     }
-  }
-
-  setTab(tab: 'live' | 'archive') {
-    this.activeTab.set(tab);
   }
 
   selectStream(stream: VideoStreamMock) {

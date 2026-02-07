@@ -1,0 +1,239 @@
+<div class="flex flex-col lg:flex-row gap-6 h-full min-h-0 overflow-hidden">
+  <aside
+    class="w-full lg:w-[550px] xl:w-[600px] flex-shrink-0 flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-slate-100 flex flex-col gap-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2 text-slate-800 font-bold">
+          <i class="pi pi-video text-red-500"></i>
+          <span>{{ "VIDEO_WALL.CAMERAS" | translate }}</span>
+        </div>
+        <span class="bg-slate-100 text-slate-500 text-xs font-bold px-2 py-1 rounded-md">
+          {{ liveStreams().length }} {{ "VIDEO_WALL.CAMERAS_COUNT" | translate }}
+        </span>
+      </div>
+
+      <div class="relative">
+        <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Search for..."
+          class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <button
+          class="px-3 py-1.5 border border-slate-200 rounded-lg bg-white text-slate-600 text-xs font-bold flex items-center gap-1 hover:bg-slate-50">
+          <i class="pi pi-filter"></i>
+          Filters
+        </button>
+        <div class="flex-1 bg-slate-100 p-1 rounded-lg flex">
+          <button
+            (click)="setFilter('all')"
+            class="flex-1 text-[10px] font-bold py-1 rounded text-center transition-all"
+            [class.bg-white]="cameraFilter() === 'all'"
+            [class.shadow-sm]="cameraFilter() === 'all'">
+            All
+          </button>
+          <button
+            (click)="setFilter('rgb')"
+            class="flex-1 text-[10px] font-bold py-1 rounded text-center transition-all"
+            [class.bg-white]="cameraFilter() === 'rgb'"
+            [class.shadow-sm]="cameraFilter() === 'rgb'">
+            RGB
+          </button>
+          <button
+            (click)="setFilter('thermal')"
+            class="flex-1 text-[10px] font-bold py-1 rounded text-center transition-all"
+            [class.bg-white]="cameraFilter() === 'thermal'"
+            [class.shadow-sm]="cameraFilter() === 'thermal'">
+            Thermal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4 grid grid-cols-2 content-start gap-4 custom-scrollbar">
+      <div
+        *ngFor="let item of filteredLiveStreams()"
+        (click)="selectStream(item)"
+        class="group relative bg-white border rounded-xl overflow-hidden cursor-pointer transition-all hover:shadow-md"
+        [class.border-blue-500]="selectedStream()?.id === item.id"
+        [class.ring-2]="selectedStream()?.id === item.id"
+        [class.ring-blue-100]="selectedStream()?.id === item.id"
+        [class.border-slate-200]="selectedStream()?.id !== item.id">
+        <div class="p-3 flex justify-between items-start">
+          <div>
+            <div class="font-bold text-slate-800 text-sm leading-tight">{{ item.title }}</div>
+            <div class="text-xs text-slate-500">{{ item.subTitle }}</div>
+          </div>
+          <div
+            class="px-2 py-0.5 rounded text-[10px] font-bold border"
+            [class.bg-green-50]="item.cameraState !== 'Error'"
+            [class.text-green-600]="item.cameraState !== 'Error'"
+            [class.border-green-100]="item.cameraState !== 'Error'"
+            [class.bg-red-50]="item.cameraState === 'Error'"
+            [class.text-red-500]="item.cameraState === 'Error'"
+            [class.border-red-100]="item.cameraState === 'Error'">
+            {{ item.statusKey | translate }}
+          </div>
+        </div>
+
+        <div class="px-3 pb-2 text-[10px] text-slate-400 font-mono flex gap-2">
+          <span>FPS: {{ item.fps }}</span>
+          <span>Quality: {{ item.quality }}</span>
+        </div>
+
+        <div class="relative w-[calc(100%-24px)] mx-auto aspect-video bg-slate-800 rounded-lg overflow-hidden mb-3">
+          <img
+            src="assets/images/chicken_cam_placeholder.svg"
+            class="w-full h-full object-cover opacity-80"
+            onerror="this.src = 'https://placehold.co/400x250/333/999?text=Feed'" />
+
+          <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-green-400 w-8 h-8 rounded opacity-70"
+            *ngIf="item.cameraState !== 'Error'"></div>
+          <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-8 bg-green-500 text-white text-[9px] px-1.5 rounded"
+            *ngIf="item.cameraState !== 'Error'">
+            Normal
+          </div>
+        </div>
+
+        <div class="px-3 pb-3 flex gap-2">
+          <div
+            class="px-2 py-1 rounded flex items-center gap-1.5 text-[10px] font-bold border"
+            [class.bg-red-50]="item.alertCount > 0"
+            [class.text-red-500]="item.alertCount > 0"
+            [class.border-red-100]="item.alertCount > 0"
+            [class.bg-slate-50]="item.alertCount === 0"
+            [class.text-slate-400]="item.alertCount === 0"
+            [class.border-slate-100]="item.alertCount === 0">
+            <i class="pi pi-video"></i>
+            Alert: {{ item.alertCount }}
+          </div>
+          <div
+            class="px-2 py-1 rounded flex items-center gap-1.5 text-[10px] font-bold border"
+            [class.bg-blue-50]="item.audioAlertCount && item.audioAlertCount > 0"
+            [class.text-blue-500]="item.audioAlertCount && item.audioAlertCount > 0"
+            [class.border-blue-100]="item.audioAlertCount && item.audioAlertCount > 0"
+            [class.bg-slate-50]="!item.audioAlertCount"
+            [class.text-slate-400]="!item.audioAlertCount"
+            [class.border-slate-100]="!item.audioAlertCount">
+            <i class="pi pi-microphone"></i>
+            Alert: {{ item.audioAlertCount || 0 }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main
+    class="flex-1 flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-full min-h-0 relative">
+    <ng-container *ngIf="selectedStream(); else noSelection">
+      <div class="p-6 pb-2 flex justify-between items-start">
+        <div>
+          <h2 class="text-xl font-bold text-slate-800">
+            {{ selectedStream()!.title }} - {{ selectedStream()!.subTitle }}
+          </h2>
+          <div class="text-sm text-slate-400 mt-1 font-mono">
+            FPS: {{ selectedStream()!.fps }}
+            <span class="mx-2 text-slate-300">|</span>
+            Quality: {{ selectedStream()!.quality }}
+          </div>
+        </div>
+        <div class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
+          {{ selectedStream()!.statusKey | translate }}
+        </div>
+      </div>
+
+      <div class="flex-1 p-6 flex flex-col min-h-0">
+        <div class="w-full flex-1 bg-black rounded-xl overflow-hidden relative group">
+          <img
+            src="assets/images/chicken_cam_placeholder.svg"
+            class="w-full h-full object-cover opacity-60"
+            onerror="this.src = 'https://placehold.co/800x600/111/444?text=Live+Stream'" />
+
+          <div
+            class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="flex items-center gap-4">
+              <button class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:scale-105">
+                <i class="pi pi-pause text-xs"></i>
+              </button>
+              <button
+                class="w-8 h-8 rounded-full bg-white/20 text-white backdrop-blur flex items-center justify-center">
+                <i class="pi pi-volume-up text-xs"></i>
+              </button>
+              <div
+                class="flex items-center gap-2 px-3 py-1 bg-red-600/80 rounded-full text-white text-[10px] font-bold">
+                <div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                Live
+              </div>
+            </div>
+            <button
+              class="w-8 h-8 rounded-lg text-white hover:bg-white/20 flex items-center justify-center"
+              (click)="playStream(selectedStream()!)">
+              <i class="pi pi-expand"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 flex gap-3">
+          <div
+            class="px-3 py-1.5 rounded-lg bg-red-50 border border-red-100 text-red-600 font-bold text-xs flex items-center gap-2">
+            <i class="pi pi-video"></i>
+            Alert: {{ selectedStream()!.alertCount }}
+          </div>
+          <div
+            class="px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 font-bold text-xs flex items-center gap-2">
+            <i class="pi pi-microphone"></i>
+            Alert: {{ selectedStream()!.audioAlertCount || 0 }}
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #noSelection>
+      <div class="flex-1 flex items-center justify-center text-slate-400">Select a camera to view</div>
+    </ng-template>
+  </main>
+
+  <aside
+    class="hidden xl:flex w-[320px] flex-shrink-0 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex-col h-full min-h-0">
+    <h2 class="text-lg font-bold text-slate-800 mb-6 font-serif">{{ "VIDEO_WALL.AI_EVENTS" | translate }}</h2>
+
+    <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 pr-1">
+      <div
+        *ngFor="let event of aiEvents()"
+        class="flex gap-4 group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors -mx-2">
+        <div class="text-xs font-medium text-slate-400 pt-1">{{ event.time }}</div>
+        <div class="flex-1">
+          <div class="font-bold text-sm text-slate-800">{{ event.titleKey | translate }}</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">{{ event.location }}</div>
+          <div class="mt-2">
+            <span class="text-blue-500 text-[11px] font-semibold hover:underline cursor-pointer">
+              {{ "VIDEO_WALL.VIEW_BTN" | translate }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 pt-6 border-t border-slate-100">
+      <h3 class="text-sm font-bold text-slate-800 mb-4">{{ "VIDEO_WALL.STATS_TODAY" | translate }}</h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-slate-500">{{ "VIDEO_WALL.TOTAL_EVENTS" | translate }}</span>
+          <span class="font-bold text-slate-800">24</span>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-slate-500">{{ "VIDEO_WALL.ACTIVE_CAMS" | translate }}</span>
+          <span class="font-bold text-slate-800">{{ liveStreams().length }}/8</span>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-slate-500">{{ "VIDEO_WALL.ALERTS" | translate }}</span>
+          <span class="font-bold text-red-500">3</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>

@@ -4,7 +4,6 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ReportsListComponent } from './features/reports/reports-list/reports-list.component';
-import { VideoArchiveComponent } from './features/video-wall/video-archive/video-archive.component';
 import { AdminLayoutComponent } from './features/layout/admin-layout/admin-layout.component';
 import { LogsLayoutComponent } from './features/layout/logs-layout/logs-layout.component';
 import { MasterDataLayoutComponent } from './features/layout/master-data-layout/master-data-layout.component';
@@ -21,6 +20,7 @@ import { UserListComponent } from './features/admin/user-list/user-list.componen
 import { AuditListComponent } from './features/admin/audit-list/audit-list.component';
 import { SystemStatusComponent } from './features/settings/system-status/system-status.component';
 import { FlocksComponent } from './features/flocks/flocks.component';
+import { VideoWallComponent } from './features/video-wall/video-wall.component';
 
 export const routes: Routes = [
   {
@@ -45,7 +45,7 @@ export const routes: Routes = [
       },
       {
         path: 'video-wall',
-        component: VideoArchiveComponent,
+        component: VideoWallComponent,
         data: { breadcrumb: 'MENU.VIDEO_WALL' },
       },
       {
