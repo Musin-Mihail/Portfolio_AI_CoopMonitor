@@ -5,28 +5,31 @@
         {{ "DASHBOARD.TITLE" | translate }}
       </h1>
 
-      <div class="w-64">
+      <div class="w-80">
         <p-select
-          [options]="houseOptions"
-          [(ngModel)]="selectedHouseId"
-          (onChange)="onHouseChange()"
-          optionLabel="name"
-          optionValue="id"
+          [options]="batchOptions"
+          [(ngModel)]="selectedBatchId"
+          (onChange)="onBatchChange()"
+          optionLabel="label"
+          optionValue="value"
           [placeholder]="'DASHBOARD.SELECT_VIEW' | translate"
           styleClass="w-full" />
       </div>
     </div>
 
     <div
-      *ngIf="!selectedHouseId"
+      *ngIf="!selectedBatchId"
       class="flex flex-col gap-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <div
-          *ngFor="let summary of allSummaries"
+          *ngFor="let card of batchCards"
           class="flex flex-col gap-4 cursor-pointer group bg-[#F5F6F8] p-5 rounded-[24px] hover:bg-[#E2E8F0] transition-colors duration-200"
-          (click)="selectedHouseId = summary.houseId; onHouseChange()">
-          <div class="font-semibold text-xl text-[#1A1C21] ml-1 group-hover:text-blue-600 transition-colors">
-            {{ summary.houseName }}
+          (click)="selectedBatchId = card.batchId; onBatchChange()">
+          <div class="flex flex-col">
+            <div class="font-semibold text-xl text-[#1A1C21] ml-1 group-hover:text-blue-600 transition-colors">
+              {{ card.batchDate | date: "dd.MM.yyyy" }}
+            </div>
+            <div class="text-sm text-slate-500 ml-1 mt-1">{{ "COMMON.HOUSE" | translate }}: {{ card.houseName }}</div>
           </div>
 
           <div class="bg-white rounded-[20px] p-5 shadow-sm border border-transparent transition-all duration-300">
@@ -34,7 +37,7 @@
               <div class="flex flex-col">
                 <span class="text-sm text-gray-400 font-medium mb-1">{{ "DASHBOARD.TEMP_SHORT" | translate }}</span>
                 <div class="text-[22px] font-bold text-[#22C55E] whitespace-nowrap">
-                  {{ summary.currentClimate.temperature | number: "1.1-1" }}
+                  {{ card.temperature | number: "1.1-1" }}
                   <span class="text-lg">°C</span>
                 </div>
               </div>
@@ -42,7 +45,7 @@
               <div class="flex flex-col">
                 <span class="text-sm text-gray-400 font-medium mb-1">CO₂</span>
                 <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
-                  {{ summary.currentClimate.co2 | number: "1.0-0" }}
+                  {{ card.co2 | number: "1.0-0" }}
                   <span class="text-sm font-normal text-gray-500">ppm</span>
                 </div>
               </div>
@@ -50,7 +53,7 @@
               <div class="flex flex-col">
                 <span class="text-sm text-gray-400 font-medium mb-1">NH₃</span>
                 <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
-                  {{ summary.currentClimate.nh3 | number: "1.0-0" }}
+                  {{ card.nh3 | number: "1.0-0" }}
                   <span class="text-sm font-normal text-gray-500">ppm</span>
                 </div>
               </div>
@@ -60,7 +63,7 @@
                   {{ "DASHBOARD.HUMIDITY_SHORT" | translate }} %
                 </span>
                 <div class="text-[22px] font-bold text-[#1A1C21] whitespace-nowrap">
-                  {{ summary.currentClimate.humidity | number: "1.0-0" }}
+                  {{ card.humidity | number: "1.0-0" }}
                   <span class="text-lg font-normal">%</span>
                 </div>
               </div>
@@ -71,27 +74,34 @@
             <div class="mb-6">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm text-gray-500">{{ "DASHBOARD.TIME_IN_RANGE" | translate }}</span>
-                <span class="text-lg font-medium text-[#1A1C21]">{{ summary.currentClimate.timeInRangePercent }}%</span>
+                <span class="text-lg font-medium text-[#1A1C21]">{{ card.timeInRangePercent }}%</span>
               </div>
               <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
                 <div
                   class="h-full bg-[#3B82F6] rounded-full"
-                  [style.width.%]="summary.currentClimate.timeInRangePercent"></div>
+                  [style.width.%]="card.timeInRangePercent"></div>
               </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
               <div>
                 <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_START" | translate }}</div>
-                <div class="text-sm font-medium text-[#1A1C21]">12.01.2026</div>
+                <div class="text-sm font-medium text-[#1A1C21]">
+                  {{ card.batchDate | date: "dd.MM.yyyy" }}
+                </div>
               </div>
               <div>
                 <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.QTY" | translate }}</div>
-                <div class="text-sm font-medium text-[#1A1C21]">203 {{ "COMMON.UNITS.PCS" | translate }}</div>
+                <div class="text-sm font-medium text-[#1A1C21]">
+                  {{ card.quantity }}
+                  {{ "COMMON.UNITS.PCS" | translate }}
+                </div>
               </div>
               <div>
                 <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_END" | translate }}</div>
-                <div class="text-sm font-medium text-[#1A1C21]">14.02.2026</div>
+                <div class="text-sm font-medium text-[#1A1C21]">
+                  {{ card.deliveryDate | date: "dd.MM.yyyy" }}
+                </div>
               </div>
             </div>
           </div>
@@ -171,7 +181,7 @@
 
     <div
       class="flex flex-col gap-6"
-      *ngIf="selectedHouseId && currentSummary">
+      *ngIf="selectedBatchId && currentSummary">
       <div class="bg-[#F5F6F8] p-5 rounded-[24px] flex flex-col gap-4">
         <h2 class="text-xl font-bold text-[#1A1C21] m-0 ml-1">
           {{ currentSummary.houseName }}
@@ -231,17 +241,24 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
             <div class="text-left">
               <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_START" | translate }}</div>
-              <div class="text-sm font-medium text-[#1A1C21] opacity-80">12.01.2026</div>
+              <div class="text-sm font-medium text-[#1A1C21] opacity-80">
+                {{ (getSelectedBatch()?.date | date: "dd.MM.yyyy") || "-" }}
+              </div>
             </div>
 
             <div class="text-left sm:text-center">
               <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.QTY" | translate }}</div>
-              <div class="text-sm font-medium text-[#1A1C21] opacity-80">203 {{ "COMMON.UNITS.PCS" | translate }}</div>
+              <div class="text-sm font-medium text-[#1A1C21] opacity-80">
+                {{ getSelectedBatch()?.quantity || 0 }}
+                {{ "COMMON.UNITS.PCS" | translate }}
+              </div>
             </div>
 
             <div class="text-left sm:text-right">
               <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_END" | translate }}</div>
-              <div class="text-sm font-medium text-[#1A1C21] opacity-80">14.02.2026</div>
+              <div class="text-sm font-medium text-[#1A1C21] opacity-80">
+                {{ (getSelectedBatch()?.deliveryDate | date: "dd.MM.yyyy") || "-" }}
+              </div>
             </div>
           </div>
         </div>

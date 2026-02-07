@@ -6,10 +6,26 @@ import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { HousesService } from '../../core/services/houses.service';
+import { BatchInfoService } from '../../core/services/batch-info.service';
 import { DashboardSummary } from '../../core/models/dashboard.models';
+import { BatchInfoRecord } from '../../core/models/logs.models';
+import { forkJoin } from 'rxjs';
 
 Chart.register(...registerables);
+
+interface BatchCard {
+  batchId: number;
+  houseId: number;
+  houseName: string;
+  batchDate: string;
+  deliveryDate: string;
+  quantity: number;
+  temperature: number;
+  humidity: number;
+  co2: number;
+  nh3: number;
+  timeInRangePercent: number;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -23,16 +39,18 @@ export class DashboardComponent implements OnInit {
   @ViewChild('comparisonChart') comparisonChartCanvas!: ElementRef<HTMLCanvasElement>;
 
   private dashboardService = inject(DashboardService);
-  private housesService = inject(HousesService);
+  private batchService = inject(BatchInfoService);
   private translate = inject(TranslateService);
 
   chart: Chart | null = null;
   comparisonChart: Chart | null = null;
 
-  houseOptions: any[] = [];
-  selectedHouseId: number | null = null;
+  batchOptions: any[] = [];
+  selectedBatchId: number | null = null;
 
-  allSummaries: DashboardSummary[] = [];
+  allBatches: BatchInfoRecord[] = [];
+
+  batchCards: BatchCard[] = [];
   currentSummary: DashboardSummary | null = null;
 
   selectedAggregation = 0;
@@ -50,7 +68,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.initOptions();
-    this.loadHouses();
+    this.loadDashboardData();
   }
 
   initOptions() {
@@ -63,61 +81,93 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-  loadHouses() {
-    this.housesService.getHouses().subscribe((data) => {
-      this.houseOptions = [{ name: 'All Houses', id: null }, ...data];
-      this.selectedHouseId = null;
-      this.loadData();
+  loadDashboardData() {
+    forkJoin({
+      batches: this.batchService.getRecords(),
+      summaries: this.dashboardService.getAllSummaries(),
+    }).subscribe(({ batches, summaries }) => {
+      this.allBatches = batches.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      this.batchOptions = [
+        { label: this.translate.instant('DASHBOARD.SELECT_VIEW'), value: null },
+        ...this.allBatches.map((b) => ({
+          label: `${b.houseName} (${new Date(b.date).toLocaleDateString()})`,
+          value: b.id,
+          houseId: b.houseId,
+        })),
+      ];
+
+      this.batchCards = this.allBatches.map((batch) => {
+        const summary = summaries.find((s) => s.houseId === batch.houseId);
+
+        return {
+          batchId: batch.id,
+          houseId: batch.houseId,
+          houseName: summary ? summary.houseName : batch.houseName || 'Unknown',
+          batchDate: batch.date,
+          deliveryDate: batch.deliveryDate,
+          quantity: batch.quantity,
+          temperature: summary ? summary.currentClimate.temperature : 0,
+          humidity: summary ? summary.currentClimate.humidity : 0,
+          co2: summary ? summary.currentClimate.co2 : 0,
+          nh3: summary ? summary.currentClimate.nh3 : 0,
+          timeInRangePercent: summary ? summary.currentClimate.timeInRangePercent : 0,
+        };
+      });
+
+      if (this.selectedBatchId) {
+        this.loadDetailData();
+      } else {
+        this.loadComparisonHistory();
+      }
     });
   }
 
-  onHouseChange() {
-    this.loadData();
+  getSelectedBatch(): BatchInfoRecord | undefined {
+    return this.allBatches.find((b) => b.id === this.selectedBatchId);
   }
 
-  onAggregationChange() {
-    if (this.selectedHouseId) {
-      this.loadSingleHistory();
+  onBatchChange() {
+    if (this.selectedBatchId) {
+      this.loadDetailData();
+    } else {
+      this.currentSummary = null;
+      if (this.chart) {
+        this.chart.destroy();
+        this.chart = null;
+      }
+      this.loadComparisonHistory();
     }
   }
 
-  setSensorType(type: 'temperature' | 'humidity' | 'co2' | 'nh3') {
-    this.selectedSensorType = type;
-    this.loadComparisonHistory();
-  }
+  loadDetailData() {
+    const selectedOption = this.batchOptions.find((b) => b.value === this.selectedBatchId);
 
-  setTimeRange(range: 'day' | 'week') {
-    this.selectedTimeRange = range;
-    this.loadComparisonHistory();
-  }
-
-  loadData() {
-    if (this.selectedHouseId === null) {
-      this.dashboardService.getAllSummaries().subscribe((res) => {
-        this.allSummaries = res;
-        this.currentSummary = null;
-        if (this.chart) {
-          this.chart.destroy();
-          this.chart = null;
-        }
-        this.loadComparisonHistory();
-      });
-    } else {
-      this.dashboardService.getSummary(this.selectedHouseId).subscribe((res) => {
+    if (selectedOption && selectedOption.houseId) {
+      this.dashboardService.getSummary(selectedOption.houseId).subscribe((res) => {
         this.currentSummary = res;
-        this.allSummaries = [];
+        if (this.currentSummary) {
+          this.currentSummary.houseName = selectedOption.label;
+        }
+
         if (this.comparisonChart) {
           this.comparisonChart.destroy();
           this.comparisonChart = null;
         }
-        this.loadSingleHistory();
+        this.loadSingleHistory(selectedOption.houseId);
       });
     }
   }
 
-  loadSingleHistory() {
-    if (!this.selectedHouseId) return;
-    this.dashboardService.getHistory(this.selectedHouseId, 24, this.selectedAggregation).subscribe((data) => {
+  onAggregationChange() {
+    if (this.selectedBatchId) {
+      const batch = this.batchOptions.find((b) => b.value === this.selectedBatchId);
+      if (batch) this.loadSingleHistory(batch.houseId);
+    }
+  }
+
+  loadSingleHistory(houseId: number) {
+    this.dashboardService.getHistory(houseId, 24, this.selectedAggregation).subscribe((data) => {
       setTimeout(() => this.updateSingleChart(data), 0);
     });
   }
@@ -131,9 +181,23 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  setSensorType(type: 'temperature' | 'humidity' | 'co2' | 'nh3') {
+    this.selectedSensorType = type;
+    this.loadComparisonHistory();
+  }
+
+  setTimeRange(range: 'day' | 'week') {
+    this.selectedTimeRange = range;
+    this.loadComparisonHistory();
+  }
+
   refreshCharts() {
-    if (this.selectedHouseId) this.loadSingleHistory();
-    else this.loadComparisonHistory();
+    if (this.selectedBatchId) {
+      const batch = this.batchOptions.find((b) => b.value === this.selectedBatchId);
+      if (batch) this.loadSingleHistory(batch.houseId);
+    } else {
+      this.loadComparisonHistory();
+    }
   }
 
   private getColor(index: number): string {
