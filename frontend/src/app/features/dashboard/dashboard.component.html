@@ -6,17 +6,6 @@
       </h1>
 
       <div class="flex items-center gap-3">
-        <div class="w-80">
-          <p-select
-            [options]="batchOptions"
-            [(ngModel)]="selectedBatchId"
-            (onChange)="onBatchChange()"
-            optionLabel="label"
-            optionValue="value"
-            [placeholder]="'DASHBOARD.SELECT_VIEW' | translate"
-            styleClass="w-full" />
-        </div>
-
         <button
           (click)="openAddFlockDialog()"
           class="bg-[#1A1C21] text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200 whitespace-nowrap">
@@ -26,14 +15,12 @@
       </div>
     </div>
 
-    <div
-      *ngIf="!selectedBatchId"
-      class="flex flex-col gap-6">
+    <div class="flex flex-col gap-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <div
           *ngFor="let card of batchCards"
           class="flex flex-col gap-4 cursor-pointer group bg-[#F5F6F8] p-5 rounded-[24px] hover:bg-[#E2E8F0] transition-colors duration-200"
-          (click)="selectedBatchId = card.batchId; onBatchChange()">
+          (click)="onCardClick(card.batchId)">
           <div class="flex flex-col">
             <div class="font-semibold text-xl text-[#1A1C21] ml-1 group-hover:text-blue-600 transition-colors">
               {{ card.batchDate | date: "dd.MM.yyyy" }}
@@ -184,115 +171,6 @@
 
         <div class="h-[300px] w-full relative">
           <canvas #comparisonChart></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="flex flex-col gap-6"
-      *ngIf="selectedBatchId && currentSummary">
-      <div class="bg-[#F5F6F8] p-5 rounded-[24px] flex flex-col gap-4">
-        <h2 class="text-xl font-bold text-[#1A1C21] m-0 ml-1">
-          {{ currentSummary.houseName }}
-        </h2>
-
-        <div class="bg-white rounded-[20px] p-6 border border-transparent shadow-sm">
-          <div class="flex flex-wrap gap-12 mb-8">
-            <div class="flex flex-col">
-              <span class="text-xs text-gray-400 font-medium mb-1">t</span>
-              <div class="text-[28px] font-bold text-[#22C55E] leading-none">
-                {{ currentSummary.currentClimate.temperature | number: "1.1-1" }}
-                <span class="text-lg font-normal">°C</span>
-              </div>
-            </div>
-
-            <div class="flex flex-col">
-              <span class="text-xs text-gray-400 font-medium mb-1">CO²</span>
-              <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
-                {{ currentSummary.currentClimate.co2 | number: "1.0-0" }}
-                <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
-              </div>
-            </div>
-
-            <div class="flex flex-col">
-              <span class="text-xs text-gray-400 font-medium mb-1">NH3</span>
-              <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
-                {{ currentSummary.currentClimate.nh3 | number: "1.0-0" }}
-                <span class="text-sm font-normal text-gray-400 ml-1">ppm</span>
-              </div>
-            </div>
-
-            <div class="flex flex-col">
-              <span class="text-xs text-gray-400 font-medium mb-1">H %</span>
-              <div class="text-[28px] font-bold text-[#1A1C21] leading-none">
-                {{ currentSummary.currentClimate.humidity | number: "1.0-0" }}
-                <span class="text-lg font-normal text-gray-400 ml-1">%</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="h-px bg-slate-100 w-full mb-6"></div>
-
-          <div class="mb-6">
-            <div class="flex justify-between items-center mb-2">
-              <span class="text-sm text-gray-400">{{ "DASHBOARD.TIME_IN_RANGE" | translate }}</span>
-              <span class="text-lg font-medium text-[#1A1C21]">
-                {{ currentSummary.currentClimate.timeInRangePercent }}%
-              </span>
-            </div>
-            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-              <div
-                class="h-full bg-[#3B82F6] rounded-full"
-                [style.width.%]="currentSummary.currentClimate.timeInRangePercent"></div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div class="text-left">
-              <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_START" | translate }}</div>
-              <div class="text-sm font-medium text-[#1A1C21] opacity-80">
-                {{ (getSelectedBatch()?.date | date: "dd.MM.yyyy") || "-" }}
-              </div>
-            </div>
-
-            <div class="text-left sm:text-center">
-              <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.QTY" | translate }}</div>
-              <div class="text-sm font-medium text-[#1A1C21] opacity-80">
-                {{ getSelectedBatch()?.quantity || 0 }}
-                {{ "COMMON.UNITS.PCS" | translate }}
-              </div>
-            </div>
-
-            <div class="text-left sm:text-right">
-              <div class="text-[11px] text-gray-400 mb-1">{{ "DASHBOARD.BATCH_END" | translate }}</div>
-              <div class="text-sm font-medium text-[#1A1C21] opacity-80">
-                {{ (getSelectedBatch()?.deliveryDate | date: "dd.MM.yyyy") || "-" }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-[24px] p-6 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-          <div class="flex items-center gap-2">
-            <i class="pi pi-chart-line text-blue-500"></i>
-            <span class="font-bold text-slate-800">{{ "DASHBOARD.MICROCLIMATE_24H" | translate }}</span>
-          </div>
-
-          <div class="flex gap-2">
-            <p-select
-              [options]="aggregationOptions"
-              [(ngModel)]="selectedAggregation"
-              (onChange)="onAggregationChange()"
-              optionLabel="label"
-              optionValue="value"
-              styleClass="w-40 text-sm" />
-          </div>
-        </div>
-
-        <div class="h-[400px] w-full relative">
-          <canvas #climateChart></canvas>
         </div>
       </div>
     </div>

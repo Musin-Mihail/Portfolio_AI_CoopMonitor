@@ -9,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
-
+import { ActivatedRoute } from '@angular/router';
 import { BatchInfoService } from '../../core/services/batch-info.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { BatchInfoRecord } from '../../core/models/logs.models';
@@ -48,6 +48,7 @@ export class FlocksComponent implements OnInit {
   private dialogService = inject(DialogService);
   private messageService = inject(MessageService);
   public translate = inject(TranslateService);
+  private route = inject(ActivatedRoute);
 
   batches = signal<BatchInfoRecord[]>([]);
   selectedBatch = signal<BatchInfoRecord | null>(null);
@@ -69,11 +70,20 @@ export class FlocksComponent implements OnInit {
       const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       this.batches.set(sorted);
 
-      // Если список не пуст и ничего не выбрано, выбираем первый элемент
+      const params = this.route.snapshot.queryParams;
+      const batchIdFromRoute = params['batchId'] ? Number(params['batchId']) : null;
+
+      if (batchIdFromRoute) {
+        const found = sorted.find((b) => b.id === batchIdFromRoute);
+        if (found) {
+          this.selectBatch(found);
+          return;
+        }
+      }
+
       if (sorted.length > 0 && !this.selectedBatch()) {
         this.selectBatch(sorted[0]);
       } else if (sorted.length > 0 && this.selectedBatch()) {
-        // Если уже был выбран элемент, обновляем его данные
         const currentId = this.selectedBatch()!.id;
         const found = sorted.find((b) => b.id === currentId);
         if (found) {
@@ -90,7 +100,7 @@ export class FlocksComponent implements OnInit {
       showHeader: false,
       width: '450px',
       modal: true,
-      data: null, // null для создания новой записи
+      data: null,
     });
 
     ref?.onClose.subscribe((result) => {
