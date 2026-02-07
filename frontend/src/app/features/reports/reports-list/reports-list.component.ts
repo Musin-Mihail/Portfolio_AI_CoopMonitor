@@ -73,7 +73,6 @@ export class ReportsListComponent implements OnInit {
         next: () => {
           this.showSuccess(this.translate.instant('REPORTS_PAGE.MSG_TRIGGERED'));
           this.isGenerating.set(false);
-          // Auto-refresh after delay
           setTimeout(() => this.loadReports(), 3000);
         },
         error: () => {

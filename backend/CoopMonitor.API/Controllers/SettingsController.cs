@@ -35,7 +35,6 @@ public class SettingsController : ControllerBase
             AdminChatId: tgConfig["AdminChatId"]
         );
 
-        // Mask ChatId for security
         if (!string.IsNullOrEmpty(notifStatus.AdminChatId) && notifStatus.AdminChatId.Length > 4)
         {
             notifStatus = notifStatus with
