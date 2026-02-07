@@ -18,65 +18,8 @@ import { DashboardSummary } from '../../../core/models/dashboard.models';
   selector: 'app-flock-health',
   standalone: true,
   imports: [CommonModule, TranslateModule],
-  template: `
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <div class="border border-slate-200 rounded-2xl p-4 bg-white">
-        <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-          <i class="pi pi-heart"></i>
-          {{ 'FLOCKS.DETAILS.METRICS.MORTALITY' | translate }}
-        </div>
-        <div class="text-2xl font-bold text-slate-800 mb-1">0,72%</div>
-        <div class="text-[10px] text-slate-400">
-          <div>{{ 'FLOCKS.DETAILS.METRICS.CYCLE_TOTAL' | translate }}: 180</div>
-          <div>{{ 'FLOCKS.DETAILS.METRICS.TODAY' | translate }}: 12</div>
-        </div>
-      </div>
-
-      <div class="border border-slate-200 rounded-2xl p-4 bg-white">
-        <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-          <i class="pi pi-filter"></i>
-          {{ 'FLOCKS.DETAILS.METRICS.AVG_WEIGHT' | translate }}
-        </div>
-        <div class="text-2xl font-bold text-slate-800 mb-1">1380 г</div>
-        <div class="text-[10px] text-slate-400">
-          <div>{{ 'FLOCKS.DETAILS.METRICS.TARGET' | translate }}: 1400г</div>
-          <div>{{ 'FLOCKS.DETAILS.METRICS.UNIFORMITY' | translate }}: 88%</div>
-        </div>
-      </div>
-
-      <div class="border border-slate-200 rounded-2xl p-4 bg-white">
-        <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-          <i class="pi pi-chart-bar"></i>
-          {{ 'FLOCKS.DETAILS.METRICS.FCR' | translate }}
-        </div>
-        <div class="text-2xl font-bold text-slate-800 mb-1">1.42</div>
-        <div class="text-[10px] text-slate-400">
-          <div>Standard: 1.45</div>
-        </div>
-      </div>
-
-      <div class="border border-slate-200 rounded-2xl p-4 bg-white">
-        <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-          <i class="pi pi-tint"></i>
-          {{ 'FLOCKS.DETAILS.METRICS.WATER_FEED' | translate }}
-        </div>
-        <div class="text-2xl font-bold text-slate-800 mb-1">2,10</div>
-        <div class="text-[10px] text-slate-400">
-          <div>{{ 'FLOCKS.DETAILS.METRICS.PER_DAY' | translate }}: 3885л</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="border border-slate-200 rounded-[24px] p-6 bg-white">
-      <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-        <i class="pi pi-chart-line text-blue-500"></i>
-        {{ 'FLOCKS.DETAILS.CHART_TITLE' | translate }}
-      </h3>
-      <div class="h-[300px] w-full relative">
-        <canvas #healthChart></canvas>
-      </div>
-    </div>
-  `,
+  templateUrl: './flock-health.component.html',
+  styleUrl: './flock-health.component.scss',
 })
 export class FlockHealthComponent implements AfterViewInit, OnDestroy {
   summary = input<DashboardSummary | null>(null);
