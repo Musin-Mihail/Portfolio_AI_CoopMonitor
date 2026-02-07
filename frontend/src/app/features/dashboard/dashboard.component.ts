@@ -5,10 +5,14 @@ import { Chart, ChartDataset, registerables } from 'chart.js';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DialogService } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
+
 import { DashboardService } from '../../core/services/dashboard.service';
 import { BatchInfoService } from '../../core/services/batch-info.service';
 import { DashboardSummary } from '../../core/models/dashboard.models';
 import { BatchInfoRecord } from '../../core/models/logs.models';
+import { BatchInfoDialogComponent } from '../logs/batch-info-dialog/batch-info-dialog.component';
 import { forkJoin } from 'rxjs';
 
 Chart.register(...registerables);
@@ -40,6 +44,8 @@ export class DashboardComponent implements OnInit {
 
   private dashboardService = inject(DashboardService);
   private batchService = inject(BatchInfoService);
+  private dialogService = inject(DialogService);
+  private messageService = inject(MessageService);
   private translate = inject(TranslateService);
 
   chart: Chart | null = null;
@@ -79,6 +85,37 @@ export class DashboardComponent implements OnInit {
       { label: this.translate.instant('DASHBOARD.AGGREGATION.30MIN'), value: 30 },
       { label: this.translate.instant('DASHBOARD.AGGREGATION.1HOUR'), value: 60 },
     ];
+  }
+
+  openAddFlockDialog() {
+    const ref = this.dialogService.open(BatchInfoDialogComponent, {
+      showHeader: false,
+      width: '450px',
+      modal: true,
+      data: null,
+    });
+
+    ref?.onClose.subscribe((result) => {
+      if (result) {
+        this.batchService.createRecord(result).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+            });
+            this.loadDashboardData();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translate.instant('COMMON.ERROR'),
+              detail: this.translate.instant('COMMON.MESSAGES.FAILED_CREATE'),
+            });
+          },
+        });
+      }
+    });
   }
 
   loadDashboardData() {

@@ -7,7 +7,9 @@
         Active
         <i class="pi pi-chevron-down text-xs"></i>
       </button>
-      <button class="bg-[#1A1C21] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
+      <button
+        (click)="openAddFlockDialog()"
+        class="bg-[#1A1C21] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
         <i class="pi pi-plus text-xs"></i>
         {{ "FLOCKS.ADD_FLOCK" | translate }}
       </button>

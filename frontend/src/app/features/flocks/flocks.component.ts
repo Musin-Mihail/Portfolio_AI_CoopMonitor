@@ -7,6 +7,9 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
+import { DialogService } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
+
 import { BatchInfoService } from '../../core/services/batch-info.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { BatchInfoRecord } from '../../core/models/logs.models';
@@ -16,6 +19,7 @@ import { FlockEnvComponent } from './flock-env/flock-env.component';
 import { FlockProdComponent } from './flock-prod/flock-prod.component';
 import { FlockPredictComponent } from './flock-predict/flock-predict.component';
 import { FlockAlertsComponent } from './flock-alerts/flock-alerts.component';
+import { BatchInfoDialogComponent } from '../logs/batch-info-dialog/batch-info-dialog.component';
 
 @Component({
   selector: 'app-flocks',
@@ -41,6 +45,8 @@ import { FlockAlertsComponent } from './flock-alerts/flock-alerts.component';
 export class FlocksComponent implements OnInit {
   private batchService = inject(BatchInfoService);
   private dashboardService = inject(DashboardService);
+  private dialogService = inject(DialogService);
+  private messageService = inject(MessageService);
   public translate = inject(TranslateService);
 
   batches = signal<BatchInfoRecord[]>([]);
@@ -62,7 +68,51 @@ export class FlocksComponent implements OnInit {
     this.batchService.getRecords().subscribe((data) => {
       const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       this.batches.set(sorted);
-      if (sorted.length > 0) this.selectBatch(sorted[0]);
+
+      // Если список не пуст и ничего не выбрано, выбираем первый элемент
+      if (sorted.length > 0 && !this.selectedBatch()) {
+        this.selectBatch(sorted[0]);
+      } else if (sorted.length > 0 && this.selectedBatch()) {
+        // Если уже был выбран элемент, обновляем его данные
+        const currentId = this.selectedBatch()!.id;
+        const found = sorted.find((b) => b.id === currentId);
+        if (found) {
+          this.selectBatch(found);
+        } else {
+          this.selectBatch(sorted[0]);
+        }
+      }
+    });
+  }
+
+  openAddFlockDialog() {
+    const ref = this.dialogService.open(BatchInfoDialogComponent, {
+      showHeader: false,
+      width: '450px',
+      modal: true,
+      data: null, // null для создания новой записи
+    });
+
+    ref?.onClose.subscribe((result) => {
+      if (result) {
+        this.batchService.createRecord(result).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translate.instant('COMMON.SUCCESS'),
+              detail: this.translate.instant('COMMON.SAVED_SUCCESS'),
+            });
+            this.loadData();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translate.instant('COMMON.ERROR'),
+              detail: this.translate.instant('COMMON.MESSAGES.FAILED_CREATE'),
+            });
+          },
+        });
+      }
     });
   }
 
