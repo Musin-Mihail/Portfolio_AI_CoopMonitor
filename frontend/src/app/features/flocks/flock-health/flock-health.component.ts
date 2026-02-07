@@ -1,6 +1,16 @@
-import { Component, ElementRef, Input, ViewChild, AfterViewInit, OnDestroy, effect, input } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
+  effect,
+  input,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Chart } from 'chart.js';
 import { DashboardSummary } from '../../../core/models/dashboard.models';
 
@@ -72,6 +82,7 @@ export class FlockHealthComponent implements AfterViewInit, OnDestroy {
   summary = input<DashboardSummary | null>(null);
   @ViewChild('healthChart') chartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: Chart | null = null;
+  private translate = inject(TranslateService);
 
   constructor() {
     effect(() => {
@@ -104,7 +115,7 @@ export class FlockHealthComponent implements AfterViewInit, OnDestroy {
         labels: labels,
         datasets: [
           {
-            label: 'Mortality Rate',
+            label: this.translate.instant('FLOCKS.DETAILS.CHART.MORTALITY_RATE'),
             data: data1,
             borderColor: '#EF4444',
             tension: 0.4,
@@ -112,7 +123,7 @@ export class FlockHealthComponent implements AfterViewInit, OnDestroy {
             borderWidth: 2,
           },
           {
-            label: 'Water Consumption',
+            label: this.translate.instant('FLOCKS.DETAILS.CHART.WATER_CONSUMPTION'),
             data: data2,
             borderColor: '#3B82F6',
             tension: 0.4,

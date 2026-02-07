@@ -201,7 +201,11 @@
         "UNIFORMITY": "Uniformity",
         "PER_DAY": "Water per day"
       },
-      "CHART_TITLE": "Growth Dynamics (14 days)"
+      "CHART_TITLE": "Growth Dynamics (14 days)",
+      "CHART": {
+        "MORTALITY_RATE": "Mortality Rate",
+        "WATER_CONSUMPTION": "Water Consumption"
+      }
     },
     "ENV": {
       "LIGHTING": "Lighting",
@@ -295,6 +299,7 @@
     "EMAIL": "Email",
     "ROLE": "Role",
     "LINKED_PERSONNEL": "Linked Personnel",
+    "LINKED_STATUS": "(Linked)",
     "NOT_LINKED": "Not linked",
     "DIALOG_TITLE_ADD": "Create User",
     "DIALOG_TITLE_EDIT": "Edit User",

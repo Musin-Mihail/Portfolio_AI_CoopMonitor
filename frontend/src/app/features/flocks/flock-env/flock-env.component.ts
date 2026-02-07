@@ -1,6 +1,6 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TagModule } from 'primeng/tag';
 import { Chart } from 'chart.js';
 
@@ -14,16 +14,16 @@ import { Chart } from 'chart.js';
         <div class="flex justify-between items-start">
           <div class="flex items-center gap-2 text-slate-500 font-medium">
             <i class="pi pi-sun"></i>
-            Освещение
+            {{ 'FLOCKS.ENV.LIGHTING' | translate }}
           </div>
           <p-tag
             severity="success"
-            value="OK"
+            [value]="'FLOCKS.ENV.STATUS_OK' | translate"
             [rounded]="true"></p-tag>
         </div>
         <div class="mt-4">
-          <div class="text-3xl font-bold text-slate-800">16 ч</div>
-          <div class="text-sm text-slate-400">Интенсивность: 5 люкс</div>
+          <div class="text-3xl font-bold text-slate-800">16 {{ 'FLOCKS.ENV.HOURS' | translate }}</div>
+          <div class="text-sm text-slate-400">{{ 'FLOCKS.ENV.INTENSITY' | translate }}</div>
         </div>
       </div>
 
@@ -31,22 +31,22 @@ import { Chart } from 'chart.js';
         <div class="flex justify-between items-start">
           <div class="flex items-center gap-2 text-slate-500 font-medium">
             <i class="pi pi-spin pi-cog"></i>
-            Вентиляция
+            {{ 'FLOCKS.ENV.VENTILATION' | translate }}
           </div>
           <p-tag
             severity="warn"
-            value="Внимание"
+            [value]="'FLOCKS.ENV.ATTENTION' | translate"
             [rounded]="true"></p-tag>
         </div>
         <div class="mt-4">
-          <div class="text-3xl font-bold text-slate-800">12 ч</div>
-          <div class="text-sm text-slate-400">Скорость воздуха: 1.8 м/с</div>
+          <div class="text-3xl font-bold text-slate-800">12 {{ 'FLOCKS.ENV.HOURS' | translate }}</div>
+          <div class="text-sm text-slate-400">{{ 'FLOCKS.ENV.AIR_SPEED' | translate }}</div>
         </div>
       </div>
     </div>
 
     <div class="bg-white border border-slate-200 rounded-[24px] p-6">
-      <h3 class="text-sm font-bold text-slate-800 mb-4">Динамика параметров за 24 часа</h3>
+      <h3 class="text-sm font-bold text-slate-800 mb-4">{{ 'FLOCKS.ENV.CHART_TITLE' | translate }}</h3>
       <div class="h-[320px] w-full relative">
         <canvas #envChart></canvas>
       </div>
@@ -54,6 +54,7 @@ import { Chart } from 'chart.js';
   `,
 })
 export class FlockEnvComponent implements AfterViewInit, OnDestroy {
+  private translate = inject(TranslateService);
   @ViewChild('envChart') chartCanvas!: ElementRef;
   chart: Chart | null = null;
 
@@ -66,8 +67,18 @@ export class FlockEnvComponent implements AfterViewInit, OnDestroy {
       data: {
         labels: labels,
         datasets: [
-          { label: 'Температура', data: [23, 22.5, 23.5, 24.5, 24, 23], borderColor: '#A855F7', tension: 0.4 },
-          { label: 'Влажность', data: [55, 58, 60, 52, 50, 55], borderColor: '#3B82F6', tension: 0.4 },
+          {
+            label: this.translate.instant('FLOCKS.ENV.CHART_TEMP'),
+            data: [23, 22.5, 23.5, 24.5, 24, 23],
+            borderColor: '#A855F7',
+            tension: 0.4,
+          },
+          {
+            label: this.translate.instant('FLOCKS.ENV.CHART_HUM'),
+            data: [55, 58, 60, 52, 50, 55],
+            borderColor: '#3B82F6',
+            tension: 0.4,
+          },
         ],
       },
       options: {

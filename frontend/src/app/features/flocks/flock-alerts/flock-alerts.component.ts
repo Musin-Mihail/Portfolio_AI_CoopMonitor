@@ -15,9 +15,15 @@ import { TagModule } from 'primeng/tag';
         styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
-            <th class="text-xs text-slate-500 font-medium bg-slate-50 border-b border-slate-100 pl-6 py-3">Severity</th>
-            <th class="text-xs text-slate-500 font-medium bg-slate-50 border-b border-slate-100 py-3">Message</th>
-            <th class="text-xs text-slate-500 font-medium bg-slate-50 border-b border-slate-100 py-3">Time</th>
+            <th class="text-xs text-slate-500 font-medium bg-slate-50 border-b border-slate-100 pl-6 py-3">
+              {{ 'FLOCKS.ALERTS.HEADER_SEVERITY' | translate }}
+            </th>
+            <th class="text-xs text-slate-500 font-medium bg-slate-50 border-b border-slate-100 py-3">
+              {{ 'FLOCKS.ALERTS.HEADER_MESSAGE' | translate }}
+            </th>
+            <th class="text-xs text-slate-500 font-medium bg-slate-50 border-b border-slate-100 py-3">
+              {{ 'FLOCKS.ALERTS.HEADER_TIME' | translate }}
+            </th>
             <th class="bg-slate-50 border-b border-slate-100"></th>
           </tr>
         </ng-template>
@@ -43,7 +49,7 @@ import { TagModule } from 'primeng/tag';
             <td
               colspan="4"
               class="text-center py-8 text-slate-500 text-sm">
-              Нет активных предупреждений
+              {{ 'FLOCKS.ALERTS.NO_DATA' | translate }}
             </td>
           </tr>
         </ng-template>

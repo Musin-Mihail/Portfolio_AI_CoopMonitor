@@ -201,7 +201,11 @@
         "UNIFORMITY": "Однородность",
         "PER_DAY": "Вода за сутки"
       },
-      "CHART_TITLE": "Динамика роста (14 дней)"
+      "CHART_TITLE": "Динамика роста (14 дней)",
+      "CHART": {
+        "MORTALITY_RATE": "Уровень падежа",
+        "WATER_CONSUMPTION": "Потребление воды"
+      }
     },
     "ENV": {
       "LIGHTING": "Освещение",
@@ -295,6 +299,7 @@
     "EMAIL": "Email",
     "ROLE": "Роль",
     "LINKED_PERSONNEL": "Связанный сотрудник",
+    "LINKED_STATUS": "(Связан)",
     "NOT_LINKED": "Не связано",
     "DIALOG_TITLE_ADD": "Создать пользователя",
     "DIALOG_TITLE_EDIT": "Редактировать пользователя",
