@@ -36,10 +36,6 @@
             [placeholder]="'FLOCKS.SEARCH_PLACEHOLDER' | translate"
             class="w-full !rounded-xl !bg-slate-50 !border-slate-200" />
         </p-iconField>
-        <button
-          class="w-10 flex-shrink-0 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50">
-          <i class="pi pi-filter text-slate-500"></i>
-        </button>
       </div>
 
       <div class="flex bg-slate-50 p-1 rounded-xl">
@@ -48,7 +44,6 @@
           (click)="activeTab.set(tab)"
           [class.bg-white]="activeTab() === tab"
           [class.shadow-sm]="activeTab() === tab"
-          [class.text-slate-800]="activeTab() === tab"
           class="flex-1 py-1.5 text-xs font-medium text-slate-500 rounded-lg transition-all">
           {{ "FLOCKS.TABS." + (tab | uppercase) | translate }}
         </button>
@@ -60,7 +55,7 @@
           (click)="selectBatch(batch)"
           [class.border-blue-500]="selectedBatch()?.id === batch.id"
           [class.bg-blue-50]="selectedBatch()?.id === batch.id"
-          class="border border-slate-200 rounded-2xl p-4 cursor-pointer hover:border-blue-300 transition-all bg-white group">
+          class="border border-slate-200 rounded-2xl p-4 cursor-pointer hover:border-blue-300 transition-all bg-white">
           <div class="flex justify-between items-start mb-3">
             <div>
               <div class="font-bold text-slate-800">Стадо #{{ batch.id }}</div>
@@ -68,22 +63,14 @@
             </div>
             <p-tag
               [severity]="getSeverity(getStatus(batch))"
-              [value]="'FLOCKS.TABS.' + getStatus(batch).toUpperCase() | translate"
+              [value]="getStatus(batch)"
               [rounded]="true"></p-tag>
           </div>
 
-          <div class="flex items-center gap-2 text-xs text-slate-600 mb-3">
+          <div class="flex items-center gap-2 text-xs text-slate-600">
             <span>{{ batch.quantity }} голов</span>
             <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-            <span>Ross 308</span>
-            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
             <span>{{ batch.birdAgeDays }} дней</span>
-          </div>
-
-          <div class="flex items-center gap-2 text-xs text-slate-400">
-            <i class="pi pi-calendar"></i>
-            {{ "FLOCKS.CARD.SLAUGHTER_IN" | translate }} {{ getDaysLeft(batch.deliveryDate) }}
-            {{ "FLOCKS.CARD.DAYS" | translate }}
           </div>
         </div>
       </div>
@@ -93,15 +80,13 @@
       class="flex-1 bg-white rounded-[24px] p-6 shadow-sm h-full overflow-y-auto custom-scrollbar"
       *ngIf="selectedBatch() as batch">
       <div class="flex justify-between items-start mb-6">
-        <div>
-          <h2 class="text-xl font-bold text-slate-900">
-            Стадо #{{ batch.id }}
-            <span class="text-slate-400 font-normal">/ {{ batch.houseName }}</span>
-          </h2>
-        </div>
+        <h2 class="text-xl font-bold text-slate-900">
+          Стадо #{{ batch.id }}
+          <span class="text-slate-400 font-normal">/ {{ batch.houseName }}</span>
+        </h2>
         <p-tag
-          [severity]="'success'"
-          [value]="'Хорошо'"
+          severity="success"
+          value="Хорошо"
           [rounded]="true"
           styleClass="px-3"></p-tag>
       </div>
@@ -112,38 +97,26 @@
         <div class="flex gap-8 mb-4">
           <div class="flex flex-col">
             <span class="text-xs text-slate-400 font-medium mb-1">T</span>
-            <div class="flex items-baseline gap-1">
-              <span class="text-xl font-bold text-green-500">
-                {{ summary.currentClimate.temperature | number: "1.1-1" }} °C
-              </span>
-            </div>
+            <span class="text-xl font-bold text-green-500">
+              {{ summary.currentClimate.temperature | number: "1.1-1" }} °C
+            </span>
           </div>
           <div class="flex flex-col">
             <span class="text-xs text-slate-400 font-medium mb-1">CO₂</span>
-            <div class="flex items-baseline gap-1">
-              <span class="text-xl font-bold text-slate-800">{{ summary.currentClimate.co2 | number: "1.0-0" }}</span>
-              <span class="text-xs text-slate-500">ppm</span>
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-xs text-slate-400 font-medium mb-1">NH₃</span>
-            <div class="flex items-baseline gap-1">
-              <span class="text-xl font-bold text-slate-800">{{ summary.currentClimate.nh3 | number: "1.0-0" }}</span>
-              <span class="text-xs text-slate-500">ppm</span>
-            </div>
+            <span class="text-xl font-bold text-slate-800">
+              {{ summary.currentClimate.co2 }}
+              <span class="text-xs font-normal">ppm</span>
+            </span>
           </div>
           <div class="flex flex-col">
             <span class="text-xs text-slate-400 font-medium mb-1">H %</span>
-            <div class="flex items-baseline gap-1">
-              <span class="text-xl font-bold text-slate-800">
-                {{ summary.currentClimate.humidity | number: "1.0-0" }}
-              </span>
-              <span class="text-xs text-slate-500">%</span>
-            </div>
+            <span class="text-xl font-bold text-slate-800">
+              {{ summary.currentClimate.humidity }}
+              <span class="text-xs font-normal">%</span>
+            </span>
           </div>
         </div>
-
-        <div class="mb-4">
+        <div>
           <div class="flex justify-between text-xs mb-1.5">
             <span class="text-slate-500">{{ "FLOCKS.DETAILS.TIME_IN_RANGE" | translate }}</span>
             <span class="text-slate-900 font-bold">{{ summary.currentClimate.timeInRangePercent }}%</span>
@@ -152,21 +125,6 @@
             <div
               class="h-full bg-blue-500 rounded-full"
               [style.width.%]="summary.currentClimate.timeInRangePercent"></div>
-          </div>
-        </div>
-
-        <div class="flex justify-between items-center pt-4 border-t border-slate-200 text-xs">
-          <div>
-            <div class="text-slate-400 mb-0.5">{{ "FLOCKS.DETAILS.LOAD_DATE" | translate }}</div>
-            <div class="font-medium text-slate-700">{{ batch.date | date: "dd.MM.yyyy" }}</div>
-          </div>
-          <div class="text-center">
-            <div class="text-slate-400 mb-0.5">{{ "FLOCKS.DETAILS.QTY" | translate }}</div>
-            <div class="font-medium text-slate-700">{{ batch.quantity }} шт</div>
-          </div>
-          <div class="text-right">
-            <div class="text-slate-400 mb-0.5">{{ "FLOCKS.DETAILS.END_DATE" | translate }}</div>
-            <div class="font-medium text-slate-700">{{ batch.deliveryDate | date: "dd.MM.yyyy" }}</div>
           </div>
         </div>
       </div>
@@ -183,64 +141,15 @@
         </button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="border border-slate-200 rounded-2xl p-4">
-          <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-            <i class="pi pi-heart"></i>
-            {{ "FLOCKS.DETAILS.METRICS.MORTALITY" | translate }}
-          </div>
-          <div class="text-2xl font-bold text-slate-800 mb-1">0,72%</div>
-          <div class="text-[10px] text-slate-400">
-            <div>{{ "FLOCKS.DETAILS.METRICS.CYCLE_TOTAL" | translate }}: 180 голов</div>
-            <div>{{ "FLOCKS.DETAILS.METRICS.TODAY" | translate }}: 12 голов</div>
-          </div>
-        </div>
-
-        <div class="border border-slate-200 rounded-2xl p-4">
-          <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-            <i class="pi pi-filter"></i>
-            {{ "FLOCKS.DETAILS.METRICS.AVG_WEIGHT" | translate }}
-          </div>
-          <div class="text-2xl font-bold text-slate-800 mb-1">1380 г</div>
-          <div class="text-[10px] text-slate-400">
-            <div>{{ "FLOCKS.DETAILS.METRICS.TARGET" | translate }}: 1400г</div>
-            <div>{{ "FLOCKS.DETAILS.METRICS.UNIFORMITY" | translate }}: 88%</div>
-          </div>
-        </div>
-
-        <div class="border border-slate-200 rounded-2xl p-4">
-          <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-            <i class="pi pi-chart-bar"></i>
-            {{ "FLOCKS.DETAILS.METRICS.FCR" | translate }}
-          </div>
-          <div class="text-2xl font-bold text-slate-800 mb-1">0,72%</div>
-          <div class="text-[10px] text-slate-400">
-            <div>{{ "FLOCKS.DETAILS.METRICS.CYCLE_TOTAL" | translate }}: 180 голов</div>
-            <div>{{ "FLOCKS.DETAILS.METRICS.TODAY" | translate }}: 12 голов</div>
-          </div>
-        </div>
-
-        <div class="border border-slate-200 rounded-2xl p-4">
-          <div class="flex items-center gap-2 mb-2 text-slate-500 text-sm">
-            <i class="pi pi-tint"></i>
-            {{ "FLOCKS.DETAILS.METRICS.WATER_FEED" | translate }}
-          </div>
-          <div class="text-2xl font-bold text-slate-800 mb-1">2,10</div>
-          <div class="text-[10px] text-slate-400">
-            <div>{{ "FLOCKS.DETAILS.METRICS.PER_DAY" | translate }}: 3885л</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="border border-slate-200 rounded-[24px] p-6">
-        <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-          <i class="pi pi-chart-line text-blue-500"></i>
-          {{ "FLOCKS.DETAILS.CHART_TITLE" | translate }}
-        </h3>
-        <div class="h-[300px] w-full relative">
-          <canvas #growthChart></canvas>
-        </div>
-      </div>
+      <ng-container [ngSwitch]="detailsTab()">
+        <app-flock-health
+          *ngSwitchCase="'Health'"
+          [summary]="selectedBatchSummary()"></app-flock-health>
+        <app-flock-env *ngSwitchCase="'Env'"></app-flock-env>
+        <app-flock-prod *ngSwitchCase="'Prod'"></app-flock-prod>
+        <app-flock-predict *ngSwitchCase="'Predict'"></app-flock-predict>
+        <app-flock-alerts *ngSwitchCase="'Alerts'"></app-flock-alerts>
+      </ng-container>
     </div>
   </div>
 </div>
