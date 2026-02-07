@@ -100,6 +100,17 @@ export class DashboardComponent implements OnInit {
       this.batchCards = this.allBatches.map((batch) => {
         const summary = summaries.find((s) => s.houseId === batch.houseId);
 
+        const start = new Date(batch.date).getTime();
+        const end = new Date(batch.deliveryDate).getTime();
+        const now = new Date().getTime();
+        let progress = 0;
+        const totalDuration = end - start;
+
+        if (totalDuration > 0) {
+          progress = ((now - start) / totalDuration) * 100;
+          progress = Math.max(0, Math.min(100, progress));
+        }
+
         return {
           batchId: batch.id,
           houseId: batch.houseId,
@@ -111,7 +122,7 @@ export class DashboardComponent implements OnInit {
           humidity: summary ? summary.currentClimate.humidity : 0,
           co2: summary ? summary.currentClimate.co2 : 0,
           nh3: summary ? summary.currentClimate.nh3 : 0,
-          timeInRangePercent: summary ? summary.currentClimate.timeInRangePercent : 0,
+          timeInRangePercent: Math.round(progress),
         };
       });
 
@@ -142,12 +153,27 @@ export class DashboardComponent implements OnInit {
 
   loadDetailData() {
     const selectedOption = this.batchOptions.find((b) => b.value === this.selectedBatchId);
+    const batch = this.allBatches.find((b) => b.id === this.selectedBatchId);
 
     if (selectedOption && selectedOption.houseId) {
       this.dashboardService.getSummary(selectedOption.houseId).subscribe((res) => {
         this.currentSummary = res;
         if (this.currentSummary) {
           this.currentSummary.houseName = selectedOption.label;
+
+          if (batch) {
+            const start = new Date(batch.date).getTime();
+            const end = new Date(batch.deliveryDate).getTime();
+            const now = new Date().getTime();
+            let progress = 0;
+            const totalDuration = end - start;
+
+            if (totalDuration > 0) {
+              progress = ((now - start) / totalDuration) * 100;
+              progress = Math.max(0, Math.min(100, progress));
+            }
+            this.currentSummary.currentClimate.timeInRangePercent = Math.round(progress);
+          }
         }
 
         if (this.comparisonChart) {

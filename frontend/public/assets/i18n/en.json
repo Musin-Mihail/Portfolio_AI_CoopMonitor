@@ -96,7 +96,7 @@
     "TEMP_SHORT": "T",
     "HUMIDITY": "Humidity",
     "HUMIDITY_SHORT": "H",
-    "TIME_IN_RANGE": "Time in range",
+    "TIME_IN_RANGE": "Cycle Progress",
     "CLIMATE_STABILITY": "Climate Stability (24h)",
     "CURRENT_STATUS": "Current Status",
     "BATCH_START": "Batch Start",
@@ -171,7 +171,7 @@
       "DAYS": "days"
     },
     "DETAILS": {
-      "TIME_IN_RANGE": "Time in range",
+      "TIME_IN_RANGE": "Cycle Progress",
       "LOAD_DATE": "Batch Load",
       "QTY": "Head Count",
       "END_DATE": "Batch Shipment",

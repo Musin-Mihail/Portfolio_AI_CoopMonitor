@@ -96,7 +96,7 @@
     "TEMP_SHORT": "T",
     "HUMIDITY": "Влажность",
     "HUMIDITY_SHORT": "H",
-    "TIME_IN_RANGE": "Время в норме",
+    "TIME_IN_RANGE": "Прогресс цикла",
     "CLIMATE_STABILITY": "Стабильность климата (24ч)",
     "CURRENT_STATUS": "Текущий статус",
     "BATCH_START": "Загрузка партии",
@@ -171,7 +171,7 @@
       "DAYS": "дн"
     },
     "DETAILS": {
-      "TIME_IN_RANGE": "Time in range",
+      "TIME_IN_RANGE": "Прогресс цикла",
       "LOAD_DATE": "Загрузка партии",
       "QTY": "Количество голов",
       "END_DATE": "Отгрузка партии",

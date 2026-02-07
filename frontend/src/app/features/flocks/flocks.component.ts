@@ -77,6 +77,21 @@ export class FlocksComponent implements OnInit {
     this.selectedBatch.set(batch);
 
     this.dashboardService.getSummary(batch.houseId).subscribe((summary) => {
+      const start = new Date(batch.date).getTime();
+      const end = new Date(batch.deliveryDate).getTime();
+      const now = new Date().getTime();
+      let progress = 0;
+      const totalDuration = end - start;
+
+      if (totalDuration > 0) {
+        progress = ((now - start) / totalDuration) * 100;
+        progress = Math.max(0, Math.min(100, progress));
+      }
+
+      if (summary && summary.currentClimate) {
+        summary.currentClimate.timeInRangePercent = Math.round(progress);
+      }
+
       this.selectedBatchSummary.set(summary);
       setTimeout(() => this.initChart(), 100);
     });
