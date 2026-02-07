@@ -76,6 +76,8 @@
     "MEDS": "Meds",
     "COMMENTS": "Comments",
     "NOTES": "Notes",
+    "LOADING": "Loading...",
+    "SEARCH_PLACEHOLDER": "Search...",
     "UNITS": {
       "PCS": "pcs",
       "KG": "kg",
@@ -160,6 +162,12 @@
     "SEARCH_PLACEHOLDER": "Search flock...",
     "FILTERS": "Filters",
     "ADD_FLOCK": "Add Flock",
+    "FILTER_ACTIVE": "Active",
+    "COUNT_SUFFIX": "flocks",
+    "FLOCK_PREFIX": "Flock #",
+    "HEADS": "heads",
+    "DAYS": "days",
+    "STATUS_GOOD": "Good",
     "TABS": {
       "ALL": "All",
       "HEALTHY": "Healthy",
@@ -194,6 +202,50 @@
         "PER_DAY": "Water per day"
       },
       "CHART_TITLE": "Growth Dynamics (14 days)"
+    },
+    "ENV": {
+      "LIGHTING": "Lighting",
+      "STATUS_OK": "OK",
+      "ATTENTION": "Attention",
+      "HOURS": "h",
+      "INTENSITY": "Intensity: 5 lux",
+      "VENTILATION": "Ventilation",
+      "AIR_SPEED": "Air speed: 1.8 m/s",
+      "CHART_TITLE": "Parameter Dynamics (24h)",
+      "CHART_TEMP": "Temperature",
+      "CHART_HUM": "Humidity"
+    },
+    "HEALTH": {
+      "STANDARD": "Standard"
+    },
+    "PROD": {
+      "DAILY_GAIN": "Daily Gain",
+      "AVERAGE": "average",
+      "EFFICIENCY_INDEX": "Efficiency Index",
+      "FCR": "Feed Conversion",
+      "TO_PLAN": "to plan",
+      "FEED_INTAKE": "Feed Intake",
+      "WEIGHT_DYNAMICS": "Weight Dynamics",
+      "CHART_CONSUMPTION": "Consumption (kg)",
+      "CHART_FACT": "Actual",
+      "CHART_PLAN": "Plan",
+      "WEEK_DAYS": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      "WEEKS": ["Week 1", "Week 2", "Week 3", "Week 4"]
+    },
+    "PREDICT": {
+      "NO_RISKS_TITLE": "No Predicted Diseases",
+      "NO_RISKS_DESC": "The AI system analyzed data from the last 48 hours. All parameters are within normal limits for this breed.",
+      "RISK_COCCIDIOSIS": "Coccidiosis Risk:",
+      "RISK_ASCITES": "Ascites Risk:",
+      "LOW": "Low",
+      "RISK_DETECTED_RESP": "Risk Detected: Respiratory Infection",
+      "RISK_DETECTED_DESC": "Probability 85%. Recommended to check ventilation in Zone 3."
+    },
+    "ALERTS": {
+      "HEADER_SEVERITY": "Severity",
+      "HEADER_MESSAGE": "Message",
+      "HEADER_TIME": "Time",
+      "NO_DATA": "No active alerts"
     }
   },
   "VIDEO_WALL": {
@@ -219,7 +271,8 @@
     "NORMAL": "Normal",
     "ONLINE": "Online",
     "OFFLINE": "Offline",
-    "ERROR": "Error"
+    "ERROR": "Error",
+    "SELECT_CAMERA": "Select a camera to view"
   },
   "ADMIN_LAYOUT": {
     "TITLE": "Administration",
@@ -269,7 +322,10 @@
     "DIALOG_TITLE_ADD": "New House",
     "DIALOG_TITLE_EDIT": "Edit House",
     "NAME_REQ": "Name is required",
-    "NO_DATA": "No houses found"
+    "NO_DATA": "No houses found",
+    "IMPORT_CSV": "Import CSV Data",
+    "IMPORT_MSG": "Importing sensor data...",
+    "NAME_PLACEHOLDER": "e.g. House #1"
   },
   "MD_FEEDS": {
     "TITLE": "Feeds List",
@@ -325,7 +381,8 @@
     "MEDICINE": "Medicine",
     "DOSAGE": "Dosage",
     "DIALOG_TITLE_ADD": "Add Disease Record",
-    "DIALOG_TITLE_EDIT": "Edit Disease Record"
+    "DIALOG_TITLE_EDIT": "Edit Disease Record",
+    "DIAGNOSIS_PLACEHOLDER": "e.g. Coccidiosis"
   },
   "LOGS_FEED_WATER": {
     "TITLE": "Feed & Water Log",
@@ -376,6 +433,7 @@
   "LOGS_BATCH_INFO": {
     "TITLE": "Batch Information",
     "DATE_ARRIVAL": "Date of Arrival",
+    "DATE_DELIVERY": "Date of Delivery",
     "QUANTITY": "Head Count",
     "AGE": "Age (days)",
     "DIALOG_TITLE_ADD": "Add Batch Info",
