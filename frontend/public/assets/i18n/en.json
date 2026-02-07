@@ -200,6 +200,13 @@
     "TITLE": "Video Wall",
     "TAB_LIVE": "Live Stream",
     "TAB_ARCHIVE": "Archive",
+    "CAMERAS": "Cameras",
+    "CAMERAS_COUNT": "cameras",
+    "SEARCH_PLACEHOLDER": "Search camera...",
+    "FILTERS": "Filters",
+    "FILTER_ALL": "All",
+    "FILTER_RGB": "RGB",
+    "FILTER_THERMAL": "Thermal",
     "QUALITY": "Quality",
     "AI_EVENTS": "AI Events",
     "STATS_TODAY": "Today's Statistics",
@@ -211,7 +218,8 @@
     "FPS": "FPS",
     "NORMAL": "Normal",
     "ONLINE": "Online",
-    "OFFLINE": "Offline"
+    "OFFLINE": "Offline",
+    "ERROR": "Error"
   },
   "ADMIN_LAYOUT": {
     "TITLE": "Administration",
