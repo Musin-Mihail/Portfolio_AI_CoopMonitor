@@ -55,20 +55,43 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-1.5">
-      <label
-        for="date"
-        class="text-sm font-semibold text-slate-700">
-        {{ "LOGS_BATCH_INFO.DATE_ARRIVAL" | translate }}
-        <span class="text-red-500">*</span>
-      </label>
-      <p-datepicker
-        id="date"
-        formControlName="date"
-        dateFormat="yy-mm-dd"
-        appendTo="body"
-        [showIcon]="true"
-        styleClass="w-full" />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="date"
+          class="text-sm font-semibold text-slate-700">
+          {{ "LOGS_BATCH_INFO.DATE_ARRIVAL" | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-datepicker
+          id="date"
+          formControlName="date"
+          dateFormat="yy-mm-dd"
+          appendTo="body"
+          [showIcon]="true"
+          styleClass="w-full" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="deliveryDate"
+          class="text-sm font-semibold text-slate-700">
+          {{ "LOGS_BATCH_INFO.DATE_DELIVERY" | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-datepicker
+          id="deliveryDate"
+          formControlName="deliveryDate"
+          dateFormat="yy-mm-dd"
+          appendTo="body"
+          [showIcon]="true"
+          styleClass="w-full" />
+        <small
+          class="text-red-500"
+          *ngIf="form.get('deliveryDate')?.hasError('required') && form.get('deliveryDate')?.touched">
+          {{ "COMMON.REQUIRED" | translate }}
+        </small>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

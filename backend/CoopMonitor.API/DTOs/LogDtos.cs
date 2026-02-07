@@ -124,6 +124,7 @@ public record BatchInfoRecordDto(
     int? PersonnelId,
     string? PersonnelName,
     DateTime Date,
+    DateTime DeliveryDate,
     int Quantity,
     int BirdAgeDays,
     DateTime CreatedAt
@@ -133,6 +134,7 @@ public record CreateBatchInfoDto(
     [Required] int HouseId,
     int? PersonnelId,
     [Required] DateTime Date,
+    [Required] DateTime DeliveryDate,
     [Required] int Quantity,
     [Required] int BirdAgeDays
 );
@@ -141,6 +143,7 @@ public record UpdateBatchInfoDto(
     [Required] int HouseId,
     int? PersonnelId,
     [Required] DateTime Date,
+    [Required] DateTime DeliveryDate,
     [Required] int Quantity,
     [Required] int BirdAgeDays
 );

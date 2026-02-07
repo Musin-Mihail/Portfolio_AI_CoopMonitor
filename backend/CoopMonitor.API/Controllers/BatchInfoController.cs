@@ -51,6 +51,7 @@ public class BatchInfoController : ControllerBase
             m.PersonnelId,
             m.Personnel?.FullName,
             m.Date,
+            m.DeliveryDate,
             m.Quantity,
             m.BirdAgeDays,
             m.CreatedAt
@@ -74,6 +75,7 @@ public class BatchInfoController : ControllerBase
             m.PersonnelId,
             m.Personnel?.FullName,
             m.Date,
+            m.DeliveryDate,
             m.Quantity,
             m.BirdAgeDays,
             m.CreatedAt
@@ -88,6 +90,7 @@ public class BatchInfoController : ControllerBase
             HouseId = dto.HouseId,
             PersonnelId = dto.PersonnelId,
             Date = dto.Date,
+            DeliveryDate = dto.DeliveryDate,
             Quantity = dto.Quantity,
             BirdAgeDays = dto.BirdAgeDays
         };
@@ -105,6 +108,7 @@ public class BatchInfoController : ControllerBase
             record.PersonnelId,
             record.Personnel?.FullName,
             record.Date,
+            record.DeliveryDate,
             record.Quantity,
             record.BirdAgeDays,
             record.CreatedAt
@@ -120,6 +124,7 @@ public class BatchInfoController : ControllerBase
         record.HouseId = dto.HouseId;
         record.PersonnelId = dto.PersonnelId;
         record.Date = dto.Date;
+        record.DeliveryDate = dto.DeliveryDate;
         record.Quantity = dto.Quantity;
         record.BirdAgeDays = dto.BirdAgeDays;
 

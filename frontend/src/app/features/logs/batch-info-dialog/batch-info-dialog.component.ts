@@ -50,6 +50,7 @@ export class BatchInfoDialogComponent implements OnInit {
       houseId: [null, Validators.required],
       personnelId: [null],
       date: [new Date(), Validators.required],
+      deliveryDate: [null, Validators.required],
       quantity: [null, [Validators.required, Validators.min(1)]],
       birdAgeDays: [0, [Validators.required, Validators.min(0)]],
     });
@@ -64,6 +65,7 @@ export class BatchInfoDialogComponent implements OnInit {
         houseId: this.data.houseId,
         personnelId: this.data.personnelId,
         date: new Date(this.data.date),
+        deliveryDate: new Date(this.data.deliveryDate),
         quantity: this.data.quantity,
         birdAgeDays: this.data.birdAgeDays,
       });
@@ -78,6 +80,8 @@ export class BatchInfoDialogComponent implements OnInit {
 
     const formValue = this.form.value;
     formValue.date = formValue.date instanceof Date ? formValue.date.toISOString() : formValue.date;
+    formValue.deliveryDate =
+      formValue.deliveryDate instanceof Date ? formValue.deliveryDate.toISOString() : formValue.deliveryDate;
 
     this.ref.close(formValue);
   }

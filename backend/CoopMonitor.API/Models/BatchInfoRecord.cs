@@ -19,6 +19,9 @@ public class BatchInfoRecord
     public DateTime Date { get; set; }
 
     [Required]
+    public DateTime DeliveryDate { get; set; }
+
+    [Required]
     public int Quantity { get; set; }
 
     [Required]

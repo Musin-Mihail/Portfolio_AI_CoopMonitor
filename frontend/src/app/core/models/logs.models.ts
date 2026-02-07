@@ -158,6 +158,7 @@ export interface BatchInfoRecord {
   personnelId?: number;
   personnelName?: string;
   date: string;
+  deliveryDate: string;
   quantity: number;
   birdAgeDays: number;
   createdAt: string;
@@ -167,6 +168,7 @@ export interface CreateBatchInfoDto {
   houseId: number;
   personnelId?: number;
   date: string;
+  deliveryDate: string;
   quantity: number;
   birdAgeDays: number;
 }

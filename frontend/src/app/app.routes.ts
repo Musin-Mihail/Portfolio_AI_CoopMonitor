@@ -20,7 +20,6 @@ import { BatchInfoListComponent } from './features/logs/batch-info-list/batch-in
 import { UserListComponent } from './features/admin/user-list/user-list.component';
 import { AuditListComponent } from './features/admin/audit-list/audit-list.component';
 import { SystemStatusComponent } from './features/settings/system-status/system-status.component';
-import { DashboardComponentTest } from './features/dashboard-test/dashboard-test.component';
 
 export const routes: Routes = [
   {
@@ -37,11 +36,6 @@ export const routes: Routes = [
         path: '',
         component: DashboardComponent,
         data: { breadcrumb: 'MENU.DASHBOARD' },
-      },
-      {
-        path: 'dashboard-test',
-        component: DashboardComponentTest,
-        data: { breadcrumb: 'MENU.VIDEO_WALL' },
       },
       {
         path: 'video-wall',
