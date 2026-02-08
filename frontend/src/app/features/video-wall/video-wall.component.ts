@@ -13,8 +13,14 @@ import { VideoArchiveListComponent } from './video-archive-list/video-archive-li
 })
 export class VideoWallComponent {
   activeTab = signal<'live' | 'archive'>('live');
+  isDropdownOpen = signal(false);
 
   setTab(tab: 'live' | 'archive') {
     this.activeTab.set(tab);
+    this.isDropdownOpen.set(false);
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen.update((v) => !v);
   }
 }
