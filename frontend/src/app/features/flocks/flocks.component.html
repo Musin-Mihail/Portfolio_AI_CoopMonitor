@@ -29,14 +29,14 @@
       <div class="flex gap-2">
         <p-iconField
           iconPosition="left"
-          class="w-full">
-          <p-inputIcon styleClass="pi pi-search" />
+          class="w-full relative">
+          <p-inputIcon styleClass="pi pi-search absolute top-1/2 -translate-y-1/2 left-3 text-slate-400" />
           <input
             type="text"
             pInputText
             [(ngModel)]="searchQuery"
             [placeholder]="'FLOCKS.SEARCH_PLACEHOLDER' | translate"
-            class="w-full !rounded-xl !bg-slate-50 !border-slate-200" />
+            class="w-full !rounded-xl !bg-slate-50 !border-slate-200 pl-10" />
         </p-iconField>
       </div>
 
