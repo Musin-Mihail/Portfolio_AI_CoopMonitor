@@ -18,6 +18,7 @@
     "MD_HOUSES": "Houses",
     "MD_PERSONNEL": "Personnel",
     "MD_FEEDS": "Feeds",
+    "MD_CAMERAS": "Cameras",
     "ADMIN_USERS": "Users",
     "ADMIN_AUDIT": "Audit",
     "ADMIN_STATUS": "System Status"
@@ -478,5 +479,21 @@
     "ADMIN_CHAT_ID": "Admin Chat ID",
     "NOT_CONFIGURED": "Not Configured",
     "CONFIG_HINT": "To configure, edit backend/appsettings.json or use environment variables."
+  },
+  "MD_CAMERAS": {
+    "TITLE": "Cameras List",
+    "NAME": "Name",
+    "TYPE": "Type",
+    "IP": "IP Address",
+    "PORT": "Port",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "STREAM_PATH": "Stream Path",
+    "POSITION": "Position",
+    "IS_ACTIVE": "Active",
+    "STATUS": "Status",
+    "NO_DATA": "No cameras found",
+    "DIALOG_TITLE_ADD": "Add Camera",
+    "DIALOG_TITLE_EDIT": "Edit Camera"
   }
 }

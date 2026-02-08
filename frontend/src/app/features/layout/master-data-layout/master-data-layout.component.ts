@@ -21,6 +21,7 @@ export class MasterDataLayoutComponent implements OnInit {
     { label: 'MENU.MD_HOUSES', value: '/master-data/houses' },
     { label: 'MENU.MD_PERSONNEL', value: '/master-data/personnel' },
     { label: 'MENU.MD_FEEDS', value: '/master-data/feeds' },
+    { label: 'MENU.MD_CAMERAS', value: '/master-data/cameras' },
   ];
 
   ngOnInit() {

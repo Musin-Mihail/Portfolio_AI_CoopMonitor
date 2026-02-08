@@ -18,6 +18,7 @@
     "MD_HOUSES": "Птичники",
     "MD_PERSONNEL": "Персонал",
     "MD_FEEDS": "Корма",
+    "MD_CAMERAS": "Камеры",
     "ADMIN_USERS": "Пользователи",
     "ADMIN_AUDIT": "Аудит",
     "ADMIN_STATUS": "Статус системы"
@@ -478,5 +479,21 @@
     "ADMIN_CHAT_ID": "Chat ID Админа",
     "NOT_CONFIGURED": "Не настроено",
     "CONFIG_HINT": "Для настройки отредактируйте backend/appsettings.json или используйте переменные окружения."
+  },
+  "MD_CAMERAS": {
+    "TITLE": "Справочник камер",
+    "NAME": "Название",
+    "TYPE": "Тип",
+    "IP": "IP адрес",
+    "PORT": "Порт",
+    "USERNAME": "Логин",
+    "PASSWORD": "Пароль",
+    "STREAM_PATH": "Путь потока (RTSP)",
+    "POSITION": "Позиция",
+    "IS_ACTIVE": "Активна",
+    "STATUS": "Статус",
+    "NO_DATA": "Нет данных для отображения",
+    "DIALOG_TITLE_ADD": "Добавление камеры",
+    "DIALOG_TITLE_EDIT": "Редактирование камеры"
   }
 }

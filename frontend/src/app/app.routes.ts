@@ -21,6 +21,7 @@ import { AuditListComponent } from './features/admin/audit-list/audit-list.compo
 import { SystemStatusComponent } from './features/settings/system-status/system-status.component';
 import { FlocksComponent } from './features/flocks/flocks.component';
 import { VideoWallComponent } from './features/video-wall/video-wall.component';
+import { CameraListComponent } from './features/cameras/camera-list/camera-list.component';
 
 export const routes: Routes = [
   {
@@ -76,6 +77,7 @@ export const routes: Routes = [
           { path: 'houses', component: HouseListComponent, data: { breadcrumb: 'MENU.MD_HOUSES' } },
           { path: 'personnel', component: PersonnelListComponent, data: { breadcrumb: 'MENU.MD_PERSONNEL' } },
           { path: 'feeds', component: FeedListComponent, data: { breadcrumb: 'MENU.MD_FEEDS' } },
+          { path: 'cameras', component: CameraListComponent, data: { breadcrumb: 'MENU.MD_CAMERAS' } },
         ],
       },
       {

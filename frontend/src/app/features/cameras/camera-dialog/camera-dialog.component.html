@@ -1,0 +1,131 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex flex-col p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-[#1A1C21] m-0">{{ title | translate }}</h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-slate-400 hover:text-slate-600 transition-colors">
+      <i class="pi pi-times text-lg"></i>
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-4 overflow-y-auto max-h-[65vh] pr-2">
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-semibold text-slate-700">
+        {{ "MD_CAMERAS.NAME" | translate }}
+        <span class="text-red-500">*</span>
+      </label>
+      <input
+        pInputText
+        formControlName="name"
+        class="w-full" />
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">{{ "MD_CAMERAS.TYPE" | translate }}</label>
+        <p-select
+          formControlName="type"
+          [options]="types"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">{{ "COMMON.HOUSE" | translate }}</label>
+        <p-select
+          formControlName="houseId"
+          [options]="houses()"
+          optionLabel="name"
+          optionValue="id"
+          [showClear]="true"
+          styleClass="w-full" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div class="col-span-2 flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">
+          {{ "MD_CAMERAS.IP" | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          pInputText
+          formControlName="ipAddress"
+          class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">{{ "MD_CAMERAS.PORT" | translate }}</label>
+        <p-inputnumber
+          formControlName="port"
+          [useGrouping]="false"
+          styleClass="w-full" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">{{ "MD_CAMERAS.USERNAME" | translate }}</label>
+        <input
+          pInputText
+          formControlName="username"
+          class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-semibold text-slate-700">{{ "MD_CAMERAS.PASSWORD" | translate }}</label>
+        <p-password
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          styleClass="w-full"
+          inputStyleClass="w-full" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-semibold text-slate-700">{{ "MD_CAMERAS.STREAM_PATH" | translate }}</label>
+      <input
+        pInputText
+        formControlName="streamPath"
+        placeholder="/live/main"
+        class="w-full" />
+    </div>
+
+    <div class="flex items-center gap-4 mt-2">
+      <div class="flex flex-col gap-1.5 w-32">
+        <label class="text-sm font-semibold text-slate-700">{{ "MD_CAMERAS.POSITION" | translate }}</label>
+        <p-inputnumber
+          formControlName="position"
+          styleClass="w-full" />
+      </div>
+      <div class="flex items-center gap-2 mt-6">
+        <p-checkbox
+          formControlName="isActive"
+          [binary]="true"
+          inputId="isActive" />
+        <label
+          for="isActive"
+          class="text-sm text-slate-700 cursor-pointer">
+          {{ "MD_CAMERAS.IS_ACTIVE" | translate }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 pt-6 mt-4 border-t border-slate-50">
+    <p-button
+      [label]="'COMMON.CANCEL' | translate"
+      severity="secondary"
+      [text]="true"
+      (onClick)="onCancel()" />
+    <p-button
+      [label]="'COMMON.SAVE' | translate"
+      type="submit"
+      [disabled]="form.invalid"
+      [rounded]="true"
+      styleClass="px-6" />
+  </div>
+</form>
