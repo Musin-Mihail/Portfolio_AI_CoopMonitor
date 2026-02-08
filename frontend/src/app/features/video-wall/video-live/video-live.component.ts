@@ -3,8 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogService } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
 import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
 import { AiEventMock, VideoStreamMock } from '../models/video.models';
+import { CameraService } from '../../../core/services/camera.service';
+import { Camera } from '../../../core/models/camera.models';
 
 @Component({
   selector: 'app-video-live',
@@ -15,65 +18,14 @@ import { AiEventMock, VideoStreamMock } from '../models/video.models';
 })
 export class VideoLiveComponent implements OnInit {
   private dialogService = inject(DialogService);
+  private cameraService = inject(CameraService);
+  private messageService = inject(MessageService);
 
   searchQuery = signal<string>('');
   cameraFilter = signal<'all' | 'rgb' | 'thermal'>('all');
   selectedStream = signal<VideoStreamMock | null>(null);
 
-  liveStreams = signal<VideoStreamMock[]>([
-    {
-      id: 1,
-      title: 'Stado A-001',
-      subTitle: 'House 1',
-      statusKey: 'VIDEO_WALL.ONLINE',
-      fps: 25,
-      quality: '1080p',
-      time: '18:29',
-      cameraState: 'Alert',
-      alertCount: 1,
-      audioAlertCount: 1,
-      type: 'rgb',
-    },
-    {
-      id: 2,
-      title: 'Stado A-001',
-      subTitle: 'House 1',
-      statusKey: 'VIDEO_WALL.ONLINE',
-      fps: 25,
-      quality: '1080p',
-      time: '18:29',
-      cameraState: 'Normal',
-      alertCount: 0,
-      audioAlertCount: 0,
-      type: 'rgb',
-    },
-    {
-      id: 3,
-      title: 'Stado A-001',
-      subTitle: 'House 1',
-      statusKey: 'VIDEO_WALL.ERROR',
-      fps: 0,
-      quality: 'Disconnected',
-      time: '18:29',
-      cameraState: 'Error',
-      alertCount: 0,
-      audioAlertCount: 0,
-      type: 'thermal',
-    },
-    {
-      id: 4,
-      title: 'Stado A-001',
-      subTitle: 'House 1',
-      statusKey: 'VIDEO_WALL.ONLINE',
-      fps: 25,
-      quality: '1080p',
-      time: '18:29',
-      cameraState: 'Alert',
-      alertCount: 1,
-      audioAlertCount: 1,
-      type: 'rgb',
-    },
-  ]);
+  liveStreams = signal<VideoStreamMock[]>([]);
 
   aiEvents = signal<AiEventMock[]>([
     { time: '10:25', titleKey: 'DASHBOARD.EVENTS.ANOMALY', location: 'House 1 - Cam 1', type: 'danger' },
@@ -103,9 +55,47 @@ export class VideoLiveComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.liveStreams().length > 0) {
-      this.selectedStream.set(this.liveStreams()[0]);
-    }
+    this.loadCameras();
+  }
+
+  loadCameras() {
+    this.cameraService.getCameras().subscribe({
+      next: (cameras: Camera[]) => {
+        const mappedStreams: VideoStreamMock[] = cameras.map((cam) => {
+          const isActive = cam.isActive;
+          const type = cam.type.toLowerCase() as 'rgb' | 'thermal';
+
+          return {
+            id: cam.id,
+            title: cam.name,
+            subTitle: cam.houseName || 'Unassigned',
+            statusKey: isActive ? 'VIDEO_WALL.ONLINE' : 'VIDEO_WALL.ERROR',
+            fps: isActive ? 25 : 0,
+            quality: isActive ? '1080p' : 'Disconnected',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            cameraState: isActive ? 'Normal' : 'Error',
+            alertCount: 0,
+            audioAlertCount: 0,
+            type: type,
+            streamUrl: cam.constructedRtspUrl,
+          };
+        });
+
+        this.liveStreams.set(mappedStreams);
+
+        if (mappedStreams.length > 0 && !this.selectedStream()) {
+          this.selectedStream.set(mappedStreams[0]);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load cameras', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load camera list',
+        });
+      },
+    });
   }
 
   selectStream(stream: VideoStreamMock) {
@@ -117,7 +107,16 @@ export class VideoLiveComponent implements OnInit {
   }
 
   playStream(stream: VideoStreamMock) {
-    const streamUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    let streamUrl = stream.streamUrl;
+
+    // Браузеры не поддерживают RTSP напрямую.
+    // Для демо используем заглушку, если пришла RTSP ссылка.
+    // В реальном проекте здесь должен быть URL потока HLS/WebRTC.
+    if (!streamUrl || streamUrl.startsWith('rtsp')) {
+      console.warn('RTSP stream detected. Using sample video for demo purposes.');
+      streamUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    }
+
     this.dialogService.open(VideoPlayerDialogComponent, {
       header: stream.title,
       width: '80vw',

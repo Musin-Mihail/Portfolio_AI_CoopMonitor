@@ -12,6 +12,7 @@ export interface VideoStreamMock {
   imageUrl?: string;
   type?: 'rgb' | 'thermal';
   date?: string;
+  streamUrl?: string;
   eventTag?: {
     labelKey: string;
     type: 'danger' | 'warning' | 'info' | 'primary';
