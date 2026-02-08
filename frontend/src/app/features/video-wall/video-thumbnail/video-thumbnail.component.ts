@@ -56,6 +56,7 @@ export class VideoThumbnailComponent implements OnInit, OnDestroy {
 
     if (!this.videoRef) return;
     const video = this.videoRef.nativeElement;
+    video.muted = true;
 
     let streamName = `cam${id}`;
 

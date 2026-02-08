@@ -1,3 +1,5 @@
+#!/bin/sh
+
 echo "Waiting for MediaMTX to start..."
 sleep 5
 
