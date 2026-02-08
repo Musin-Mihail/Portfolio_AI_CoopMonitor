@@ -2,22 +2,21 @@ import { Component, computed, inject, OnInit, signal, ViewChild, ElementRef, OnD
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { AiEventMock, VideoStreamMock } from '../models/video.models';
 import { CameraService } from '../../../core/services/camera.service';
 import { Camera } from '../../../core/models/camera.models';
 import Hls from 'hls.js';
+import { VideoThumbnailComponent } from '../video-thumbnail/video-thumbnail.component';
 
 @Component({
   selector: 'app-video-live',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, VideoThumbnailComponent],
   templateUrl: './video-live.component.html',
   styleUrls: ['./video-live.component.scss'],
 })
 export class VideoLiveComponent implements OnInit, OnDestroy {
-  private dialogService = inject(DialogService);
   private cameraService = inject(CameraService);
   private messageService = inject(MessageService);
 
