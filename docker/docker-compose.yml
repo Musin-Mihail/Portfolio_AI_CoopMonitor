@@ -51,6 +51,29 @@ services:
     networks:
       - coop-net
 
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: coop_mediamtx
+    restart: unless-stopped
+    ports:
+      - "8554:8554" # RTSP
+      - "1935:1935" # RTMP
+      - "8888:8888" # HLS
+    networks:
+      - coop-net
+
+  mock-cameras:
+    build:
+      context: ./mock_cameras
+      dockerfile: Dockerfile
+    container_name: coop_mock_cameras
+    depends_on:
+      - mediamtx
+    volumes:
+      - ./mock_cameras/videos:/videos
+    networks:
+      - coop-net
+
 networks:
   coop-net:
     driver: bridge
