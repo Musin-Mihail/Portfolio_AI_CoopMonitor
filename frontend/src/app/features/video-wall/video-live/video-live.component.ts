@@ -1,13 +1,13 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild, ElementRef, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
-import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
 import { AiEventMock, VideoStreamMock } from '../models/video.models';
 import { CameraService } from '../../../core/services/camera.service';
 import { Camera } from '../../../core/models/camera.models';
+import Hls from 'hls.js';
 
 @Component({
   selector: 'app-video-live',
@@ -16,23 +16,23 @@ import { Camera } from '../../../core/models/camera.models';
   templateUrl: './video-live.component.html',
   styleUrls: ['./video-live.component.scss'],
 })
-export class VideoLiveComponent implements OnInit {
+export class VideoLiveComponent implements OnInit, OnDestroy {
   private dialogService = inject(DialogService);
   private cameraService = inject(CameraService);
   private messageService = inject(MessageService);
+
+  @ViewChild('mainPlayer') mainPlayerRef!: ElementRef<HTMLVideoElement>;
+  private hls: Hls | null = null;
 
   searchQuery = signal<string>('');
   cameraFilter = signal<'all' | 'rgb' | 'thermal'>('all');
   selectedStream = signal<VideoStreamMock | null>(null);
 
   liveStreams = signal<VideoStreamMock[]>([]);
-
   aiEvents = signal<AiEventMock[]>([
     { time: '10:25', titleKey: 'DASHBOARD.EVENTS.ANOMALY', location: 'House 1 - Cam 1', type: 'danger' },
     { time: '08:30', titleKey: 'DASHBOARD.EVENTS.OBJECT_DETECTED', location: 'House 3 - Cam 1', type: 'primary' },
     { time: '10:25', titleKey: 'DASHBOARD.EVENTS.ANOMALY', location: 'House 1 - Cam 1', type: 'danger' },
-    { time: '08:30', titleKey: 'DASHBOARD.EVENTS.MOTION', location: 'House 3 - Cam 1', type: 'info' },
-    { time: '08:30', titleKey: 'DASHBOARD.EVENTS.OBJECT_DETECTED', location: 'House 3 - Cam 1', type: 'primary' },
     { time: '08:30', titleKey: 'DASHBOARD.EVENTS.MOTION', location: 'House 3 - Cam 1', type: 'info' },
   ]);
 
@@ -54,8 +54,23 @@ export class VideoLiveComponent implements OnInit {
     return streams;
   });
 
+  constructor() {
+    effect(() => {
+      const stream = this.selectedStream();
+      if (stream) {
+        setTimeout(() => this.playStreamInMainPlayer(stream), 50);
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.loadCameras();
+  }
+
+  ngOnDestroy(): void {
+    if (this.hls) {
+      this.hls.destroy();
+    }
   }
 
   loadCameras() {
@@ -106,26 +121,55 @@ export class VideoLiveComponent implements OnInit {
     this.cameraFilter.set(filter);
   }
 
-  playStream(stream: VideoStreamMock) {
-    let streamUrl = stream.streamUrl;
+  playStreamInMainPlayer(stream: VideoStreamMock) {
+    if (!this.mainPlayerRef) return;
+    const video = this.mainPlayerRef.nativeElement;
 
-    // Браузеры не поддерживают RTSP напрямую.
-    // Для демо используем заглушку, если пришла RTSP ссылка.
-    // В реальном проекте здесь должен быть URL потока HLS/WebRTC.
-    if (!streamUrl || streamUrl.startsWith('rtsp')) {
-      console.warn('RTSP stream detected. Using sample video for demo purposes.');
-      streamUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    if (this.hls) {
+      this.hls.destroy();
+      this.hls = null;
     }
 
-    this.dialogService.open(VideoPlayerDialogComponent, {
-      header: stream.title,
-      width: '80vw',
-      contentStyle: { padding: '0', 'background-color': '#000' },
-      data: {
-        title: stream.title,
-        streamUrl: streamUrl,
-        mimeType: 'video/mp4',
-      },
-    });
+    const streamName = `cam${stream.id}`;
+    const hlsUrl = `http://localhost:8888/${streamName}/index.m3u8`;
+
+    console.log(`Playing HLS stream: ${hlsUrl}`);
+
+    if (Hls.isSupported()) {
+      this.hls = new Hls({
+        debug: false,
+        enableWorker: true,
+        lowLatencyMode: true,
+      });
+
+      this.hls.loadSource(hlsUrl);
+      this.hls.attachMedia(video);
+
+      this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch((e) => console.warn('Auto-play blocked:', e));
+      });
+
+      this.hls.on(Hls.Events.ERROR, (event, data) => {
+        if (data.fatal) {
+          console.error('HLS Fatal Error:', data.type);
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              this.hls?.startLoad();
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              this.hls?.recoverMediaError();
+              break;
+            default:
+              this.hls?.destroy();
+              break;
+          }
+        }
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsUrl;
+      video.addEventListener('loadedmetadata', () => {
+        video.play();
+      });
+    }
   }
 }

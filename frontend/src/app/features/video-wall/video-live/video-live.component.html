@@ -79,49 +79,15 @@
           </div>
         </div>
 
-        <div class="px-3 pb-2 text-[10px] text-slate-400 font-mono flex gap-2">
-          <span>{{ "VIDEO_WALL.FPS" | translate }}: {{ item.fps }}</span>
-          <span>{{ "VIDEO_WALL.QUALITY" | translate }}: {{ item.quality }}</span>
-        </div>
-
         <div class="relative w-[calc(100%-24px)] mx-auto aspect-video bg-slate-800 rounded-lg overflow-hidden mb-3">
           <img
             src="assets/images/chicken_cam_placeholder.svg"
             class="w-full h-full object-cover opacity-80"
-            onerror="this.src = 'https://placehold.co/400x250/333/999?text=Feed'" />
+            onerror="this.src = 'https://placehold.co/400x250/333/999?text=Preview'" />
 
           <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-green-400 w-8 h-8 rounded opacity-70"
-            *ngIf="item.cameraState !== 'Error'"></div>
-          <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-8 bg-green-500 text-white text-[9px] px-1.5 rounded"
-            *ngIf="item.cameraState !== 'Error'">
-            {{ "VIDEO_WALL.NORMAL" | translate }}
-          </div>
-        </div>
-
-        <div class="px-3 pb-3 flex gap-2">
-          <div
-            class="px-2 py-1 rounded flex items-center gap-1.5 text-[10px] font-bold border"
-            [class.bg-red-50]="item.alertCount > 0"
-            [class.text-red-500]="item.alertCount > 0"
-            [class.border-red-100]="item.alertCount > 0"
-            [class.bg-slate-50]="item.alertCount === 0"
-            [class.text-slate-400]="item.alertCount === 0"
-            [class.border-slate-100]="item.alertCount === 0">
-            <i class="pi pi-video"></i>
-            {{ "VIDEO_WALL.ALERT_LABEL" | translate }}: {{ item.alertCount }}
-          </div>
-          <div
-            class="px-2 py-1 rounded flex items-center gap-1.5 text-[10px] font-bold border"
-            [class.bg-blue-50]="item.audioAlertCount && item.audioAlertCount > 0"
-            [class.text-blue-500]="item.audioAlertCount && item.audioAlertCount > 0"
-            [class.border-blue-100]="item.audioAlertCount && item.audioAlertCount > 0"
-            [class.bg-slate-50]="!item.audioAlertCount"
-            [class.text-slate-400]="!item.audioAlertCount"
-            [class.border-slate-100]="!item.audioAlertCount">
-            <i class="pi pi-microphone"></i>
-            {{ "VIDEO_WALL.ALERT_LABEL" | translate }}: {{ item.audioAlertCount || 0 }}
+            class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
+            <i class="pi pi-play-circle text-3xl text-white"></i>
           </div>
         </div>
       </div>
@@ -148,34 +114,15 @@
       </div>
 
       <div class="flex-1 p-6 flex flex-col min-h-0">
-        <div class="w-full flex-1 bg-black rounded-xl overflow-hidden relative group">
-          <img
-            src="assets/images/chicken_cam_placeholder.svg"
-            class="w-full h-full object-cover opacity-60"
-            onerror="this.src = 'https://placehold.co/800x600/111/444?text=Live+Stream'" />
-
-          <div
-            class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-            <div class="flex items-center gap-4">
-              <button class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:scale-105">
-                <i class="pi pi-pause text-xs"></i>
-              </button>
-              <button
-                class="w-8 h-8 rounded-full bg-white/20 text-white backdrop-blur flex items-center justify-center">
-                <i class="pi pi-volume-up text-xs"></i>
-              </button>
-              <div
-                class="flex items-center gap-2 px-3 py-1 bg-red-600/80 rounded-full text-white text-[10px] font-bold">
-                <div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                Live
-              </div>
-            </div>
-            <button
-              class="w-8 h-8 rounded-lg text-white hover:bg-white/20 flex items-center justify-center"
-              (click)="playStream(selectedStream()!)">
-              <i class="pi pi-expand"></i>
-            </button>
-          </div>
+        <div class="w-full flex-1 bg-black rounded-xl overflow-hidden relative flex items-center justify-center">
+          <video
+            #mainPlayer
+            controls
+            autoplay
+            muted
+            class="w-full h-full object-contain">
+            Your browser does not support video.
+          </video>
         </div>
 
         <div class="mt-4 flex gap-3">
@@ -202,7 +149,6 @@
   <aside
     class="hidden xl:flex w-[320px] flex-shrink-0 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex-col h-full min-h-0">
     <h2 class="text-lg font-bold text-slate-800 mb-6 font-serif">{{ "VIDEO_WALL.AI_EVENTS" | translate }}</h2>
-
     <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-4 pr-1">
       <div
         *ngFor="let event of aiEvents()"
@@ -211,29 +157,6 @@
         <div class="flex-1">
           <div class="font-bold text-sm text-slate-800">{{ event.titleKey | translate }}</div>
           <div class="text-[11px] text-slate-500 mt-0.5">{{ event.location }}</div>
-          <div class="mt-2">
-            <span class="text-blue-500 text-[11px] font-semibold hover:underline cursor-pointer">
-              {{ "VIDEO_WALL.VIEW_BTN" | translate }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-6 pt-6 border-t border-slate-100">
-      <h3 class="text-sm font-bold text-slate-800 mb-4">{{ "VIDEO_WALL.STATS_TODAY" | translate }}</h3>
-      <div class="space-y-3">
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-slate-500">{{ "VIDEO_WALL.TOTAL_EVENTS" | translate }}</span>
-          <span class="font-bold text-slate-800">24</span>
-        </div>
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-slate-500">{{ "VIDEO_WALL.ACTIVE_CAMS" | translate }}</span>
-          <span class="font-bold text-slate-800">{{ liveStreams().length }}/8</span>
-        </div>
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-slate-500">{{ "VIDEO_WALL.ALERTS" | translate }}</span>
-          <span class="font-bold text-red-500">3</span>
         </div>
       </div>
     </div>
