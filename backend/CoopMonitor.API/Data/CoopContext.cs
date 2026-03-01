@@ -24,7 +24,6 @@ public class CoopContext : IdentityDbContext<User>
   public DbSet<ReportMetadata> Reports { get; set; }
   public DbSet<AuditLog> AuditLogs { get; set; }
   public DbSet<SyncUsage> SyncUsages { get; set; }
-  // --- НОВАЯ СТРОКА ---
   public DbSet<Camera> Cameras { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)

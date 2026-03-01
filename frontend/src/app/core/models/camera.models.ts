@@ -10,7 +10,7 @@ export interface Camera {
   streamPath?: string;
   position: number;
   isActive: boolean;
-  constructedRtspUrl: string; // Готовый URL для плеера или AI
+  constructedRtspUrl: string;
 }
 
 export interface CreateCameraDto {

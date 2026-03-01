@@ -27,19 +27,18 @@ public class Camera
     [ForeignKey("HouseId")]
     public House? House { get; set; }
 
-    // --- Данные для подключения (RTSP/ONVIF) ---
 
     [Required]
     [MaxLength(50)]
     public string IpAddress { get; set; } = string.Empty;
 
-    public int Port { get; set; } = 554; // Стандартный RTSP порт
+    public int Port { get; set; } = 554;
 
     [MaxLength(50)]
     public string? Username { get; set; }
 
     [MaxLength(100)]
-    public string? Password { get; set; } // В реальном проекте здесь должно быть шифрование
+    public string? Password { get; set; }
 
     /// <summary>
     /// Специфический путь потока, например: "/h264/ch1/main/av_stream"
@@ -54,8 +53,6 @@ public class Camera
     [MaxLength(500)]
     public string? RtspUrlOverride { get; set; }
 
-    // --- Поля для Видеостены ---
-
     /// <summary>
     /// Порядок отображения на видеостене
     /// </summary>
@@ -66,6 +63,5 @@ public class Camera
     /// </summary>
     public bool IsActive { get; set; } = true;
 
-    // Метаданные
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

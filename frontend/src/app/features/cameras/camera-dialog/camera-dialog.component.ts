@@ -57,7 +57,7 @@ export class CameraDialogComponent implements OnInit {
       ipAddress: [this.data?.ipAddress || '', Validators.required],
       port: [this.data?.port || 554, Validators.required],
       username: [this.data?.username || ''],
-      password: [''], // Пароль не предзаполняем для безопасности, если это не требуется
+      password: [''],
       streamPath: [this.data?.streamPath || ''],
       position: [this.data?.position || 0],
       isActive: [this.data?.isActive ?? true],
